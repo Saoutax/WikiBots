@@ -1,5 +1,8 @@
 {
     "conventionalCommits.scopes": [
-        "conventionalCommits"
+        "deleteRedirect",
+        "utils/config",
+        "utils/flagDelete",
+        "utils/pageInfo"
     ]
 }
