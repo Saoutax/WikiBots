@@ -24,6 +24,17 @@ const config = {
 			password: env.CM_MAIN,
 		},
 	},
+	vjp: {
+		api: 'https://voca.wiki/api.php',
+		bot: {
+			name: 'MisakaNetwork@MisakaNetwork',
+			password: env.VJP_BOT,
+		},
+		main: {
+			name: 'SaoMikoto@saomikoto',
+			password: env.VJP_MAIN,
+		},
+	},
 };
 
 export default config;

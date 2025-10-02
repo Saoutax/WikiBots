@@ -1,8 +1,11 @@
 {
     "conventionalCommits.scopes": [
-        "deleteRedirect",
+        "mgp/deleteRedirect",
+        "vjp/cleanSandbox",
+        "vjp/invisibleCharacter",
         "utils/config",
         "utils/flagDelete",
-        "utils/pageInfo"
+        "utils/pageInfo",
+        "utils/splitAndJoin",
     ]
 }

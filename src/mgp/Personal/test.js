@@ -1,5 +1,5 @@
 import { MediaWikiApi } from 'wiki-saikou';
-import config from '../utils/config.js';
+import config from '../../utils/config.js';
 
 const api = new MediaWikiApi(config.cm.api, {
 	headers: { 'user-agent': config.useragent },
