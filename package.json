@@ -1,0 +1,29 @@
+{
+  "name": "wikibots",
+  "version": "1.0.0",
+  "description": "用于多站点的MediaWiki机器人",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ./src/Personal/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Saoutax/WikiBots.git"
+  },
+  "keywords": [],
+  "author": "Saoutax",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Saoutax/WikiBots/issues"
+  },
+  "homepage": "https://github.com/Saoutax/WikiBots#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "moment": "^2.30.1",
+    "opencc-js": "^1.0.5",
+    "wiki-saikou": "^5.0.0",
+    "wikiparser-node": "^1.28.0"
+  }
+}
