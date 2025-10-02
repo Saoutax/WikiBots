@@ -55,8 +55,9 @@ async function getRecentMoves() {
     
     const usage = await new CheckGlobalUsage(api).check(isRedirect);
     const unused = Object.keys(usage).filter(key => usage[key] === false);
-    
-    await new FlagDelete(api).flagDelete(unused, '移动残留重定向', '自动挂删文件移动残留重定向');
+
+    const successList = await new FlagDelete(api).flagDelete(unused, '移动残留重定向', '自动挂删文件移动残留重定向');
+    console.log(`成功挂删 ${successList.length} 个重定向`);
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

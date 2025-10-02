@@ -8,11 +8,13 @@ export class FlagDelete {
      * @param {string|string[]} input - 页面标题或标题数组
      * @param {string} reason - 挂删理由
      * @param {string} summary - 编辑摘要
+     * @returns {Promise<string[]|void>} - 成功挂删的页面数组
      */
     async flagDelete(page, reason, summary) {
+        const successList = [];
         const flagDel = async (title) => {
             try {
-                const del = await this.api.postWithToken('csrf',{
+                const del = await this.api.postWithToken('csrf', {
                     action: 'edit',
                     title,
                     text: `<noinclude>{{即将删除|user=机娘亚衣琴|1=${reason}}}</noinclude>`,
@@ -26,16 +28,22 @@ export class FlagDelete {
                     await this.api.getToken('csrf', true);
                     return await flagDel(title);
                 }
+
+                if (del?.edit?.result === 'Success') {
+                    successList.push(title);
+                }
             } catch (err) {
                 console.error(`挂删失败（${title}）：`, err);
             }
         };
 
         if (Array.isArray(page)) {
-            return await Promise.all(page.map(title => flagDel(title)));
+            await Promise.all(page.map(title => flagDel(title)));
         } else {
-            return await flagDel(page);
+            await flagDel(page);
         }
+
+        return successList;
     }
 }
 
