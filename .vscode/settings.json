@@ -7,5 +7,6 @@
         "utils/flagDelete",
         "utils/pageInfo",
         "utils/splitAndJoin",
+        "utils/queryCats",
     ]
 }
