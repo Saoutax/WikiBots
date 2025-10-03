@@ -7,12 +7,12 @@ const api = new MediaWikiApi(config.cm.api, {
     headers: { 'user-agent': config.useragent },
 });
 
+const now = new Date();
+const day = now.getDay() === 1 ? 7 : 1;
+const time = new Date(now - 86400000 * day);
+
 async function getRecentMoves() {
     try {
-        const now = new Date();
-        const day = now.getDay() === 1 ? 7 : 1;
-        const time = new Date(now - 86400000 * day);
-
         const res = await api.post({
             action: 'query',
             list: 'logevents',
