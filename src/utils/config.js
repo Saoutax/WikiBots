@@ -20,7 +20,7 @@ const config = {
 			password: env.CM_BOT,
 		},
 		main: {
-			name: "SaoMikoto@SaoMikoto",
+			name: "SaoMikoto@saomikoto",
 			password: env.CM_MAIN,
 		},
 	},
