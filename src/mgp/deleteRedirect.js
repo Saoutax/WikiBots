@@ -1,7 +1,7 @@
 import { MediaWikiApi } from 'wiki-saikou';
-import config from '../../utils/config.js';
-import { CheckGlobalUsage, CheckRedirect } from '../../utils/pageInfo.js';
-import FlagDelete from '../../utils/flagDelete.js';
+import config from '../utils/config.js';
+import { CheckGlobalUsage, CheckRedirect } from '../utils/pageInfo.js';
+import FlagDelete from '../utils/flagDelete.js';
 
 const api = new MediaWikiApi(config.cm.api, {
     headers: { 'user-agent': config.useragent },

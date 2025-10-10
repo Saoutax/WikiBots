@@ -34,5 +34,5 @@ jobs:
       - name: Run Script
         env:
           CM_BOT: ${{ secrets.CM_BOT }}
-        run: node src/mgp/File/deleteRedirect.js
+        run: node src/mgp/deleteRedirect.js
 
