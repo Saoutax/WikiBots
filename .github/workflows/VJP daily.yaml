@@ -19,7 +19,6 @@ env:
 jobs:
   cleanSandbox:
     if: |
-      github.event.schedule == '35 16 * * *' ||
       github.event.inputs.task == 'cleanSandbox'
     runs-on: ubuntu-latest
     steps:
