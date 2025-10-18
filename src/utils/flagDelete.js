@@ -8,16 +8,17 @@ export class FlagDelete {
      * @param {string|string[]} input - 页面标题或标题数组
      * @param {string} reason - 挂删理由
      * @param {string} summary - 编辑摘要
+     * @param {string} user - 用户名
      * @returns {Promise<string[]|void>} - 成功挂删的页面数组
      */
-    async flagDelete(page, reason, summary) {
+    async flagDelete(page, reason, summary, user) {
         const successList = [];
         const flagDel = async (title) => {
             try {
                 const del = await this.api.postWithToken('csrf', {
                     action: 'edit',
                     title,
-                    text: `<noinclude>{{即将删除|user=机娘亚衣琴|1=${reason}}}</noinclude>`,
+                    text: `<noinclude>{{即将删除|user=${user}|1=${reason}}}</noinclude>`,
                     summary,
                     tags: 'Bot',
                     bot: true,

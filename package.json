@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "用于多站点的MediaWiki机器人",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "node ./src/mgp/Personal/test.js"
   },
