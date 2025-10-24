@@ -41,7 +41,7 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
 		rvprop: 'content',
 		list: 'recentchanges',
 		rcprop: 'timestamp|ids',
-		rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+		rcend: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
 		rclimit: 'max',
 		rcnamespace: '*',
 		rctag: 'invisibleCharacter',
