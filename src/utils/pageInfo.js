@@ -102,3 +102,43 @@ export class CheckRedirect {
         }
     }
 }
+
+
+export class GetEmbeddedPages {
+    constructor(api) {
+        this.api = api;
+    }
+
+    /**
+     * 获取链入页面
+     * @param {string} title - 模板名
+     * @param {number|string} [namespace="*"] - 命名空间
+     * @returns {Promise<string[]>} 页面标题数组
+     */
+    async get(title, namespace = "*") {
+        const result = [];
+        const eol = Symbol();
+        let geicontinue;
+
+        while (geicontinue !== eol) {
+            const { data } = await this.api.post(
+                {
+                    generator: "embeddedin",
+                    geititle: title,
+                    geinamespace: namespace,
+                    geilimit: "500",
+                    ...(geicontinue ? { geicontinue } : {}),
+                },
+                { retry: 10 }
+            );
+
+            if (data.query?.pages) {
+                result.push(...Object.values(data.query.pages).map(p => p.title));
+            }
+
+            geicontinue = data.continue?.geicontinue ?? eol;
+        }
+
+        return result;
+    }
+}
