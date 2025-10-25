@@ -4,7 +4,7 @@
   "description": "用于多站点的MediaWiki机器人",
   "main": "index.js",
   "scripts": {
-    "test": "node ./src/test.js"
+    "test": "node --env-file=.env src/test.js"
   },
   "repository": {
     "type": "git",
