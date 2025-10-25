@@ -22,6 +22,10 @@ const PAGE_MAP = {
 		content: '/* [[Category:在模板命名空间下的CSS页面]] */',
 		summary: '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
 	},
+	'Module:沙盒': {
+		content: '',
+		summary: '沙盒清理作业，若想保留较长时间，可建立「Module:沙盒/用户名/沙盒名」进行测试，或查阅页面历史并再次编辑本页。',
+	},
 };
 
 async function pageEdit(title) {
@@ -50,8 +54,22 @@ async function pageEdit(title) {
 		{ retry: 25, noCache: true },
 	).then(console.log);
 
-	await Promise.all(Object.keys(PAGE_MAP).map(async (title) => {
-		await pageEdit(title);
+	const { data: { query: { pages } } } = await api.post({
+		prop: 'revisions|info',
+		titles: Object.keys(PAGE_MAP),
+		rvprop: 'timestamp|content',
+		inprop: 'touched',
+	}, {
+		retry: 15,
+	});
+
+	await Promise.all(pages.map(async ({ title, revisions: [{ timestamp }], touched }) => {
+		const minutes = (Date.now() - new Date(touched || timestamp).getTime()) / 60000;
+		if (minutes > 180) {
+			await pageEdit(title);
+		} else {
+			console.log(`${title} 在 ${(minutes).toFixed(1)} 分钟前存在编辑，跳过。`);
+		}
 	}));
 
 	console.log(`End time: ${new Date().toISOString()}`);
