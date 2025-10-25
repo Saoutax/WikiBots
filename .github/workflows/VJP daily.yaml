@@ -3,6 +3,7 @@ name: "VJP daily"
 on:
   schedule:
     - cron: "35 16 * * *" # 00:35 CST
+    - cron: "30 20 * * *" # 04:30 CST
   workflow_dispatch:
     inputs:
       task:
@@ -19,7 +20,7 @@ env:
 jobs:
   cleanSandbox:
     if: |
-      github.event.schedule == '35 16 * * *' ||
+      github.event.schedule == '30 20 * * *' ||
       github.event.inputs.task == 'cleanSandbox'
     runs-on: ubuntu-latest
     steps:
