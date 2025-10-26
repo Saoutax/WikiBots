@@ -13,6 +13,7 @@ on:
         options:
           - cleanSandbox
           - invisibleCharacter
+          - activeCount
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -57,3 +58,23 @@ jobs:
         env:
           VJP_BOT: ${{ secrets.VJP_BOT }}
         run: node src/vjp/invisibleCharacter.js
+
+  activeCount:
+    if: |
+      github.event.schedule == '35 16 * * 6' ||
+      github.event.inputs.task == 'activeCount'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set Node Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Script
+        env:
+          VJP_BOT: ${{ secrets.VJP_BOT }}
+        run: node src/vjp/activeCount.js

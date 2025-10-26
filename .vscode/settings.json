@@ -3,6 +3,7 @@
         "mgp/deleteRedirect",
         "vjp/cleanSandbox",
         "vjp/invisibleCharacter",
+        "vjp/activeCount",
         "utils/config",
         "utils/flagDelete",
         "utils/pageInfo",
