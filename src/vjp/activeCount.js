@@ -77,6 +77,7 @@ async function getContribs(user) {
 		title: 'Vocawiki:活跃用户编辑报告',
 		text,
 		summary: '更新数据报告',
+        tags: 'Bot',
 		bot: true,
 		nocreate: true,
 		watchlist: 'nochange',
