@@ -59,7 +59,7 @@ async function getContribs(user) {
 
 	let text = '* 本页面是由[[U:MisakaNetwork|机器人]]生成活跃用户近30日内的编辑统计。\n';
 	text += '* 不包含机器人用户组与通过[[Special:ReplaceText|替换文本]]进行的编辑。\n';
-	text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)}}\n\n';
+	text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n';
 	text += '{| class="wikitable sortable" width=100%\n|-\n! 用户 !! 编辑数 !! 最后编辑时间\n';
 
 	for (const user of users) {
