@@ -122,7 +122,7 @@ async function addTemplate(file, pageName) {
 	await Promise.all([
 		zhapi.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }),
 		cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }),
-	]).then(res => console.log('Successful login at both sites.'));
+	]).then(() => console.log('Successful login at both sites.'));
 
 	const pages = await getPages(zhapi);
 	const fileList = await matchFiles(pages);
