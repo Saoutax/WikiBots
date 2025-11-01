@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "mgp/deleteRedirect",
+        "mgp/highRiskCount",
         "vjp/cleanSandbox",
         "vjp/invisibleCharacter",
         "vjp/activeCount",
