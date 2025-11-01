@@ -2,6 +2,7 @@
     "conventionalCommits.scopes": [
         "mgp/deleteRedirect",
         "mgp/highRiskCount",
+        "mgp/markImg",
         "vjp/cleanSandbox",
         "vjp/invisibleCharacter",
         "vjp/activeCount",
