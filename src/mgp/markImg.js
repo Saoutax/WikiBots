@@ -23,6 +23,7 @@ async function getPages(api) {
 			rcprop: 'title|timestamp',
 			rctype: 'edit|new',
 			rctag: '疑似外链调用内部文件',
+            rcnamespace: '0|4|8|10|12|14|274|828',
 			rcstart: start,
 			rcend: end,
 			rclimit: 'max',
