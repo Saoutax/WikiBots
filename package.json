@@ -23,6 +23,6 @@
     "moment": "^2.30.1",
     "opencc-js": "^1.0.5",
     "wiki-saikou": "^5.0.0",
-    "wikiparser-node": "^1.28.0"
+    "wikiparser-node": "^1.29.2"
   }
 }
