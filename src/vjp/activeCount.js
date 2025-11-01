@@ -1,5 +1,5 @@
 import { MediaWikiApi } from 'wiki-saikou';
-import config from '../utils/config.js';
+import config from './utils/config.js';
 import moment from 'moment';
 
 const api = new MediaWikiApi(config.vjp.api, {
@@ -10,7 +10,7 @@ const now = moment.utc();
 const start = now.toISOString();
 const end = now.clone().subtract(30, 'days').toISOString();
 
-const timestampCST = ts => `${moment(ts).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')} (CST)`;
+const timestampCST = ts => moment(ts).utcOffset(8).format('YYYY-MM-DD HH:mm:ss (CST)');
 
 async function getRecentChanges() {
 	const users = new Map();
@@ -27,7 +27,9 @@ async function getRecentChanges() {
 			rccontinue: cont,
 		});
 		const list = data?.query?.recentchanges;
-		if (!list?.length) break;
+		if (!list?.length) {
+			break;
+		}
 
 		for (const rc of list) {
 			if (/文字替换/.test(rc.comment || '')) {
@@ -40,7 +42,9 @@ async function getRecentChanges() {
 			}
 			const u = users.get(user);
 			u.count++;
-			if (ts.isAfter(u.latest)) u.latest = ts;
+			if (ts.isAfter(u.latest)) {
+				u.latest = ts;
+			}
 		}
 
 		cont = data.continue?.rccontinue;
