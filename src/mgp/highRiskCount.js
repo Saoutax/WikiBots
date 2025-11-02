@@ -71,7 +71,7 @@ function formatNum(num) {
 			const pageTitle = `${tpl}/doc`;
 			const parsedPage = await getParsedPage(pageTitle);
 			const highrisk = parsedPage.querySelector('template#Template:High-risk');
-			highrist.setValue('1', `${newCount}`);
+			highrisk.setValue('1', `${newCount}`);
 			
 			await api.postWithToken('csrf', {
 				action: 'edit',
