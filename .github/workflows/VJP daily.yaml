@@ -78,3 +78,23 @@ jobs:
         env:
           VJP_BOT: ${{ secrets.VJP_BOT }}
         run: node src/vjp/activeCount.js
+
+  mostTranscludedPages:
+    if: |
+      github.event.schedule == '35 16 * * 1' ||
+      github.event.inputs.task == 'mostTranscludedPages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set Node Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Script
+        env:
+          VJP_BOT: ${{ secrets.VJP_BOT }}
+        run: node src/vjp/mostTranscludedPages.js
