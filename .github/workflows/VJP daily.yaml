@@ -61,7 +61,7 @@ jobs:
 
   activeCount:
     if: |
-      github.event.schedule == '35 16 * * 6' ||
+      github.event.schedule == '35 20 * * *' ||
       github.event.inputs.task == 'activeCount'
     runs-on: ubuntu-latest
     steps:
