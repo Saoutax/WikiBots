@@ -10,7 +10,7 @@ const now = moment.utc();
 const start = now.toISOString();
 const end = now.clone().subtract(30, 'days').toISOString();
 
-const timestampCST = ts => moment(ts).utcOffset(8).format('YYYY-MM-DD HH:mm:ss (CST)');
+const timestampCST = ts => moment(ts).utcOffset(8).format('YYYY-MM-DD HH:mm:ss [(CST)]');
 
 async function getRecentChanges() {
 	const users = new Map();
