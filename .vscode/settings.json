@@ -7,6 +7,8 @@
         "vjp/invisibleCharacter",
         "vjp/activeCount",
         "vjp/mostTranscludedPages",
+        "uew/cleanSandbox",
+        "uew/invisibleCharacter",
         "utils/config",
         "utils/flagDelete",
         "utils/pageInfo",

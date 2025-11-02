@@ -14,6 +14,7 @@ on:
           - cleanSandbox
           - invisibleCharacter
           - activeCount
+          - mostTranscludedPages
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -61,7 +62,7 @@ jobs:
 
   activeCount:
     if: |
-      github.event.schedule == '35 20 * * *' ||
+      github.event.schedule == '30 20 * * *' ||
       github.event.inputs.task == 'activeCount'
     runs-on: ubuntu-latest
     steps:

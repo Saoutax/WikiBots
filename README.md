@@ -10,6 +10,10 @@
 - [SaoMikoto](https://voca.wiki/_?curid=51483)（主账号）
 - [MisakaNetwork](https://voca.wiki/_?curid=63775)（机器人）
 
+**地球联合百科**
+- [SaoMikoto](https://unitedearth.wiki/?curid=1507)（主账号）
+- [MisakaNetwork](https://unitedearth.wiki/?curid=1610)（机器人，管理员）
+
 ### Dependencies
 - [wiki-saikou](https://github.com/moegirlwiki/wiki-saikou)
 - [wikiparser-node](https://github.com/bhsd-harry/wikiparser-node)

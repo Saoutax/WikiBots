@@ -35,6 +35,17 @@ const config = {
 			password: env.VJP_MAIN,
 		},
 	},
+	uew: {
+		api: "https://unitedearth.wiki/api.php",
+		bot: {
+			name: 'Saoutax-bot@saoutaxbot',
+			password: env.UEW_BOT,
+		},
+		main: {
+			name: "SaoMikoto@SaoMikoto",
+			password: env.UEW_MAIN,
+		},
+	},
 };
 
 export default config;
