@@ -24,7 +24,7 @@ async function getOldCount(pages) {
 		try {
 			const parsedPage = await getParsedPage(page);
 			const tpl = parsedPage.querySelector('template#Template:High-risk');
-			const anonArg = tpl?.getAnonArgs()?.[0]?.value ?? null;
+			const anonArg = tpl?.getValue(1) ?? null;
 			return [key, anonArg];
 		} catch {
 			return [key, null];
@@ -71,13 +71,7 @@ function formatNum(num) {
 			const pageTitle = `${tpl}/doc`;
 			const parsedPage = await getParsedPage(pageTitle);
 			const highrisk = parsedPage.querySelector('template#Template:High-risk');
-			
-			const anonArgs = highrisk.getAnonArgs();
-			if (anonArgs.length > 0) {
-				anonArgs[0].setValue(`${newCount}`);
-			} else {
-				highrisk.append(`|${newCount}`);
-			}
+			highrist.setValue('1', `${newCount}`);
 			
 			await api.postWithToken('csrf', {
 				action: 'edit',
