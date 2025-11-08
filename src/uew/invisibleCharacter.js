@@ -25,7 +25,7 @@ function replaceSpecialCharacters(wikitext) {
 	const { data: { query: { recentchanges } } } = await api.post({
 		list: 'recentchanges',
 		rcprop: 'timestamp|ids',
-		rcend: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+		rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
 		rclimit: 'max',
 		rcnamespace: '*',
 		rctag: '包含不可见字符',
