@@ -37,6 +37,7 @@ const config = {
 	},
 	uew: {
 		api: "https://unitedearth.wiki/api.php",
+		cf: env.UEW_CF,
 		bot: {
 			name: 'Saoutax-bot@saoutaxbot',
 			password: env.UEW_BOT,

@@ -16,6 +16,7 @@ on:
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
+  UEW_CF: ${{ secrets.UEW_CF }}
 
 jobs:
   cleanSandbox:
