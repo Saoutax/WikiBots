@@ -1,4 +1,4 @@
-import { env } from 'process';
+import { env } from "process";
 
 const config = {
 	useragent: `${env.API_USER_AGENT} (Github Actions; Saoutax-bot) `,
@@ -25,13 +25,13 @@ const config = {
 		},
 	},
 	vjp: {
-		api: 'https://voca.wiki/api.php',
+		api: "https://voca.wiki/api.php",
 		bot: {
-			name: 'MisakaNetwork@MisakaNetwork',
+			name: "MisakaNetwork@MisakaNetwork",
 			password: env.VJP_BOT,
 		},
 		main: {
-			name: 'SaoMikoto@saomikoto',
+			name: "SaoMikoto@saomikoto",
 			password: env.VJP_MAIN,
 		},
 	},
@@ -39,7 +39,7 @@ const config = {
 		api: "https://unitedearth.wiki/api.php",
 		cf: env.UEW_CF,
 		bot: {
-			name: 'Saoutax-bot@saoutaxbot',
+			name: "Saoutax-bot@saoutaxbot",
 			password: env.UEW_BOT,
 		},
 		main: {
