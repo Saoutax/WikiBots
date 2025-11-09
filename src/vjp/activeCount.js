@@ -32,7 +32,7 @@ async function getRecentChanges() {
 		}
 
 		for (const rc of list) {
-			if (/文字替换/.test(rc.comment || "")) {
+			if (/文字替换/u.test(rc.comment || "")) {
 				continue;
 			}
 			const user = rc.user;

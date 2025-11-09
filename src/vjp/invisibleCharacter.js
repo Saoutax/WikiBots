@@ -12,8 +12,8 @@ const api = new MediaWikiApi(config.vjp.api, {
 });
 
 const regexMap = {
-	3164: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\uFEFF]+/g,
-	"default": /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/g,
+	3164: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\uFEFF]+/gu,
+	"default": /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu,
 };
 
 function replaceSpecialCharacters(wikitext, pageid, setting) {
