@@ -12,6 +12,8 @@ on:
         required: true
         options:
           - deleteRedirect
+          - markImg
+          - highRiskCount
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
