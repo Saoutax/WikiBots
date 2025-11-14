@@ -52,7 +52,7 @@ function formatNum(num) {
 	);
 
 	const gep = new GetEmbeddedPages(api);
-	const risk = await gep.get("Template:High-risk", "10");
+	const risk = (await gep.get("Template:High-risk", "10")).filter(item => item !== "Template:High-risk");
 	const riskDocs = risk.filter(item => item.includes("/doc"));
 	const riskTemplates = riskDocs.map(item => item.replace("/doc", ""));
 
