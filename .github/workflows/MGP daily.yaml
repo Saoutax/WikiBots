@@ -60,7 +60,7 @@ jobs:
         run: node src/mgp/markImg.js
   highRiskCount:
     if: |
-      github.event.schedule == '00 20 * * *' ||
+      github.event.schedule == '00 20 * * 3' ||
       github.event.inputs.task == 'highRiskCount'
     runs-on: ubuntu-latest
     steps:

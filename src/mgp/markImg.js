@@ -67,7 +67,11 @@ async function matchFiles(titles) {
 		const regex = /\{\{filepath:(.*?)\}\}/g;
 		let match;
 		while ((match = regex.exec(content)) !== null) {
-			const fileName = `File:${match[1]}`;
+			const trueFiles = match[1].trim();
+			if (!/\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i.test(trueFiles)) {
+				continue;
+			}
+			const fileName = `File:${trueFiles}`;
 			matches[fileName] = title;
 		}
 	}
