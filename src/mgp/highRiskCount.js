@@ -44,28 +44,29 @@ function formatNum(num) {
 }
 
 (async () => {
+	console.log(`Start time: ${new Date().toISOString()}`);
 	await api.login(
 		config.zh.bot.name,
 		config.zh.bot.password,
 		undefined,
 		{ retry: 25, noCache: true },
-	);
+	).then(console.log);
 
 	const gep = new GetEmbeddedPages(api);
 	const risk = (await gep.get("Template:High-risk", "10")).filter(item => item !== "Template:High-risk");
-	const riskDocs = risk.filter(item => item.includes("/doc"));
+	const riskDocs = risk.filter(item => item.includes("/doc")).filter(item => item !== "Template:High-risk/doc");
 	const riskTemplates = riskDocs.map(item => item.replace("/doc", ""));
 
 	const oldResults = await getOldCount(riskDocs);
 
-	for (const tpl of riskTemplates) {
+	await Promise.all(riskTemplates.map(async tpl => {
 		try {
 			const pages = await gep.get(tpl);
 			const newCount = formatNum(pages.length);
 			const oldCount = oldResults[tpl];
 
 			if (newCount === oldCount) {
-				continue;
+				return;
 			}
 
 			const pageTitle = `${tpl}/doc`;
@@ -89,5 +90,6 @@ function formatNum(num) {
 		} catch (e) {
 			console.error(`处理模板 ${tpl} 时出错:`, e);
 		}
-	}
+	}));
+	console.log(`End time: ${new Date().toISOString()}`);
 })();
