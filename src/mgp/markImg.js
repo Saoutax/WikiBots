@@ -2,10 +2,12 @@ import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
 import moment from "moment";
 
-const zhapi = new MediaWikiApi(config.zh.api, {
+const zhapi = new MediaWikiApi({
+	baseURL: config.zh.api,
 	headers: { "user-agent": config.useragent },
 });
-const cmapi = new MediaWikiApi(config.cm.api, {
+const cmapi = new MediaWikiApi({
+	baseURL: config.cm.api,
 	headers: { "user-agent": config.useragent },
 });
 
@@ -129,6 +131,8 @@ async function addTemplate(file, pageName) {
 }
 
 (async () => {
+	console.log(`Start time: ${new Date().toISOString()}`);
+
 	await Promise.all([
 		zhapi.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }),
 		cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }),
@@ -143,4 +147,5 @@ async function addTemplate(file, pageName) {
 		await addTemplate(file, fileList[file]);
 	}
 
+	console.log(`End time: ${new Date().toISOString()}`);
 })();

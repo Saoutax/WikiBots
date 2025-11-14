@@ -3,7 +3,8 @@ import Parser from "wikiparser-node";
 import config from "../utils/config.js";
 import { GetEmbeddedPages } from "../utils/pageInfo.js";
 
-const api = new MediaWikiApi(config.zh.api, {
+const api = new MediaWikiApi({
+	baseURL: config.zh.api,
 	headers: { "user-agent": config.useragent },
 });
 
@@ -45,6 +46,7 @@ function formatNum(num) {
 
 (async () => {
 	console.log(`Start time: ${new Date().toISOString()}`);
+
 	await api.login(
 		config.zh.bot.name,
 		config.zh.bot.password,
@@ -91,5 +93,6 @@ function formatNum(num) {
 			console.error(`处理模板 ${tpl} 时出错:`, e);
 		}
 	}));
+
 	console.log(`End time: ${new Date().toISOString()}`);
 })();

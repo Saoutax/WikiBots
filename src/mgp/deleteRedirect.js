@@ -3,7 +3,8 @@ import config from "../utils/config.js";
 import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
 import FlagDelete from "../utils/flagDelete.js";
 
-const api = new MediaWikiApi(config.cm.api, {
+const api = new MediaWikiApi({
+	baseURL: config.cm.api,
 	headers: { "user-agent": config.useragent },
 });
 

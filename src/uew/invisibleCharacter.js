@@ -2,7 +2,8 @@ import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
 import splitAndJoin from "../utils/splitAndJoin.js";
 
-const api = new MediaWikiApi(config.uew.api, {
+const api = new MediaWikiApi({
+	baseURL: config.uew.api,
 	headers: { "user-agent": config.useragent, "saoutax-bot": config.uew.cf },
 });
 

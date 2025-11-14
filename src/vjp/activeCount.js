@@ -2,7 +2,8 @@ import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
 import moment from "moment";
 
-const api = new MediaWikiApi(config.vjp.api, {
+const api = new MediaWikiApi({
+	baseURL: config.vjp.api,
 	headers: { "user-agent": config.useragent },
 });
 
