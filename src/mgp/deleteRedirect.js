@@ -45,7 +45,7 @@ async function getRecentMoves() {
 		config.cm.bot.name,
 		config.cm.bot.password,
 		undefined,
-		{ retry: 25, noCache: true }
+		{ retry: 25, noCache: true },
 	).then(res => {
 		console.log(res);
 		return res;
@@ -90,7 +90,7 @@ async function getRecentMoves() {
 	const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
 
 	if (successList.length > 0) {
-		console.log(`成功挂删 ${successList.length} 个重定向：${successList.join("\n")}`);
+		console.log(`成功挂删 ${successList.length} 个重定向：\n${successList.join("\n")}`);
 	} else {
 		console.log("没有需要挂删的重定向");
 	}
