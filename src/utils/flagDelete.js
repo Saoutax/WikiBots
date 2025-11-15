@@ -24,13 +24,12 @@ export class FlagDelete {
 					bot: true,
 					minor: true
 				});
-
-				if (del?.error?.code === "badtoken") {
+				const data = del.data;
+				if (data?.error?.code === "badtoken") {
 					await this.api.getToken("csrf", true);
 					return await flagDel(title);
 				}
-
-				if (del?.edit?.result === "Success") {
+				if (data?.edit?.newtimestamp) {
 					successList.push(title);
 				}
 			} catch (err) {
@@ -39,7 +38,7 @@ export class FlagDelete {
 		};
 
 		if (Array.isArray(page)) {
-			await Promise.all(page.map(title => flagDel(title)));
+			await Promise.all(page.map(flagDel));
 		} else {
 			await flagDel(page);
 		}

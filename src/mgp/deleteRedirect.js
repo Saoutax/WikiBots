@@ -36,13 +36,15 @@ async function getRecentMoves() {
 (async () => {
 	console.log(`Start time: ${new Date().toISOString()}`);
 
-	await api.login(
+	const { lgusername: username } = await api.login(
 		config.cm.bot.name,
 		config.cm.bot.password,
 		undefined,
-		{ retry: 25, noCache: true },
-	).then(console.log);
-	const username = config.cm.bot.name.split("@")[0];
+		{ retry: 25, noCache: true }
+	).then(res => {
+		console.log(res);
+		return res;
+	});
 
 	const movedFiles = await getRecentMoves();
 
@@ -61,7 +63,7 @@ async function getRecentMoves() {
 	const successList = await new FlagDelete(api).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
 
 	if (successList.length > 0) {
-		console.log(`成功挂删 ${successList.length} 个重定向`);
+		console.log(`成功挂删 ${successList.length} 个重定向：\n${successList}`);
 	} else {
 		console.log("没有需要挂删的重定向");
 	}
