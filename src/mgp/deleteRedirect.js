@@ -45,7 +45,7 @@ async function getRecentMoves() {
 		config.cm.bot.name,
 		config.cm.bot.password,
 		undefined,
-		{ retry: 25, noCache: true },
+		{ retry: 25 },
 	).then(res => {
 		console.log(res);
 		return res;
@@ -54,7 +54,7 @@ async function getRecentMoves() {
 		config.zh.bot.name,
 		config.zh.bot.password,
 		undefined,
-		{ retry: 25, noCache: true },
+		{ retry: 25 },
 	).then(console.log);
 
 	const movedFiles = await getRecentMoves();
