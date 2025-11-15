@@ -2,8 +2,13 @@ import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
 import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
 import FlagDelete from "../utils/flagDelete.js";
+import moment from "moment";
 
-const api = new MediaWikiApi({
+const zhapi = new MediaWikiApi({
+	baseURL: config.zh.api,
+	headers: { "user-agent": config.useragent },
+});
+const cmapi = new MediaWikiApi({
 	baseURL: config.cm.api,
 	headers: { "user-agent": config.useragent },
 });
@@ -14,7 +19,7 @@ const time = new Date(now - 86400000 * day);
 
 async function getRecentMoves() {
 	try {
-		const res = await api.post({
+		const res = await cmapi.post({
 			action: "query",
 			list: "logevents",
 			letype: "move",
@@ -36,7 +41,7 @@ async function getRecentMoves() {
 (async () => {
 	console.log(`Start time: ${new Date().toISOString()}`);
 
-	const { lgusername: username } = await api.login(
+	const { lgusername: username } = await cmapi.login(
 		config.cm.bot.name,
 		config.cm.bot.password,
 		undefined,
@@ -45,6 +50,12 @@ async function getRecentMoves() {
 		console.log(res);
 		return res;
 	});
+	await zhapi.login(
+		config.zh.bot.name,
+		config.zh.bot.password,
+		undefined,
+		{ retry: 25, noCache: true },
+	).then(console.log);
 
 	const movedFiles = await getRecentMoves();
 
@@ -54,16 +65,32 @@ async function getRecentMoves() {
 		return;
 	}
 
-	const redirects = await new CheckRedirect(api).check(movedFiles);
+	const redirects = await new CheckRedirect(cmapi).check(movedFiles);
 	const isRedirect = Object.keys(redirects).filter(key => redirects[key] === true);
 
-	const usage = await new CheckGlobalUsage(api).check(isRedirect);
+	const usage = await new CheckGlobalUsage(cmapi).check(isRedirect);
 	const unused = Object.keys(usage).filter(key => usage[key] === false);
+	const used = Object.keys(usage).filter(key => usage[key] === true);
+	
+	if (used.length > 0) {
+		const today = moment().format("YYYY年MM月DD日");
+		const text = used.map(item => `* [[cm:${item}|${item}]]`).join("\n");
+		await zhapi.postWithToken("csrf", {
+			action: "edit",
+			title: "User:SaoMikoto/Bot/log/deleteRedirect",
+			appendtext: `\n\n== ${today} ==\n${text}`,
+			summary: "记录仍有使用的重定向",
+			minor: true,
+			bot: true,
+			tags: "Bot"
+		}, { retry: 10 });
+		console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
+	}
 
-	const successList = await new FlagDelete(api).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
+	const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
 
 	if (successList.length > 0) {
-		console.log(`成功挂删 ${successList.length} 个重定向：\n${successList}`);
+		console.log(`成功挂删 ${successList.length} 个重定向：${successList.join("\n")}`);
 	} else {
 		console.log("没有需要挂删的重定向");
 	}
