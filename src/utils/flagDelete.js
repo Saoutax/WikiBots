@@ -35,6 +35,7 @@ export class FlagDelete {
 			} catch (err) {
 				console.error(`挂删失败（${title}）：`, err);
 			}
+			return;
 		};
 
 		if (Array.isArray(page)) {
