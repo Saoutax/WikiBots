@@ -36,6 +36,7 @@ jobs:
         run: npm ci
       - name: Run Script
         env:
+          ZH_BOT: ${{ secrets.ZH_BOT }}
           CM_BOT: ${{ secrets.CM_BOT }}
         run: node src/mgp/deleteRedirect.js
   markImg:
