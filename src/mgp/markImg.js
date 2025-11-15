@@ -102,25 +102,10 @@ async function notInCat(fileList, category) {
 }
 
 async function addTemplate(file, pageName) {
-	const { data } = await cmapi.post({
-		action: "query",
-		prop: "revisions",
-		titles: file,
-		rvprop: "content",
-		formatversion: 2
-	});
-
-	const page = data?.query?.pages?.[0];
-	if (!page || page.missing) {
-		return;
-	}
-
-	const content = page.revisions[0].content + `\n{{非链入使用|[[zhmoe:${pageName}]]}}`;
-
 	await cmapi.postWithToken("csrf", {
 		action: "edit",
 		title: file,
-		text: content,
+		appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
 		summary: "标记存在非链入使用的文件",
 		minor: true,
 		bot: true,
