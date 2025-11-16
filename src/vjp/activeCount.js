@@ -71,7 +71,7 @@ async function getRecentChanges() {
 	text += "{| class=\"wikitable sortable\" width=100%\n|-\n! 用户 !! 编辑数 !! 最后编辑时间\n";
 
 	for (const [user, info] of users.entries()) {
-		text += `|-\n| [[User:${user}|${user}]] || ${info.count} || ${timestampCST(info.latest)}\n`;
+		text += `|-\n| {{User Avatar|user=${user}|size=30px|style=border:2px solid white;border-radius:50%;box-shadow:0px 0px 1px gray;}} [[User:${user}|${user}]] || ${info.count} || ${timestampCST(info.latest)}\n`;
 	}
 
 	text += "|}\n[[Category:Vocawiki数据报告]]";
