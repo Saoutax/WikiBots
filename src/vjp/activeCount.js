@@ -32,20 +32,19 @@ async function getRecentChanges() {
 			break;
 		}
 
-		for (const rc of list) {
-			if (/文字替换/u.test(rc.comment || "")) {
+		const regex = /文字替换/u;
+		for (const revision of list) {
+			const { comment = "", user, timestamp } = revision;
+			if (regex.test(comment)) {
 				continue;
 			}
-			const user = rc.user;
-			const ts = moment(rc.timestamp);
-			if (!users.has(user)) {
-				users.set(user, { count: 0, latest: ts });
+			const time = moment(timestamp);
+			const userData = users.get(user) || { count: 0, latest: time };
+			userData.count++;
+			if (time.isAfter(userData.latest)) {
+				userData.latest = time;
 			}
-			const u = users.get(user);
-			u.count++;
-			if (ts.isAfter(u.latest)) {
-				u.latest = ts;
-			}
+			users.set(user, userData);
 		}
 
 		cont = data.continue?.rccontinue;
@@ -65,7 +64,7 @@ async function getRecentChanges() {
 
 	const users = await getRecentChanges();
 
-	let text = "* 本页面是由[[U:MisakaNetwork|机器人]]生成活跃用户近30日内的编辑统计。\n";
+	let text = "* 本页面是由[[U:MisakaNetwork|机器人]]生成的活跃用户近30日内编辑统计。\n";
 	text += "* 不包含机器人用户组与通过[[Special:ReplaceText|替换文本]]进行的编辑。\n";
 	text += "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
 	text += "{| class=\"wikitable sortable\" width=100%\n|-\n! 用户 !! 编辑数 !! 最后编辑时间\n";
