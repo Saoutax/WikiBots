@@ -3,75 +3,75 @@ import config from "../utils/config.js";
 import splitAndJoin from "../utils/splitAndJoin.js";
 
 const api = new MediaWikiApi(config.uew.api, {
-	headers: { "user-agent": config.useragent, "saoutax-bot": config.uew.cf },
+    headers: { "user-agent": config.useragent, "saoutax-bot": config.uew.cf },
 });
 
 const regexDefault = /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu;
 
 function replaceSpecialCharacters(wikitext) {
-	return wikitext.replaceAll(regexDefault, "");
+    return wikitext.replaceAll(regexDefault, "");
 }
 
 (async () => {
-	console.log(`Start time: ${new Date().toISOString()}`);
+    console.log(`Start time: ${new Date().toISOString()}`);
 
-	await api.login(
-		config.uew.bot.name,
-		config.uew.bot.password,
-		undefined,
-		{ retry: 25, noCache: true },
-	).then(console.log);
+    await api.login(
+        config.uew.bot.name,
+        config.uew.bot.password,
+        undefined,
+        { retry: 25, noCache: true },
+    ).then(console.log);
 
-	const { data: { query: { recentchanges } } } = await api.post({
-		list: "recentchanges",
-		rcprop: "timestamp|ids",
-		rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-		rclimit: "max",
-		rcnamespace: "*",
-		rctag: "包含不可见字符",
-		rctoponly: true,
-	}, {
-		retry: 15,
-	});
+    const { data: { query: { recentchanges } } } = await api.post({
+        list: "recentchanges",
+        rcprop: "timestamp|ids",
+        rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        rclimit: "max",
+        rcnamespace: "*",
+        rctag: "包含不可见字符",
+        rctoponly: true,
+    }, {
+        retry: 15,
+    });
 
-	const pagelists = splitAndJoin(
-		recentchanges.map(({ pageid }) => pageid),
-		500,
-	);
+    const pagelists = splitAndJoin(
+        recentchanges.map(({ pageid }) => pageid),
+        500,
+    );
 
-	if (pagelists.length) {
-		await Promise.all(pagelists.map(async (pagelist) => {
-			const { data: { query: { pages } } } = await api.post({
-				prop: "revisions",
-				pageids: pagelist,
-				rvprop: "content",
-			}, {
-				retry: 15,
-			});
-			await Promise.all(pages.map(async (page) => {
-				const { pageid, revisions } = page;
-				if (revisions.length) {
-					const { content: wikitext } = revisions[0];
-					await api.postWithToken("csrf", {
-						action: "edit",
-						pageid,
-						text: replaceSpecialCharacters(wikitext),
-						minor: true,
-						bot: true,
-						nocreate: true,
-						tags: "Bot",
-						summary: "移除不可见字符",
-						watchlist: "nochange",
-					}, {
-						retry: 50,
-						noCache: true,
-					}).then(({ data }) => console.log(JSON.stringify(data)));
-				}
-			}));
-		}));
-	} else {
-		console.log("No pages has invisible characters.");
-	}
+    if (pagelists.length) {
+        await Promise.all(pagelists.map(async (pagelist) => {
+            const { data: { query: { pages } } } = await api.post({
+                prop: "revisions",
+                pageids: pagelist,
+                rvprop: "content",
+            }, {
+                retry: 15,
+            });
+            await Promise.all(pages.map(async (page) => {
+                const { pageid, revisions } = page;
+                if (revisions.length) {
+                    const { content: wikitext } = revisions[0];
+                    await api.postWithToken("csrf", {
+                        action: "edit",
+                        pageid,
+                        text: replaceSpecialCharacters(wikitext),
+                        minor: true,
+                        bot: true,
+                        nocreate: true,
+                        tags: "Bot",
+                        summary: "移除不可见字符",
+                        watchlist: "nochange",
+                    }, {
+                        retry: 50,
+                        noCache: true,
+                    }).then(({ data }) => console.log(JSON.stringify(data)));
+                }
+            }));
+        }));
+    } else {
+        console.log("No pages has invisible characters.");
+    }
 
-	console.log(`End time: ${new Date().toISOString()}`);
+    console.log(`End time: ${new Date().toISOString()}`);
 })();

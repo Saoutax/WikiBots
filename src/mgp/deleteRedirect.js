@@ -5,12 +5,12 @@ import FlagDelete from "../utils/flagDelete.js";
 import moment from "moment";
 
 const zhapi = new MediaWikiApi({
-	baseURL: config.zh.api,
-	headers: { "user-agent": config.useragent },
+    baseURL: config.zh.api,
+    headers: { "user-agent": config.useragent },
 });
 const cmapi = new MediaWikiApi({
-	baseURL: config.cm.api,
-	headers: { "user-agent": config.useragent },
+    baseURL: config.cm.api,
+    headers: { "user-agent": config.useragent },
 });
 
 const now = new Date();
@@ -18,82 +18,82 @@ const day = now.getDay() === 1 ? 7 : 1;
 const time = new Date(now - 86400000 * day);
 
 async function getRecentMoves() {
-	try {
-		const res = await cmapi.post({
-			action: "query",
-			list: "logevents",
-			letype: "move",
-			lenamespace: 6,
-			lelimit: 500,
-			lestart: time.toISOString(),
-			ledir: "newer"
-		});
+    try {
+        const res = await cmapi.post({
+            action: "query",
+            list: "logevents",
+            letype: "move",
+            lenamespace: 6,
+            lelimit: 500,
+            lestart: time.toISOString(),
+            ledir: "newer"
+        });
 
-		const files = res.data?.query?.logevents || [];
-		return files.map(e => e.title);
-	} catch (err) {
-		console.error("获取移动日志出错:", err);
-		return [];
-	}
+        const files = res.data?.query?.logevents || [];
+        return files.map(e => e.title);
+    } catch (err) {
+        console.error("获取移动日志出错:", err);
+        return [];
+    }
 }
 
 
 (async () => {
-	console.log(`Start time: ${new Date().toISOString()}`);
+    console.log(`Start time: ${new Date().toISOString()}`);
 
-	const { lgusername: username } = await cmapi.login(
-		config.cm.bot.name,
-		config.cm.bot.password,
-		undefined,
-		{ retry: 25, noCache: true },
-	).then(res => {
-		console.log(res);
-		return res;
-	});
-	await zhapi.login(
-		config.zh.bot.name,
-		config.zh.bot.password,
-		undefined,
-		{ retry: 25, noCache: true },
-	).then(console.log);
+    const { lgusername: username } = await cmapi.login(
+        config.cm.bot.name,
+        config.cm.bot.password,
+        undefined,
+        { retry: 25, noCache: true },
+    ).then(res => {
+        console.log(res);
+        return res;
+    });
+    await zhapi.login(
+        config.zh.bot.name,
+        config.zh.bot.password,
+        undefined,
+        { retry: 25, noCache: true },
+    ).then(console.log);
 
-	const movedFiles = await getRecentMoves();
+    const movedFiles = await getRecentMoves();
 
-	if (!movedFiles.length) {
-		console.log(`最近 ${day} 日无文件移动记录`);
-		console.log(`End time: ${new Date().toISOString()}`);
-		return;
-	}
+    if (!movedFiles.length) {
+        console.log(`最近 ${day} 日无文件移动记录`);
+        console.log(`End time: ${new Date().toISOString()}`);
+        return;
+    }
 
-	const redirects = await new CheckRedirect(cmapi).check(movedFiles);
-	const isRedirect = Object.keys(redirects).filter(key => redirects[key] === true);
+    const redirects = await new CheckRedirect(cmapi).check(movedFiles);
+    const isRedirect = Object.keys(redirects).filter(key => redirects[key] === true);
 
-	const usage = await new CheckGlobalUsage(cmapi).check(isRedirect);
-	const unused = Object.keys(usage).filter(key => usage[key] === false);
-	const used = Object.keys(usage).filter(key => usage[key] === true);
+    const usage = await new CheckGlobalUsage(cmapi).check(isRedirect);
+    const unused = Object.keys(usage).filter(key => usage[key] === false);
+    const used = Object.keys(usage).filter(key => usage[key] === true);
 	
-	if (used.length > 0) {
-		const today = moment().format("YYYY年MM月DD日");
-		const text = used.map(item => `* [[cm:${item}|${item}]]`).join("\n");
-		await zhapi.postWithToken("csrf", {
-			action: "edit",
-			title: "User:SaoMikoto/Bot/log/deleteRedirect",
-			appendtext: `\n\n== ${today} ==\n${text}`,
-			summary: "记录仍有使用的重定向",
-			minor: true,
-			bot: true,
-			tags: "Bot"
-		}, { retry: 10 });
-		console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
-	}
+    if (used.length > 0) {
+        const today = moment().format("YYYY年MM月DD日");
+        const text = used.map(item => `* [[cm:${item}|${item}]]`).join("\n");
+        await zhapi.postWithToken("csrf", {
+            action: "edit",
+            title: "User:SaoMikoto/Bot/log/deleteRedirect",
+            appendtext: `\n\n== ${today} ==\n${text}`,
+            summary: "记录仍有使用的重定向",
+            minor: true,
+            bot: true,
+            tags: "Bot"
+        }, { retry: 10 });
+        console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
+    }
 
-	const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
+    const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
 
-	if (successList.length > 0) {
-		console.log(`成功挂删 ${successList.length} 个重定向：\n${successList.join("\n")}`);
-	} else {
-		console.log("没有需要挂删的重定向");
-	}
+    if (successList.length > 0) {
+        console.log(`成功挂删 ${successList.length} 个重定向：\n${successList.join("\n")}`);
+    } else {
+        console.log("没有需要挂删的重定向");
+    }
 
-	console.log(`End time: ${new Date().toISOString()}`);
+    console.log(`End time: ${new Date().toISOString()}`);
 })();
