@@ -14,6 +14,7 @@ on:
           - deleteRedirect
           - markImg
           - highRiskCount
+          - deleteUnused
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -39,6 +40,7 @@ jobs:
           ZH_BOT: ${{ secrets.ZH_BOT }}
           CM_BOT: ${{ secrets.CM_BOT }}
         run: node src/mgp/deleteRedirect.js
+
   markImg:
     if: |
       github.event.schedule == '00 20 * * *' ||
@@ -59,6 +61,7 @@ jobs:
           ZH_BOT: ${{ secrets.ZH_BOT }}
           CM_BOT: ${{ secrets.CM_BOT }}
         run: node src/mgp/markImg.js
+
   highRiskCount:
     if: |
       github.event.schedule == '00 20 * * 3' ||
@@ -78,3 +81,24 @@ jobs:
         env:
           ZH_BOT: ${{ secrets.ZH_BOT }}
         run: node src/mgp/highRiskCount.js
+
+  deleteUnused:
+    if: |
+      github.event.schedule == '00 20 * * 5' ||
+      github.event.inputs.task == 'deleteUnused'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set Node Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Script
+        env:
+          ZH_BOT: ${{ secrets.ZH_BOT }}
+          CM_BOT: ${{ secrets.CM_BOT }}
+        run: node src/mgp/deleteUnused.js
