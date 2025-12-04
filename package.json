@@ -1,8 +1,6 @@
 {
   "name": "wikibots",
-  "version": "1.0.0",
   "description": "用于多站点的MediaWiki机器人",
-  "main": "index.js",
   "scripts": {
     "test": "node --env-file=.env src/test.js",
     "lint": "npx eslint --fix ."
@@ -11,7 +9,6 @@
     "type": "git",
     "url": "git+https://github.com/Saoutax/WikiBots.git"
   },
-  "keywords": [],
   "author": "Saoutax",
   "license": "MIT",
   "type": "module",
