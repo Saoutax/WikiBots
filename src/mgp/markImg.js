@@ -65,16 +65,30 @@ async function matchFiles(titles) {
         }
 
         const content = page.revisions[0].content;
+        
+        const filepathRegex = /\{\{filepath:(.*?)\}\}/g;
+        const urlRegex = /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
+        const extTest = /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
 
-        const regex = /\{\{filepath:(.*?)\}\}/g;
         let match;
-        while ((match = regex.exec(content)) !== null) {
-            const trueFiles = match[1].trim();
-            if (!/\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i.test(trueFiles)) {
+
+        while ((match = filepathRegex.exec(content))) {
+            const file = match[1].trim();
+            if (extTest.test(file)) {
+                matches[`File:${file}`] = title;
+            }
+        }
+
+        while ((match = urlRegex.exec(content))) {
+            let file = match[1];
+            try {
+                file = decodeURIComponent(file).trim();
+            } catch {
                 continue;
             }
-            const fileName = `File:${trueFiles}`;
-            matches[fileName] = title;
+            if (extTest.test(file)) {
+                matches[`File:${file}`] = title;
+            }
         }
     }
 
