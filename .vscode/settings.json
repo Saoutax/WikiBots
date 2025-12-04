@@ -4,6 +4,7 @@
         "MGP/deleteUnused",
         "MGP/highRiskCount",
         "MGP/markImg",
+        "MGP/disambigLinks",
         "VJP/cleanSandbox",
         "VJP/invisibleCharacter",
         "VJP/activeCount",

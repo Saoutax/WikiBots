@@ -110,9 +110,9 @@ export class GetEmbeddedPages {
     }
 
     /**
-     * 获取链入页面
+     * 获取嵌入页面
      * @param {string} title - 模板名
-     * @param {number|string} [namespace="*"] - 命名空间
+     * @param {string} [namespace="*"] - 命名空间
      * @returns {Promise<string[]>} 页面标题数组
      */
     async get(title, namespace = "*") {
@@ -121,16 +121,13 @@ export class GetEmbeddedPages {
         let geicontinue;
 
         while (geicontinue !== eol) {
-            const { data } = await this.api.post(
-                {
-                    generator: "embeddedin",
-                    geititle: title,
-                    geinamespace: namespace,
-                    geilimit: "500",
-                    ...(geicontinue ? { geicontinue } : {}),
-                },
-                { retry: 10 }
-            );
+            const { data } = await this.api.post({
+                generator: "embeddedin",
+                geititle: title,
+                geinamespace: namespace,
+                geilimit: "500",
+                ...(geicontinue ? { geicontinue } : {}),
+            },{ retry: 10 });
 
             if (data.query?.pages) {
                 result.push(...Object.values(data.query.pages).map(p => p.title));
@@ -140,5 +137,57 @@ export class GetEmbeddedPages {
         }
 
         return result;
+    }
+}
+
+export class GetLinkedPages {
+    constructor(api) {
+        this.api = api;
+    }
+
+    /**
+     * 查询链入页面
+     * @param {string|string[]} input - 页面标题或标题数组
+     * @param {string|number} [namespace="*"] - 命名空间
+     * @param {boolean} [redirect=false] - 是否包含重定向
+     * @returns {Promise<Object<string, string[]>>} - 对象键为输入标题，值为链入页面标题数组
+     */
+    async get(input, namespace = "*", redirect = false) {
+        const titles = Array.isArray(input) ? input : [input];
+
+        const results = await Promise.all(
+            chunk(titles).map(async group => {
+                const chunkResult = new Map(group.map(title => [title, []]));
+                let lhcontinue;
+
+                do {
+                    const res = await this.api.post({
+                        prop: "linkshere",
+                        titles: group.join("|"),
+                        lhprop: "title",
+                        lhnamespace: namespace,
+                        lhshow: redirect ? "redirects|!redirects" : "!redirects",
+                        lhlimit: "max",
+                        formatversion: 2,
+                        ...(lhcontinue ? { lhcontinue } : {})
+                    });
+
+                    for (const page of res.data.query.pages || []) {
+                        if (page.linkshere?.length) {
+                            chunkResult.set(
+                                page.title,
+                                page.linkshere.map(lh => lh.title)
+                            );
+                        }
+                    }
+
+                    lhcontinue = res.data.continue?.lhcontinue;
+                } while (lhcontinue);
+
+                return Object.fromEntries(chunkResult);
+            })
+        );
+
+        return Object.assign({}, ...results);
     }
 }
