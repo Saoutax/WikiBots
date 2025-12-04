@@ -1,0 +1,101 @@
+name: "Code Analysis"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  pull_request_target:
+    types:
+      - opened
+      - ready_for_review
+  schedule:
+    - cron: "00 00 * * *"
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: javascript-typescript
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{matrix.language}}"
+
+  generate-scopes:
+    name: Generate Conventional Commit Scopes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scope generator
+        run: node ./scripts/generateConventionalCommitsScopes.js
+
+      - name: Commit and push .vscode/settings.json if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .vscode/settings.json
+
+          if ! git diff --cached --quiet; then
+            BRANCH=$(git rev-parse --abbrev-ref HEAD)
+            git commit -m "auto: update conventionalCommits.scopes"
+            git push origin "$BRANCH"
+          else
+            echo "No changes to .vscode/settings.json — nothing to commit."
+          fi
+
+  auto-assign:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+      contents: read
+    steps:
+      - name: Auto Assign
+        uses: kentaro-m/auto-assign-action@v2.0.0
+        with:
+          configuration-path: .github/auto_assign.yaml
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"

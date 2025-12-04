@@ -16,6 +16,6 @@
         "utils/pageInfo",
         "utils/splitAndJoin",
         "utils/queryCats",
-        "utils/getJSON",
+        "utils/getJSON"
     ]
 }
