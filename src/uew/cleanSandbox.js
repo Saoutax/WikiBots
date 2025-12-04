@@ -1,8 +1,14 @@
 import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
 
-const api = new MediaWikiApi(config.uew.api, {
-    headers: { "user-agent": config.useragent, "saoutax-bot": config.uew.cf },
+const api = new MediaWikiApi({
+    baseURL: config.uew.api,
+    fexiosConfigs: {
+        headers: { 
+            "user-agent": config.useragent, 
+            "saoutax-bot": config.uew.cf 
+        }
+    }
 });
 
 const PAGE_MAP = {

@@ -2,8 +2,14 @@ import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
 import splitAndJoin from "../utils/splitAndJoin.js";
 
-const api = new MediaWikiApi(config.uew.api, {
-    headers: { "user-agent": config.useragent, "saoutax-bot": config.uew.cf },
+const api = new MediaWikiApi({
+    baseURL: config.uew.api,
+    fexiosConfigs: {
+        headers: { 
+            "user-agent": config.useragent, 
+            "saoutax-bot": config.uew.cf 
+        }
+    }
 });
 
 const regexDefault = /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu;
