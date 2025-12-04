@@ -4,7 +4,9 @@ import moment from "moment";
 
 const api = new MediaWikiApi({
     baseURL: config.vjp.api,
-    headers: { "user-agent": config.useragent },
+    fexiosConfigs: {
+        headers: { "user-agent": config.useragent },
+    }
 });
 
 const now = moment.utc();

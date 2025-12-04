@@ -3,7 +3,9 @@ import config from "../utils/config.js";
 
 const api = new MediaWikiApi({
     baseURL: config.vjp.api,
-    headers: { "user-agent": config.useragent },
+    fexiosConfigs: {
+        headers: { "user-agent": config.useragent },
+    }
 });
 
 const PAGE_MAP = {

@@ -6,11 +6,15 @@ import moment from "moment";
 
 const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
-    headers: { "user-agent": config.useragent },
+    fexiosConfigs: {
+        headers: { "user-agent": config.useragent },
+    }
 });
 const cmapi = new MediaWikiApi({
     baseURL: config.cm.api,
-    headers: { "user-agent": config.useragent },
+    fexiosConfigs: {
+        headers: { "user-agent": config.useragent },
+    }
 });
 
 const now = new Date();

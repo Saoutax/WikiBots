@@ -7,7 +7,9 @@ import { GetLinkedPages } from "../utils/pageInfo.js";
 
 const api = new MediaWikiApi({
     baseURL: config.zh.api,
-    headers: { "user-agent": config.useragent },
+    fexiosConfigs: {
+        headers: { "user-agent": config.useragent },
+    }
 });
 
 function processObject(array, obj) {
