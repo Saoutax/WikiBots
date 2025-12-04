@@ -2,20 +2,20 @@
     "conventionalCommits.scopes": [
         "MGP/deleteRedirect",
         "MGP/deleteUnused",
+        "MGP/disambigLinks",
         "MGP/highRiskCount",
         "MGP/markImg",
-        "MGP/disambigLinks",
-        "VJP/cleanSandbox",
-        "VJP/invisibleCharacter",
-        "VJP/activeCount",
-        "VJP/mostTranscludedPages",
         "UEW/cleanSandbox",
         "UEW/invisibleCharacter",
+        "VJP/activeCount",
+        "VJP/cleanSandbox",
+        "VJP/invisibleCharacter",
+        "VJP/mostTranscludedPages",
         "utils/config",
         "utils/flagDelete",
+        "utils/getJSON",
         "utils/pageInfo",
-        "utils/splitAndJoin",
         "utils/queryCats",
-        "utils/getJSON"
+        "utils/splitAndJoin"
     ]
 }
