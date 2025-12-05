@@ -108,13 +108,14 @@ function reportPage(obj) {
 
     const disambig = await new QueryCategory(api).queryCat("Category:消歧义页", false, "page");
 
-    const getLinks = new GetLinkedPages(api);
-    const linkPages = await getLinks.get(disambig, "0");
+    const linkPages = await new GetLinkedPages(api).get(disambig, "0", false);
 
     const deDuplicate = processObject(disambig, linkPages);
     console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
 
-    const report = reportPage(grouping(deDuplicate));
+    const inGroup = grouping(deDuplicate);
+
+    const report = reportPage(inGroup);
 
     for (const [title, text] of Object.entries(report)) {
         await api.postWithToken("csrf", {

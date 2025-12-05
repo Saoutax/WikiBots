@@ -19,12 +19,12 @@ const now = moment.utc();
 const start = now.toISOString();
 const end = now.clone().subtract(26, "hours").toISOString();
 
-async function getPages(api) {
+async function getPages() {
     const pages = new Set();
     let cont;
 
     do {
-        const { data } = await api.post({
+        const { data } = await zhapi.post({
             list: "recentchanges",
             rcprop: "title|timestamp",
             rctype: "edit|new",
@@ -141,7 +141,7 @@ async function addTemplate(file, pageName) {
         cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }),
     ]).then(() => console.log("Successful login at both sites."));
 
-    const pages = await getPages(zhapi);
+    const pages = await getPages();
     const fileList = await matchFiles(pages);
     const titles = Object.keys(fileList);
     const needMark = await notInCat(titles, "非链入使用的文件");
