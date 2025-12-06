@@ -15,6 +15,7 @@
         "utils/flagDelete",
         "utils/getJSON",
         "utils/pageInfo",
+        "utils/parseThread",
         "utils/queryCats",
         "utils/splitAndJoin"
     ]
