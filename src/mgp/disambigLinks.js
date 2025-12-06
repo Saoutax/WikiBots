@@ -101,10 +101,7 @@ function reportPage(obj) {
         config.zh.bot.password,
         undefined,
         { retry: 25, noCache: true },
-    ).then(res => {
-        console.log(res);
-        return res;
-    });
+    ).then(console.log);
 
     const disambig = await new QueryCategory(api).queryCat("Category:消歧义页", false, "page");
 
