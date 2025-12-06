@@ -23,7 +23,7 @@
     "pinyin-pro": "^3.27.0",
     "wanakana": "^5.3.1",
     "wiki-saikou": "^7.3.0",
-    "wikiparser-node": "^1.31.0"
+    "wikiparser-node": "^1.32.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
