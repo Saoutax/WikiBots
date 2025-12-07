@@ -7,11 +7,11 @@ export class FlagDelete {
      * 挂删页面
      * @param {string|string[]} input - 页面标题或标题数组
      * @param {string} reason - 挂删理由
-     * @param {string} summary - 编辑摘要
      * @param {string} user - 用户名
+     * @param {string} [summary=reason] - 编辑摘要，默认为挂删理由
      * @returns {Promise<string[]|void>} - 成功挂删的页面数组
      */
-    async flagDelete(page, reason, summary, user) {
+    async flagDelete(page, reason, user, summary = reason) {
         const successList = [];
         const flagDel = async (title) => {
             try {

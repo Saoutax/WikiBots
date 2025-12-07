@@ -44,7 +44,7 @@ const cmapi = new MediaWikiApi({
     const usage = await new CheckGlobalUsage(cmapi).check(files);
     const unused =  Object.keys(usage).filter(key => usage[key] === false);
 
-    const success = await new FlagDelete(cmapi).flagDelete(unused, "无使用或不再使用的文件", "无使用或不再使用的文件", username);
+    const success = await new FlagDelete(cmapi).flagDelete(unused, "无使用或不再使用的文件", username);
     console.log(success);
 
     console.log(`End time: ${new Date().toISOString()}`);

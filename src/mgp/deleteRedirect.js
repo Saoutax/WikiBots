@@ -91,7 +91,7 @@ async function getRecentMoves() {
         console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
     }
 
-    const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", "自动挂删文件移动残留重定向", username);
+    const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", username, "自动挂删文件移动残留重定向");
 
     if (successList.length > 0) {
         console.log(`成功挂删 ${successList.length} 个重定向：\n${successList.join("\n")}`);
