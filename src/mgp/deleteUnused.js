@@ -20,7 +20,7 @@ const cmapi = new MediaWikiApi({
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
-    
+
     await zhapi.login(
         config.zh.bot.name,
         config.zh.bot.password,

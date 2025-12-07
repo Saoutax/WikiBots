@@ -23,6 +23,8 @@ export default defineConfig([
             "no-unreachable-loop": "error",
             "curly": ["error", "all"],
             "linebreak-style": ["error", "unix"],
+            "no-trailing-spaces": "error",
+            "object-curly-spacing": ["error", "always"],
         },
     },
 ]);

@@ -75,7 +75,7 @@ async function getRecentMoves() {
     const usage = await new CheckGlobalUsage(cmapi).check(isRedirect);
     const unused = Object.keys(usage).filter(key => usage[key] === false);
     const used = Object.keys(usage).filter(key => usage[key] === true);
-	
+
     if (used.length > 0) {
         const today = moment().format("YYYY年MM月DD日");
         const text = used.map(item => `* [[cm:${item}|${item}]]`).join("\n");
