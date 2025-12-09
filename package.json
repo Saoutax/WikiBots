@@ -22,7 +22,7 @@
     "opencc-js": "^1.0.5",
     "pinyin-pro": "^3.27.0",
     "wanakana": "^5.3.1",
-    "wiki-saikou": "^7.3.0",
+    "wiki-saikou": "^7.4.1",
     "wikiparser-node": "^1.32.0"
   },
   "devDependencies": {
