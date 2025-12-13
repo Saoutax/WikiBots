@@ -19,11 +19,11 @@ const api = new MediaWikiApi({
     ).then(console.log);
 
     const { data: { query: { allusers } } } = await api.postWithToken("csrf", {
-        "list": "allusers",
-        "auexcludegroup": "bot",
-        "auprop": "editcount",
-        "aulimit": "max",
-        "auwitheditsonly": 1
+        list: "allusers",
+        auexcludegroup: "bot",
+        auprop: "editcount",
+        aulimit: "max",
+        auwitheditsonly: 1
     });
 
     const count = Object.fromEntries(
