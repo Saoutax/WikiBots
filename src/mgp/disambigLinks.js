@@ -121,6 +121,7 @@ function reportPage(obj) {
             text,
             summary: "更新数据报告",
             tags: "Bot",
+            minor: true,
             bot: true
         });
         console.log(`${title} done.`);
