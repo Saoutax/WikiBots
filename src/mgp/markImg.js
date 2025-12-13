@@ -69,7 +69,7 @@ async function matchFiles(titles) {
         }
 
         const content = page.revisions[0].content;
-        
+
         const filepathRegex = /\{\{filepath:(.*?)\}\}/g;
         const urlRegex = /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
         const extTest = /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;

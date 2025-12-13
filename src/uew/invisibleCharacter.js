@@ -5,9 +5,9 @@ import splitAndJoin from "../utils/splitAndJoin.js";
 const api = new MediaWikiApi({
     baseURL: config.uew.api,
     fexiosConfigs: {
-        headers: { 
-            "user-agent": config.useragent, 
-            "saoutax-bot": config.uew.cf 
+        headers: {
+            "user-agent": config.useragent,
+            "saoutax-bot": config.uew.cf
         }
     }
 });
