@@ -15,6 +15,7 @@ on:
           - markImg
           - highRiskCount
           - deleteUnused
+          - disambigLinks
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
