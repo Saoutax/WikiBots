@@ -1,7 +1,7 @@
+import _ from "lodash";
+import moment from "moment";
 import { MediaWikiApi } from "wiki-saikou";
 import Parser from "wikiparser-node";
-import moment from "moment";
-import _ from "lodash";
 import config from "../utils/config.js";
 import parseThread from "../utils/parseThread.js";
 

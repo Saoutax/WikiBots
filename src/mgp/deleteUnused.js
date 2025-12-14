@@ -1,9 +1,9 @@
 import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
-import GetJSON from "../utils/getJSON.js";
-import QueryCategory from "../utils/queryCats.js";
-import { CheckGlobalUsage } from "../utils/pageInfo.js";
 import FlagDelete from "../utils/flagDelete.js";
+import GetJSON from "../utils/getJSON.js";
+import { CheckGlobalUsage } from "../utils/pageInfo.js";
+import QueryCategory from "../utils/queryCats.js";
 
 const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,

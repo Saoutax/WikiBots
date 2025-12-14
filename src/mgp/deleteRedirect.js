@@ -1,8 +1,8 @@
+import moment from "moment";
 import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
-import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
 import FlagDelete from "../utils/flagDelete.js";
-import moment from "moment";
+import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
 
 const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,

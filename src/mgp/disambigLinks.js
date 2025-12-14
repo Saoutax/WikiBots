@@ -1,9 +1,9 @@
-import { MediaWikiApi } from "wiki-saikou";
-import { toRomaji } from "wanakana";
 import { pinyin } from "pinyin-pro";
+import { toRomaji } from "wanakana";
+import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
-import QueryCategory from "../utils/queryCats.js";
 import { GetLinkedPages } from "../utils/pageInfo.js";
+import QueryCategory from "../utils/queryCats.js";
 
 const api = new MediaWikiApi({
     baseURL: config.zh.api,

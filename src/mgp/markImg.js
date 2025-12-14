@@ -1,6 +1,6 @@
+import moment from "moment";
 import { MediaWikiApi } from "wiki-saikou";
 import config from "../utils/config.js";
-import moment from "moment";
 
 const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
