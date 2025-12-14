@@ -15,6 +15,8 @@ on:
           - invisibleCharacter
           - activeCount
           - mostTranscludedPages
+          - editCount
+          - archiveThread
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -119,3 +121,23 @@ jobs:
         env:
           VJP_BOT: ${{ secrets.VJP_BOT }}
         run: node src/vjp/editCount.js
+
+  archiveThread:
+    if: |
+      github.event.schedule == '35 16 * * *' ||
+      github.event.inputs.task == 'archiveThread'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set Node Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Script
+        env:
+          VJP_BOT: ${{ secrets.VJP_BOT }}
+        run: node src/vjp/archiveThread.js
