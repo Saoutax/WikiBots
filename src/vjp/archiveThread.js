@@ -52,7 +52,9 @@ async function getParsedThread() {
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
-                const archiveTime = Number(mar.getValue().time) + Number(mar.getValue()["archive-offset"]);
+                const archiveTime = moment(mar.getValue().time, "YYYYMMDD")
+                    .add(Number(mar.getValue()["archive-offset"]), "days")
+                    .format("YYYYMMDD");
                 if (currentTime > archiveTime) {
                     discussion[key].content = `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}#${value.title}}}\n`;
                     archive += discussionThread[key].content;
@@ -69,7 +71,7 @@ async function getParsedThread() {
 
     const PAGE_MAP = {
         [`Vocawiki:讨论版/存档/${currentYear}`]: {
-            content: `\n\n${archive}`,
+            content: archive ? `\n\n${archive}` : "",
             append: true
         },
         "Vocawiki:讨论版": {
@@ -82,7 +84,6 @@ async function getParsedThread() {
         const params = {
             action: "edit",
             title,
-            text: content,
             summary: "存档过期讨论串",
             minor: true,
             bot: true,
