@@ -3,7 +3,7 @@ import moment from "moment";
 /**
  * 解析讨论串
  * @param {string} text - 待处理文本
- * @returns {Object} - { preface: "...", 1: { title, thread, timestamp }, 2: {...}, ... }
+ * @returns {Object} - { preface: "...", 1: { title, thread, content, timestamp }, ... }
  */
 function parseThread(text) {
     const headingRegex = /^==\s*(.+?)\s*==\s*$/gm;
@@ -15,6 +15,7 @@ function parseThread(text) {
     while ((match = headingRegex.exec(text))) {
         headings.push({
             title: match[1].trim(),
+            raw: match[0],
             start: match.index,
             end: match.index + match[0].length
         });
@@ -41,6 +42,7 @@ function parseThread(text) {
         result[i + 1] = {
             title: h.title,
             thread,
+            content: h.raw + thread,
             timestamp: newTimestamp
         };
     });
