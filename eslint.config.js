@@ -1,10 +1,9 @@
 import js from "@eslint/js";
 import markdown from "@eslint/markdown";
-import { defineConfig } from "eslint/config";
 import importPlugin from "eslint-plugin-import";
 import globals from "globals";
 
-export default defineConfig([
+export default [
     {
         files: ["**/*.js"],
         plugins: {
@@ -63,4 +62,4 @@ export default defineConfig([
             "markdown/heading-increment": "off",
         },
     },
-]);
+];
