@@ -17,6 +17,7 @@ on:
           - mostTranscludedPages
           - editCount
           - archiveThread
+          - siteStatistics
 
 env:
   API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -84,7 +85,7 @@ jobs:
 
   mostTranscludedPages:
     if: |
-      github.event.schedule == '30 20 * * 1' ||
+      github.event.schedule == '30 20 * * 2' ||
       github.event.inputs.task == 'mostTranscludedPages'
     runs-on: ubuntu-latest
     steps:
@@ -104,7 +105,7 @@ jobs:
 
   editCount:
     if: |
-      github.event.schedule == '30 20 * * 1' ||
+      github.event.schedule == '30 20 * * 2' ||
       github.event.inputs.task == 'editCount'
     runs-on: ubuntu-latest
     steps:
@@ -141,3 +142,23 @@ jobs:
         env:
           VJP_BOT: ${{ secrets.VJP_BOT }}
         run: node src/vjp/archiveThread.js
+
+  siteStatistics:
+    if: |
+      github.event.schedule == '35 16 * * *' ||
+      github.event.inputs.task == 'siteStatistics'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set Node Version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Script
+        env:
+          VJP_BOT: ${{ secrets.VJP_BOT }}
+        run: node src/vjp/siteStatistics.js
