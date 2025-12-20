@@ -1,9 +1,11 @@
 import _ from "lodash";
-import moment from "moment";
+import moment from "moment-timezone";
 import { MediaWikiApi } from "wiki-saikou";
 import Parser from "wikiparser-node";
 import config from "../utils/config.js";
 import parseThread from "../utils/parseThread.js";
+
+moment.tz.setDefault("Asia/Shanghai");
 
 const api = new MediaWikiApi({
     baseURL: config.vjp.api,
@@ -55,7 +57,7 @@ async function getParsedThread() {
                 const archiveTime = moment(mar.getValue().time, "YYYYMMDD")
                     .add(Number(mar.getValue()["archive-offset"]), "days")
                     .format("YYYYMMDD");
-                if (currentTime > archiveTime) {
+                if (currentTime >= archiveTime) {
                     discussion[key].content = `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}#${value.title}}}\n`;
                     archive += discussionThread[key].content;
                     console.log(`存档讨论串：${value.title}`);
