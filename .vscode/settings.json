@@ -13,6 +13,7 @@
         "VJP/editCount",
         "VJP/invisibleCharacter",
         "VJP/mostTranscludedPages",
+        "VJP/siteStatistics",
         "utils/config",
         "utils/flagDelete",
         "utils/getJSON",
