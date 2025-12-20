@@ -84,6 +84,7 @@ async function getRecentChanges() {
         summary: "更新数据报告",
         tags: "Bot",
         bot: true,
+        minor: true,
         nocreate: true,
         watchlist: "nochange",
     });
