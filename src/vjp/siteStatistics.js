@@ -32,7 +32,7 @@ const api = new MediaWikiApi({
     });
 
     // TODO：移入模板，通过{{Echart}}显示
-    const title = `${username}/siteStatistics.json`;
+    const title = `User:${username}/siteStatistics.json`;
     const statistics = await new GetJSON(api).get(title);
 
     statistics[moment().format("YYYY-MM-DD")] = { articles, edits, users, activeusers };
