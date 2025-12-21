@@ -119,6 +119,7 @@ function reportPage(obj) {
             summary: "更新数据报告",
             tags: "Bot",
             bot: true,
+            minor: true,
         });
         console.log(`${title} done.`);
     }
