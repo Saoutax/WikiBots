@@ -19,6 +19,7 @@
         "url": "https://github.com/Saoutax/WikiBots/issues"
     },
     "homepage": "https://github.com/Saoutax/WikiBots#readme",
+    "packageManager": "pnpm@10.20.0",
     "dependencies": {
         "dotenv": "^17.2.3",
         "lodash": "^4.17.21",
