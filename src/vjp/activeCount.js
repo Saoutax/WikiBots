@@ -6,7 +6,7 @@ const api = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 const now = moment.utc();
@@ -57,18 +57,14 @@ async function getRecentChanges() {
 (async () => {
     console.log(`Start: ${new Date().toISOString()}`);
 
-    await api.login(
-        config.vjp.bot.name,
-        config.vjp.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
     const users = await getRecentChanges();
 
     let text = "* 本页面是由[[U:MisakaNetwork|机器人]]生成的活跃用户近30日内编辑统计。\n";
     text += "* 不包含机器人用户组与通过[[Special:ReplaceText|替换文本]]进行的编辑。\n";
     text += "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
+    // prettier-ignore
     text += "{| class=\"wikitable sortable\" width=100%\n|-\n! 用户 !! 编辑数 !! 最后编辑时间\n";
 
     for (const [user, info] of users.entries()) {

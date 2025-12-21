@@ -9,11 +9,21 @@ class GetJSON {
      * @returns {Promise<object} 返回解析后的JSON
      */
     async get(title) {
-        const { data: { query: { pages: [{ revisions: [{ content }] }] } } } = await this.api.get({
+        const {
+            data: {
+                query: {
+                    pages: [
+                        {
+                            revisions: [{ content }],
+                        },
+                    ],
+                },
+            },
+        } = await this.api.get({
             action: "query",
             prop: "revisions",
             rvprop: "content",
-            titles: title
+            titles: title,
         });
 
         return JSON.parse(content);

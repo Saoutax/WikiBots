@@ -1,60 +1,60 @@
 name: "UEW daily"
 
 on:
-  schedule:
-    - cron: "30 16 * * *" # 00:30 CST
-    - cron: "30 20 * * *" # 04:30 CST
-  workflow_dispatch:
-    inputs:
-      task:
-        description: "选择任务"
-        type: choice
-        required: true
-        options:
-          - cleanSandbox
-          - invisibleCharacter
+    schedule:
+        - cron: "30 16 * * *" # 00:30 CST
+        - cron: "30 20 * * *" # 04:30 CST
+    workflow_dispatch:
+        inputs:
+            task:
+                description: "选择任务"
+                type: choice
+                required: true
+                options:
+                    - cleanSandbox
+                    - invisibleCharacter
 
 env:
-  API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
-  UEW_CF: ${{ secrets.UEW_CF }}
+    API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
+    UEW_CF: ${{ secrets.UEW_CF }}
 
 jobs:
-  cleanSandbox:
-    if: |
-      github.event.schedule == '30 20 * * *' ||
-      github.event.inputs.task == 'cleanSandbox'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set Node Version
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Script
-        env:
-          UEW_BOT: ${{ secrets.UEW_BOT }}
-        run: node src/uew/cleanSandbox.js
+    cleanSandbox:
+        if: |
+            github.event.schedule == '30 20 * * *' ||
+            github.event.inputs.task == 'cleanSandbox'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Set Node Version
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: npm
+            - name: Install dependencies
+              run: npm ci
+            - name: Run Script
+              env:
+                  UEW_BOT: ${{ secrets.UEW_BOT }}
+              run: node src/uew/cleanSandbox.js
 
-  invisibleCharacter:
-    if: |
-      github.event.schedule == '30 16 * * *' ||
-      github.event.inputs.task == 'invisibleCharacter'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set Node Version
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Script
-        env:
-          UEW_BOT: ${{ secrets.UEW_BOT }}
-        run: node src/uew/invisibleCharacter.js
+    invisibleCharacter:
+        if: |
+            github.event.schedule == '30 16 * * *' ||
+            github.event.inputs.task == 'invisibleCharacter'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Set Node Version
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: npm
+            - name: Install dependencies
+              run: npm ci
+            - name: Run Script
+              env:
+                  UEW_BOT: ${{ secrets.UEW_BOT }}
+              run: node src/uew/invisibleCharacter.js

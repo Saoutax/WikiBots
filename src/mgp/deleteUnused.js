@@ -9,30 +9,20 @@ const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 const cmapi = new MediaWikiApi({
     baseURL: config.cm.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await zhapi.login(
-        config.zh.bot.name,
-        config.zh.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
-    const { lgusername: username } = await cmapi.login(
-        config.cm.bot.name,
-        config.cm.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(res => {
+    await zhapi.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    const { lgusername: username } = await cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }).then(res => {
         console.log(res);
         return res;
     });
@@ -42,7 +32,7 @@ const cmapi = new MediaWikiApi({
     const files = await new QueryCategory(cmapi).queryCat(categories, true, "file");
 
     const usage = await new CheckGlobalUsage(cmapi).check(files);
-    const unused =  Object.keys(usage).filter(key => usage[key] === false);
+    const unused = Object.keys(usage).filter(key => usage[key] === false);
 
     const success = await new FlagDelete(cmapi).flagDelete(unused, "无使用或不再使用的文件", username);
     console.log(success);

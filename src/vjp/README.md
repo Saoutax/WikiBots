@@ -7,4 +7,4 @@
 |   [invisibleCharacter](./invisibleCharacter.js)   |  每天00:35  |                            移除不可见字符                            |
 |        [archiveThread](./archiveThread.js)        |  每天00:35  |                            存档过期讨论串                            |
 | [mostTranscludedPages](./mostTranscludedPages.js) | 每周一00:35 | 更新[Vocawiki:高引用量页面保护数据](https://voca.wiki/_?curid=63794) |
-|             [editCount](./editCount.js)              | 每周一00:35 |   更新[Vocawiki:全站累计编辑报告](https://voca.wiki/_?curid=67177)   |
+|            [editCount](./editCount.js)            | 每周一00:35 |   更新[Vocawiki:全站累计编辑报告](https://voca.wiki/_?curid=67177)   |

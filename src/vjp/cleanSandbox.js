@@ -5,7 +5,7 @@ const api = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 const PAGE_MAP = {
@@ -32,48 +32,58 @@ const PAGE_MAP = {
 };
 
 async function pageEdit(title) {
-    await api.postWithToken("csrf", {
-        action: "edit",
-        title,
-        text: PAGE_MAP[title].content,
-        minor: true,
-        bot: true,
-        tags: "Bot",
-        summary: PAGE_MAP[title].summary,
-        watchlist: "nochange",
-    }, {
-        retry: 50,
-        noCache: true,
-    }).then(({ data }) => console.log(JSON.stringify(data)));
+    await api
+        .postWithToken(
+            "csrf",
+            {
+                action: "edit",
+                title,
+                text: PAGE_MAP[title].content,
+                minor: true,
+                bot: true,
+                tags: "Bot",
+                summary: PAGE_MAP[title].summary,
+                watchlist: "nochange",
+            },
+            {
+                retry: 50,
+                noCache: true,
+            },
+        )
+        .then(({ data }) => console.log(JSON.stringify(data)));
 }
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(
-        config.vjp.bot.name,
-        config.vjp.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
-    const { data: { query: { pages } } } = await api.post({
-        prop: "revisions|info",
-        titles: Object.keys(PAGE_MAP),
-        rvprop: "timestamp|content",
-        inprop: "touched",
-    }, {
-        retry: 15,
-    });
+    const {
+        data: {
+            query: { pages },
+        },
+    } = await api.post(
+        {
+            prop: "revisions|info",
+            titles: Object.keys(PAGE_MAP),
+            rvprop: "timestamp|content",
+            inprop: "touched",
+        },
+        {
+            retry: 15,
+        },
+    );
 
-    await Promise.all(pages.map(async ({ title, revisions: [{ timestamp }], touched }) => {
-        const minutes = (Date.now() - new Date(touched || timestamp).getTime()) / 60000;
-        if (minutes > 180) {
-            await pageEdit(title);
-        } else {
-            console.log(`${title} 在 ${(minutes).toFixed(1)} 分钟前存在编辑，跳过。`);
-        }
-    }));
+    await Promise.all(
+        pages.map(async ({ title, revisions: [{ timestamp }], touched }) => {
+            const minutes = (Date.now() - new Date(touched || timestamp).getTime()) / 60000;
+            if (minutes > 180) {
+                await pageEdit(title);
+            } else {
+                console.log(`${title} 在 ${minutes.toFixed(1)} 分钟前存在编辑，跳过。`);
+            }
+        }),
+    );
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

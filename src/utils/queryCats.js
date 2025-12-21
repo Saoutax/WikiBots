@@ -35,14 +35,17 @@ class QueryCategory {
 
         let cmcontinue;
         do {
-            const { data } = await this.api.post({
-                action: "query",
-                list: "categorymembers",
-                cmtitle: cat,
-                cmtype,
-                cmlimit: "max",
-                cmcontinue,
-            }, { retry: 10 });
+            const { data } = await this.api.post(
+                {
+                    action: "query",
+                    list: "categorymembers",
+                    cmtitle: cat,
+                    cmtype,
+                    cmlimit: "max",
+                    cmcontinue,
+                },
+                { retry: 10 },
+            );
 
             const members = data?.query?.categorymembers || [];
             for (const member of members) {

@@ -8,13 +8,13 @@ const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 const cmapi = new MediaWikiApi({
     baseURL: config.cm.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 const now = new Date();
@@ -30,7 +30,7 @@ async function getRecentMoves() {
             lenamespace: 6,
             lelimit: 500,
             lestart: time.toISOString(),
-            ledir: "newer"
+            ledir: "newer",
         });
 
         const files = res.data?.query?.logevents || [];
@@ -41,25 +41,14 @@ async function getRecentMoves() {
     }
 }
 
-
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    const { lgusername: username } = await cmapi.login(
-        config.cm.bot.name,
-        config.cm.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(res => {
+    const { lgusername: username } = await cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }).then(res => {
         console.log(res);
         return res;
     });
-    await zhapi.login(
-        config.zh.bot.name,
-        config.zh.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await zhapi.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
     const movedFiles = await getRecentMoves();
 
@@ -79,15 +68,19 @@ async function getRecentMoves() {
     if (used.length > 0) {
         const today = moment().format("YYYY年MM月DD日");
         const text = used.map(item => `* [[cm:${item}|${item}]]`).join("\n");
-        await zhapi.postWithToken("csrf", {
-            action: "edit",
-            title: "User:SaoMikoto/Bot/log/deleteRedirect",
-            appendtext: `\n\n== ${today} ==\n${text}`,
-            summary: "记录仍有使用的重定向",
-            minor: true,
-            bot: true,
-            tags: "Bot"
-        }, { retry: 10 });
+        await zhapi.postWithToken(
+            "csrf",
+            {
+                action: "edit",
+                title: "User:SaoMikoto/Bot/log/deleteRedirect",
+                appendtext: `\n\n== ${today} ==\n${text}`,
+                summary: "记录仍有使用的重定向",
+                minor: true,
+                bot: true,
+                tags: "Bot",
+            },
+            { retry: 10 },
+        );
         console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
     }
 

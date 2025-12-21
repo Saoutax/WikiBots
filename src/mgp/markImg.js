@@ -6,13 +6,13 @@ const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 const cmapi = new MediaWikiApi({
     baseURL: config.cm.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 const now = moment.utc();
@@ -100,35 +100,41 @@ async function matchFiles(titles) {
 }
 
 async function notInCat(fileList, category) {
-    const results = await Promise.all(fileList.map(async file => {
-        const { data } = await cmapi.post({
-            action: "query",
-            prop: "categories",
-            titles: file,
-            cllimit: "max",
-            formatversion: 2,
-        });
-        const page = data?.query?.pages?.[0];
-        if (!page || page.missing) {
-            return null;
-        }
-        const inCategory = page.categories?.some(c => c.title === `Category:${category}`);
-        return inCategory ? null : file;
-    }));
+    const results = await Promise.all(
+        fileList.map(async file => {
+            const { data } = await cmapi.post({
+                action: "query",
+                prop: "categories",
+                titles: file,
+                cllimit: "max",
+                formatversion: 2,
+            });
+            const page = data?.query?.pages?.[0];
+            if (!page || page.missing) {
+                return null;
+            }
+            const inCategory = page.categories?.some(c => c.title === `Category:${category}`);
+            return inCategory ? null : file;
+        }),
+    );
 
     return results.filter(Boolean);
 }
 
 async function addTemplate(file, pageName) {
-    await cmapi.postWithToken("csrf", {
-        action: "edit",
-        title: file,
-        appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
-        summary: "标记存在非链入使用的文件",
-        minor: true,
-        bot: true,
-        tags: "Bot"
-    }, { retry: 10 });
+    await cmapi.postWithToken(
+        "csrf",
+        {
+            action: "edit",
+            title: file,
+            appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
+            summary: "标记存在非链入使用的文件",
+            minor: true,
+            bot: true,
+            tags: "Bot",
+        },
+        { retry: 10 },
+    );
 
     console.log(`${file}已标记。`);
 }

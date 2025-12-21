@@ -11,14 +11,15 @@ const api = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 const regexMap = {
     3164: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\uFEFF]+/gu,
-    "default": /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu,
+    default: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu,
 };
 
+// prettier-ignore
 function replaceSpecialCharacters(wikitext, pageid, setting) {
     switch (true) {
     case setting["3164"].includes(pageid):
@@ -31,62 +32,89 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(
-        config.vjp.bot.name,
-        config.vjp.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
-    const { data: { query: { recentchanges, pages: [{ revisions: [{ content }] }] } } } = await api.post({
-        prop: "revisions",
-        titles: "User:SaoMikoto/Bot/config/invisibleCharacter.json",
-        rvprop: "content",
-        list: "recentchanges",
-        rcprop: "timestamp|ids",
-        rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        rclimit: "max",
-        rcnamespace: "*",
-        rctag: "invisibleCharacter",
-        rctoponly: true,
-    }, {
-        retry: 15,
-    });
+    const {
+        data: {
+            query: {
+                recentchanges,
+                pages: [
+                    {
+                        revisions: [{ content }],
+                    },
+                ],
+            },
+        },
+    } = await api.post(
+        {
+            prop: "revisions",
+            titles: "User:SaoMikoto/Bot/config/invisibleCharacter.json",
+            rvprop: "content",
+            list: "recentchanges",
+            rcprop: "timestamp|ids",
+            rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            rclimit: "max",
+            rcnamespace: "*",
+            rctag: "invisibleCharacter",
+            rctoponly: true,
+        },
+        {
+            retry: 15,
+        },
+    );
 
     const setting = JSON.parse(content || "{}");
     const pagelists = splitAndJoin(
-        recentchanges.map(({ pageid }) => pageid)
-        , 500);
+        recentchanges.map(({ pageid }) => pageid),
+        500,
+    );
     if (pagelists.length) {
-        await Promise.all(pagelists.map(async(pagelist) => {
-            const { data: { query: { pages } } } = await api.post({
-                prop: "revisions",
-                pageids: pagelist,
-                rvprop: "content",
-            }, {
-                retry: 15,
-            });
-            await Promise.all(pages.map(async (page) => {
-                const { pageid, revisions } = page;
-                if (revisions.length) {
-                    const { content: wikitext } = revisions[0];
-                    await api.postWithToken("csrf", {
-                        action: "edit",
-                        pageid,
-                        text: replaceSpecialCharacters(wikitext, pageid, setting),
-                        minor: true,
-                        bot: true,
-                        nocreate: true,
-                        tags: "Bot",
-                        summary: "移除不可见字符",
-                        watchlist: "nochange",
-                    }, {
-                        retry: 50,
-                        noCache: true,
-                    }).then(({ data }) => console.log(JSON.stringify(data)));
-                }
-            }));
-        }));
+        await Promise.all(
+            pagelists.map(async pagelist => {
+                const {
+                    data: {
+                        query: { pages },
+                    },
+                } = await api.post(
+                    {
+                        prop: "revisions",
+                        pageids: pagelist,
+                        rvprop: "content",
+                    },
+                    {
+                        retry: 15,
+                    },
+                );
+                await Promise.all(
+                    pages.map(async page => {
+                        const { pageid, revisions } = page;
+                        if (revisions.length) {
+                            const { content: wikitext } = revisions[0];
+                            await api
+                                .postWithToken(
+                                    "csrf",
+                                    {
+                                        action: "edit",
+                                        pageid,
+                                        text: replaceSpecialCharacters(wikitext, pageid, setting),
+                                        minor: true,
+                                        bot: true,
+                                        nocreate: true,
+                                        tags: "Bot",
+                                        summary: "移除不可见字符",
+                                        watchlist: "nochange",
+                                    },
+                                    {
+                                        retry: 50,
+                                        noCache: true,
+                                    },
+                                )
+                                .then(({ data }) => console.log(JSON.stringify(data)));
+                        }
+                    }),
+                );
+            }),
+        );
     } else {
         console.log("No pages has invisible characters.");
     }

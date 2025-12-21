@@ -9,7 +9,7 @@ const api = new MediaWikiApi({
     baseURL: config.zh.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 function processObject(array, obj) {
@@ -40,7 +40,7 @@ function grouping(obj) {
         ["P", "R", "P-R"],
         ["S", "U", "S-U"],
         ["V", "X", "V-X"],
-        ["Y", "Z", "Y-Z"]
+        ["Y", "Z", "Y-Z"],
     ];
 
     const result = {};
@@ -78,7 +78,9 @@ function reportPage(obj) {
         const entries = obj[page] || {};
         let text = "* 本页面是由[[U:机娘亚衣琴|机器人]]生成的疑似链入消歧义页面的条目报告。\n";
         text += "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
+        // prettier-ignore
         text += "{| class=\"wikitable\"\n";
+        // prettier-ignore
         text += "|+\n! width=\"10%\" | 消歧义页面\n! width=\"90%\" | 链入消歧义页面的条目\n";
         for (const key of Object.keys(entries)) {
             const arr = Array.isArray(entries[key]) ? entries[key] : [];
@@ -96,12 +98,7 @@ function reportPage(obj) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(
-        config.zh.bot.name,
-        config.zh.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await api.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
     const disambig = await new QueryCategory(api).queryCat("Category:消歧义页", false, "page");
 
@@ -121,7 +118,7 @@ function reportPage(obj) {
             text,
             summary: "更新数据报告",
             tags: "Bot",
-            bot: true
+            bot: true,
         });
         console.log(`${title} done.`);
     }

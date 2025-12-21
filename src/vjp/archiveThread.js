@@ -11,15 +11,25 @@ const api = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 async function getParsedThread() {
-    const { data: { query: { pages: [{ revisions: [{ content }] }] } } } = await api.get({
+    const {
+        data: {
+            query: {
+                pages: [
+                    {
+                        revisions: [{ content }],
+                    },
+                ],
+            },
+        },
+    } = await api.get({
         action: "query",
         prop: "revisions",
         rvprop: "content",
-        titles: "Vocawiki:讨论版"
+        titles: "Vocawiki:讨论版",
     });
 
     return parseThread(content);
@@ -28,12 +38,7 @@ async function getParsedThread() {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(
-        config.vjp.bot.name,
-        config.vjp.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
     const discussionThread = await getParsedThread();
 
@@ -54,9 +59,7 @@ async function getParsedThread() {
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
-                const archiveTime = moment(mar.getValue().time, "YYYYMMDD")
-                    .add(Number(mar.getValue()["archive-offset"]), "days")
-                    .format("YYYYMMDD");
+                const archiveTime = moment(mar.getValue().time, "YYYYMMDD").add(Number(mar.getValue()["archive-offset"]), "days").format("YYYYMMDD");
                 if (currentTime >= archiveTime) {
                     discussion[key].content = `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}#${value.title}}}\n\n`;
                     archive += discussionThread[key].content;
@@ -65,21 +68,23 @@ async function getParsedThread() {
             }
         });
 
-    const newDiscussion = discussion.preface + Object.keys(discussion)
-        .filter(k => k !== "preface")
-        .sort((a, b) => Number(a) - Number(b))
-        .map(k => discussion[k].content)
-        .join("");
+    const newDiscussion =
+        discussion.preface +
+        Object.keys(discussion)
+            .filter(k => k !== "preface")
+            .sort((a, b) => Number(a) - Number(b))
+            .map(k => discussion[k].content)
+            .join("");
 
     const PAGE_MAP = {
         [`Vocawiki:讨论版/存档/${currentYear}`]: {
             content: archive ? `\n\n${archive}` : "",
-            append: true
+            append: true,
         },
         "Vocawiki:讨论版": {
             content: newDiscussion,
-            append: false
-        }
+            append: false,
+        },
     };
 
     for (const [title, { content, append }] of Object.entries(PAGE_MAP)) {

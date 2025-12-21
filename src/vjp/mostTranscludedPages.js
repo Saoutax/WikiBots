@@ -9,38 +9,50 @@ const api = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(
-        config.vjp.bot.name,
-        config.vjp.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(console.log);
+    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
 
-    const { data: { query: { pages } } } = await api.post({
-        prop: "info",
-        generator: "querypage",
-        inprop: "protection",
-        gqppage: "Mostlinkedtemplates",
-        gqplimit: "max",
-    }, {
-        retry: 15,
-    });
-    const { data: { query: { querypage: { results } } } } = await api.post({
-        list: "querypage",
-        qppage: "Mostlinkedtemplates",
-        qplimit: "max",
-    }, {
-        retry: 15,
-    });
+    const {
+        data: {
+            query: { pages },
+        },
+    } = await api.post(
+        {
+            prop: "info",
+            generator: "querypage",
+            inprop: "protection",
+            gqppage: "Mostlinkedtemplates",
+            gqplimit: "max",
+        },
+        {
+            retry: 15,
+        },
+    );
+    const {
+        data: {
+            query: {
+                querypage: { results },
+            },
+        },
+    } = await api.post(
+        {
+            list: "querypage",
+            qppage: "Mostlinkedtemplates",
+            qplimit: "max",
+        },
+        {
+            retry: 15,
+        },
+    );
 
     let text = "* 本页面由[[U:MisakaNetwork|机器人]]根据[[Special:MostTranscludedPages]]生成的页面保护信息，以供管理员检查。仅统计使用量大于100的页面。\n";
     text += "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)}}｜{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
+    // prettier-ignore
     text += "{| class=\"wikitable sortable center plainlinks\"\n";
     text += "|-\n! 序号 !! 页面名 !! 使用量 !! 编辑 !! 移动 !! 操作\n";
     let count = 1;
@@ -49,7 +61,7 @@ const api = new MediaWikiApi({
         if (value <= 100) {
             continue;
         }
-        const match = pages.find((page) => page.title === title);
+        const match = pages.find(page => page.title === title);
         const { protection } = match;
         const levelStr = { edit: " - ||", move: " - ||" };
         for (const option of protection) {
@@ -62,19 +74,25 @@ const api = new MediaWikiApi({
     }
     text += "|}\n\n[[Category:Vocawiki数据报告]]";
 
-    await api.postWithToken("csrf", {
-        action: "edit",
-        pageid: "63794",
-        text,
-        summary: "更新数据报告",
-        bot: true,
-        notminor: true,
-        tags: "Bot",
-        watchlist: "nochange",
-    }, {
-        retry: 50,
-        noCache: true,
-    }).then(({ data }) => console.log(JSON.stringify(data)));
+    await api
+        .postWithToken(
+            "csrf",
+            {
+                action: "edit",
+                pageid: "63794",
+                text,
+                summary: "更新数据报告",
+                bot: true,
+                notminor: true,
+                tags: "Bot",
+                watchlist: "nochange",
+            },
+            {
+                retry: 50,
+                noCache: true,
+            },
+        )
+        .then(({ data }) => console.log(JSON.stringify(data)));
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

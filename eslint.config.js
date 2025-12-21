@@ -18,12 +18,12 @@ export default [
         },
         rules: {
             ...js.configs.recommended.rules,
-            "indent": ["error", 4],
-            "quotes": ["error", "double"],
-            "semi": ["error", "always"],
+            indent: ["error", 4],
+            quotes: ["error", "double"],
+            semi: ["error", "always"],
             "linebreak-style": ["error", "unix"],
             "object-curly-spacing": ["error", "always"],
-            "curly": ["error", "all"],
+            curly: ["error", "all"],
             "no-trailing-spaces": "error",
             "dot-notation": "error",
             "no-duplicate-imports": "error",
@@ -35,14 +35,7 @@ export default [
             "import/order": [
                 "warn",
                 {
-                    groups: [
-                        "builtin",
-                        "external",
-                        "internal",
-                        "parent",
-                        "sibling",
-                        "index",
-                    ],
+                    groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
                     alphabetize: {
                         order: "asc",
                         caseInsensitive: false,

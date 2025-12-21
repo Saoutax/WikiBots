@@ -9,26 +9,26 @@ const api = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
-    }
+    },
 });
-
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    const { lgusername: username } = await api.login(
-        config.vjp.bot.name,
-        config.vjp.bot.password,
-        undefined,
-        { retry: 25, noCache: true },
-    ).then(res => {
+    const { lgusername: username } = await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(res => {
         console.log(res);
         return res;
     });
 
-    const { data: { query: { statistics: { articles, edits, users, activeusers } } } } = await api.get({
+    const {
+        data: {
+            query: {
+                statistics: { articles, edits, users, activeusers },
+            },
+        },
+    } = await api.get({
         meta: "siteinfo",
-	    siprop: "statistics"
+        siprop: "statistics",
     });
 
     // TODO：移入模板，通过{{Echart}}显示

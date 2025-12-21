@@ -37,7 +37,7 @@ export class CheckGlobalUsage {
                             prop: "globalusage",
                             titles: group.join("|"),
                             ...(gucontinue ? { gucontinue } : {}),
-                            gulimit: "max"
+                            gulimit: "max",
                         });
 
                         for (const page of Object.values(res?.data?.query?.pages || {})) {
@@ -50,7 +50,7 @@ export class CheckGlobalUsage {
                     } while (gucontinue);
 
                     return Object.fromEntries(chunkResult);
-                })
+                }),
             );
 
             const result = Object.assign({}, ...results);
@@ -61,7 +61,6 @@ export class CheckGlobalUsage {
         }
     }
 }
-
 
 export class CheckRedirect {
     constructor(api) {
@@ -83,26 +82,22 @@ export class CheckRedirect {
                     const res = await this.api.post({
                         action: "query",
                         prop: "info",
-                        titles: group.join("|")
+                        titles: group.join("|"),
                     });
 
                     const pages = res?.data?.query?.pages || {};
-                    return Object.fromEntries(
-                        Object.values(pages).map(p => [p.title, "redirect" in p])
-                    );
-                })
+                    return Object.fromEntries(Object.values(pages).map(p => [p.title, "redirect" in p]));
+                }),
             );
 
             const result = Object.assign({}, ...results);
             return isSingle ? result[input] : result;
-
         } catch (err) {
             console.error("CheckRedirect error:", err);
             return isSingle ? false : Object.fromEntries(titles.map(t => [t, false]));
         }
     }
 }
-
 
 export class GetEmbeddedPages {
     constructor(api) {
@@ -121,13 +116,16 @@ export class GetEmbeddedPages {
         let geicontinue;
 
         while (geicontinue !== eol) {
-            const { data } = await this.api.post({
-                generator: "embeddedin",
-                geititle: title,
-                geinamespace: namespace,
-                geilimit: "500",
-                ...(geicontinue ? { geicontinue } : {}),
-            },{ retry: 10 });
+            const { data } = await this.api.post(
+                {
+                    generator: "embeddedin",
+                    geititle: title,
+                    geinamespace: namespace,
+                    geilimit: "500",
+                    ...(geicontinue ? { geicontinue } : {}),
+                },
+                { retry: 10 },
+            );
 
             if (data.query?.pages) {
                 result.push(...Object.values(data.query.pages).map(p => p.title));
@@ -169,14 +167,14 @@ export class GetLinkedPages {
                         lhshow: redirect ? "redirects|!redirects" : "!redirects",
                         lhlimit: "max",
                         formatversion: 2,
-                        ...(lhcontinue ? { lhcontinue } : {})
+                        ...(lhcontinue ? { lhcontinue } : {}),
                     });
 
                     for (const page of res.data.query.pages || []) {
                         if (page.linkshere?.length) {
                             chunkResult.set(
                                 page.title,
-                                page.linkshere.map(lh => lh.title)
+                                page.linkshere.map(lh => lh.title),
                             );
                         }
                     }
@@ -185,7 +183,7 @@ export class GetLinkedPages {
                 } while (lhcontinue);
 
                 return Object.fromEntries(chunkResult);
-            })
+            }),
         );
 
         return Object.assign({}, ...results);

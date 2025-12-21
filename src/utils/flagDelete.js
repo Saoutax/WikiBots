@@ -13,7 +13,7 @@ export class FlagDelete {
      */
     async flagDelete(page, reason, user, summary = reason) {
         const successList = [];
-        const flagDel = async (title) => {
+        const flagDel = async title => {
             try {
                 const del = await this.api.postWithToken("csrf", {
                     action: "edit",
@@ -22,7 +22,7 @@ export class FlagDelete {
                     summary,
                     tags: "Bot",
                     bot: true,
-                    minor: true
+                    minor: true,
                 });
                 const data = del.data;
                 if (data?.error?.code === "badtoken") {
