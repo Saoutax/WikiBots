@@ -35,9 +35,13 @@ function parseThread(text) {
         const end = next ? next.start : text.length;
         const thread = text.slice(start, end);
 
-        const timestamps = [...thread.matchAll(timestampRegex)].map(m => moment(m[1], "YYYY年M月D日 HH:mm"));
+        const timestamps = [...thread.matchAll(timestampRegex)].map(m =>
+            moment(m[1], "YYYY年M月D日 HH:mm"),
+        );
 
-        const newTimestamp = timestamps.length ? moment(Math.max(...timestamps.map(t => t.valueOf()))).toISOString() : null;
+        const newTimestamp = timestamps.length
+            ? moment(Math.max(...timestamps.map(t => t.valueOf()))).toISOString()
+            : null;
 
         result[i + 1] = {
             title: h.title,

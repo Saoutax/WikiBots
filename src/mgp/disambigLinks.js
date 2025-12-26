@@ -1,16 +1,8 @@
 import { pinyin } from "pinyin-pro";
 import { toRomaji } from "wanakana";
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
+import { zhapi as api, Login } from "../utils/apiLogin.js";
 import { GetLinkedPages } from "../utils/pageInfo.js";
 import QueryCategory from "../utils/queryCats.js";
-
-const api = new MediaWikiApi({
-    baseURL: config.zh.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
 
 function processObject(array, obj) {
     const setArray = new Set(array);
@@ -98,7 +90,7 @@ function reportPage(obj) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("zh.bot");
 
     const disambig = await new QueryCategory(api).queryCat("Category:消歧义页", false, "page");
 

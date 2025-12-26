@@ -3,16 +3,8 @@
  * @author 星海 <https://github.com/lovelyCARDINAL/WikiBots/blob/main/src/Clean/invisibleCharacter.js>
  */
 
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
+import { vjpapi as api, Login } from "../utils/apiLogin.js";
 import splitAndJoin from "../utils/splitAndJoin.js";
-
-const api = new MediaWikiApi({
-    baseURL: config.vjp.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
 
 const regexMap = {
     3164: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\uFEFF]+/gu,
@@ -22,17 +14,17 @@ const regexMap = {
 // prettier-ignore
 function replaceSpecialCharacters(wikitext, pageid, setting) {
     switch (true) {
-    case setting["3164"].includes(pageid):
-        return wikitext.replaceAll(regexMap["3164"], "");
-    default:
-        return wikitext.replaceAll(regexMap.default, "");
+        case setting["3164"].includes(pageid):
+            return wikitext.replaceAll(regexMap["3164"], "");
+        default:
+            return wikitext.replaceAll(regexMap.default, "");
     }
 }
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("vjp.bot");
 
     const {
         data: {

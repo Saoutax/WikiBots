@@ -1,19 +1,5 @@
 import moment from "moment";
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
-
-const zhapi = new MediaWikiApi({
-    baseURL: config.zh.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
-const cmapi = new MediaWikiApi({
-    baseURL: config.cm.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
+import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
 
 const now = moment.utc();
 const start = now.toISOString();
@@ -71,8 +57,10 @@ async function matchFiles(titles) {
         const content = page.revisions[0].content;
 
         const filepathRegex = /\{\{filepath:(.*?)\}\}/g;
-        const urlRegex = /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
-        const extTest = /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
+        const urlRegex =
+            /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
+        const extTest =
+            /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
 
         let match;
 
@@ -142,10 +130,7 @@ async function addTemplate(file, pageName) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await Promise.all([
-        zhapi.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }),
-        cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }),
-    ]).then(() => console.log("Successful login at both sites."));
+    await Promise.all([new Login(zhapi).login("zh.bot"), new Login(cmapi).login("cm.bot")]);
 
     const pages = await getPages();
     const fileList = await matchFiles(pages);

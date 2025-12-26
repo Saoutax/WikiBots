@@ -1,18 +1,10 @@
 import _ from "lodash";
 import moment from "moment-timezone";
-import { MediaWikiApi } from "wiki-saikou";
 import Parser from "wikiparser-node";
-import config from "../utils/config.js";
+import { vjpapi as api, Login } from "../utils/apiLogin.js";
 import parseThread from "../utils/parseThread.js";
 
 moment.tz.setDefault("Asia/Shanghai");
-
-const api = new MediaWikiApi({
-    baseURL: config.vjp.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
 
 async function getParsedThread() {
     const {
@@ -38,7 +30,7 @@ async function getParsedThread() {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("vjp.bot");
 
     const discussionThread = await getParsedThread();
 
@@ -59,9 +51,12 @@ async function getParsedThread() {
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
-                const archiveTime = moment(mar.getValue().time, "YYYYMMDD").add(Number(mar.getValue()["archive-offset"]), "days").format("YYYYMMDD");
+                const archiveTime = moment(mar.getValue().time, "YYYYMMDD")
+                    .add(Number(mar.getValue()["archive-offset"]), "days")
+                    .format("YYYYMMDD");
                 if (currentTime >= archiveTime) {
-                    discussion[key].content = `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}#${value.title}}}\n\n`;
+                    discussion[key].content =
+                        `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}#${value.title}}}\n\n`;
                     archive += discussionThread[key].content;
                     console.log(`存档讨论串：${value.title}`);
                 }

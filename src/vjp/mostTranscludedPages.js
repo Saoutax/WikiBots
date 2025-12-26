@@ -2,20 +2,12 @@
  * @description 高引用量页面保护数据
  * @author 星海 <https://github.com/lovelyCARDINAL/WikiBots/blob/main/src/Report/mostTranscludedPages.js>
  */
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
-
-const api = new MediaWikiApi({
-    baseURL: config.vjp.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
+import { vjpapi as api, Login } from "../utils/apiLogin.js";
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("vjp.bot");
 
     const {
         data: {
@@ -50,8 +42,10 @@ const api = new MediaWikiApi({
         },
     );
 
-    let text = "* 本页面由[[U:MisakaNetwork|机器人]]根据[[Special:MostTranscludedPages]]生成的页面保护信息，以供管理员检查。仅统计使用量大于100的页面。\n";
-    text += "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)}}｜{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
+    let text =
+        "* 本页面由[[U:MisakaNetwork|机器人]]根据[[Special:MostTranscludedPages]]生成的页面保护信息，以供管理员检查。仅统计使用量大于100的页面。\n";
+    text +=
+        "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)}}｜{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
     // prettier-ignore
     text += "{| class=\"wikitable sortable center plainlinks\"\n";
     text += "|-\n! 序号 !! 页面名 !! 使用量 !! 编辑 !! 移动 !! 操作\n";

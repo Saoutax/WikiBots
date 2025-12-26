@@ -1,18 +1,8 @@
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
+import { uewapi as api, Login } from "../utils/apiLogin.js";
 import splitAndJoin from "../utils/splitAndJoin.js";
 
-const api = new MediaWikiApi({
-    baseURL: config.uew.api,
-    fexiosConfigs: {
-        headers: {
-            "user-agent": config.useragent,
-            "saoutax-bot": config.uew.cf,
-        },
-    },
-});
-
-const regexDefault = /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu;
+const regexDefault =
+    /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu;
 
 function replaceSpecialCharacters(wikitext) {
     return wikitext.replaceAll(regexDefault, "");
@@ -21,7 +11,7 @@ function replaceSpecialCharacters(wikitext) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(config.uew.bot.name, config.uew.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("zh.bot");
 
     const {
         data: {

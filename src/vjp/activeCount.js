@@ -1,13 +1,5 @@
 import moment from "moment";
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
-
-const api = new MediaWikiApi({
-    baseURL: config.vjp.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
+import { vjpapi as api, Login } from "../utils/apiLogin.js";
 
 const now = moment.utc();
 const start = now.toISOString();
@@ -57,7 +49,7 @@ async function getRecentChanges() {
 (async () => {
     console.log(`Start: ${new Date().toISOString()}`);
 
-    await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("vjp.bot");
 
     const users = await getRecentChanges();
 

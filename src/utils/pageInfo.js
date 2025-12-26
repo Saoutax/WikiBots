@@ -86,7 +86,9 @@ export class CheckRedirect {
                     });
 
                     const pages = res?.data?.query?.pages || {};
-                    return Object.fromEntries(Object.values(pages).map(p => [p.title, "redirect" in p]));
+                    return Object.fromEntries(
+                        Object.values(pages).map(p => [p.title, "redirect" in p]),
+                    );
                 }),
             );
 

@@ -15,10 +15,15 @@ const api = new MediaWikiApi({
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    const { lgusername: username } = await api.login(config.vjp.bot.name, config.vjp.bot.password, undefined, { retry: 25, noCache: true }).then(res => {
-        console.log(res);
-        return res;
-    });
+    const { lgusername: username } = await api
+        .login(config.vjp.bot.name, config.vjp.bot.password, undefined, {
+            retry: 25,
+            noCache: true,
+        })
+        .then(res => {
+            console.log(res);
+            return res;
+        });
 
     const {
         data: {

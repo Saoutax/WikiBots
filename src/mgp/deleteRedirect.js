@@ -1,21 +1,7 @@
 import moment from "moment";
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
+import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
 import FlagDelete from "../utils/flagDelete.js";
 import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
-
-const zhapi = new MediaWikiApi({
-    baseURL: config.zh.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
-const cmapi = new MediaWikiApi({
-    baseURL: config.cm.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
 
 const now = new Date();
 const day = now.getDay() === 1 ? 7 : 1;
@@ -44,11 +30,8 @@ async function getRecentMoves() {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    const { lgusername: username } = await cmapi.login(config.cm.bot.name, config.cm.bot.password, undefined, { retry: 25, noCache: true }).then(res => {
-        console.log(res);
-        return res;
-    });
-    await zhapi.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(zhapi).login("zh.bot");
+    const { lgusername: username } = await new Login(cmapi).login("cm.bot");
 
     const movedFiles = await getRecentMoves();
 
@@ -84,7 +67,12 @@ async function getRecentMoves() {
         console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
     }
 
-    const successList = await new FlagDelete(cmapi).flagDelete(unused, "移动残留重定向", username, "自动挂删文件移动残留重定向");
+    const successList = await new FlagDelete(cmapi).flagDelete(
+        unused,
+        "移动残留重定向",
+        username,
+        "自动挂删文件移动残留重定向",
+    );
 
     if (successList.length > 0) {
         console.log(`成功挂删 ${successList.length} 个重定向：\n${successList.join("\n")}`);

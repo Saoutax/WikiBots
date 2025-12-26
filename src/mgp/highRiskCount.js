@@ -1,14 +1,6 @@
-import { MediaWikiApi } from "wiki-saikou";
 import Parser from "wikiparser-node";
-import config from "../utils/config.js";
+import { zhapi as api, Login } from "../utils/apiLogin.js";
 import { GetEmbeddedPages } from "../utils/pageInfo.js";
-
-const api = new MediaWikiApi({
-    baseURL: config.zh.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
 
 async function getParsedPage(titles) {
     const {
@@ -64,11 +56,15 @@ function formatNum(num) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await api.login(config.zh.bot.name, config.zh.bot.password, undefined, { retry: 25, noCache: true }).then(console.log);
+    await new Login(api).login("zh.bot");
 
     const gep = new GetEmbeddedPages(api);
-    const risk = (await gep.get("Template:High-risk", "10")).filter(item => item !== "Template:High-risk");
-    const riskDocs = risk.filter(item => item.includes("/doc")).filter(item => item !== "Template:High-risk/doc");
+    const risk = (await gep.get("Template:High-risk", "10")).filter(
+        item => item !== "Template:High-risk",
+    );
+    const riskDocs = risk
+        .filter(item => item.includes("/doc"))
+        .filter(item => item !== "Template:High-risk/doc");
     const riskTemplates = riskDocs.map(item => item.replace("/doc", ""));
 
     const oldResults = await getOldCount(riskDocs);
