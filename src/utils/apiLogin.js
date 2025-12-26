@@ -1,5 +1,5 @@
 import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
+import config from "./config.js";
 
 export const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
