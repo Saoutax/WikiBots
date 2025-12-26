@@ -1,29 +1,13 @@
 import moment from "moment-timezone";
-import { MediaWikiApi } from "wiki-saikou";
-import config from "../utils/config.js";
+import { vjpapi as api, Login } from "../utils/apiLogin.js";
 import GetJSON from "../utils/getJSON.js";
 
 moment.tz.setDefault("Asia/Shanghai");
 
-const api = new MediaWikiApi({
-    baseURL: config.vjp.api,
-    fexiosConfigs: {
-        headers: { "user-agent": config.useragent },
-    },
-});
-
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    const { lgusername: username } = await api
-        .login(config.vjp.bot.name, config.vjp.bot.password, undefined, {
-            retry: 25,
-            noCache: true,
-        })
-        .then(res => {
-            console.log(res);
-            return res;
-        });
+    const { lgusername: username } = await new Login(api).login("vjp.bot");
 
     const {
         data: {
