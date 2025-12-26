@@ -32,7 +32,7 @@ export const uewapi = new MediaWikiApi({
     },
 });
 
-export function getPaths(str) {
+function getPaths(str) {
     const path = str.split(".");
     const result = {
         site: path[0],
