@@ -41,7 +41,7 @@ async function getLastDayEditCount() {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    const { lgusername: username } = await new Login(api).login("vjp.bot");
+    await new Login(api).login("vjp.bot");
 
     const {
         data: {
@@ -56,11 +56,17 @@ async function getLastDayEditCount() {
 
     const editCount = await getLastDayEditCount();
 
-    // TODO：移入模板，通过{{Echart}}显示
-    const title = `User:${username}/siteStatistics.json`;
+    const title = "Template:站点数据.json";
     const statistics = await new GetJSON(api).get(title);
 
-    statistics[moment().format("YYYY-MM-DD")] = { articles, edits, users, activeusers, editCount };
+    statistics.dataset.source.push([
+        moment().format("YYYY-MM-DD"),
+        users,
+        activeusers,
+        editCount,
+        articles,
+        edits,
+    ]);
 
     const text = JSON.stringify(statistics, null, 4);
 
