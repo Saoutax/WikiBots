@@ -4,6 +4,40 @@ import GetJSON from "../utils/getJSON.js";
 
 moment.tz.setDefault("Asia/Shanghai");
 
+async function getLastDayEditCount() {
+    let cont;
+    let count = 0;
+
+    const end = moment().toISOString();
+    const start = moment().subtract(1, "day").toISOString();
+
+    do {
+        const {
+            data,
+            data: {
+                query: { recentchanges: list }
+            }
+        } = await api.get({
+            list: "recentchanges",
+            rcprop: "timestamp",
+            rctype: "edit|new",
+            rclimit: "max",
+            rcstart: end,
+            rcend: start,
+            rccontinue: cont,
+        });
+
+        if (!list?.length) {
+            break;
+        }
+
+        count += list.length;
+        cont = data.continue?.rccontinue;
+    } while (cont);
+
+    return count;
+}
+
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
@@ -20,11 +54,13 @@ moment.tz.setDefault("Asia/Shanghai");
         siprop: "statistics",
     });
 
+    const editCount = await getLastDayEditCount();
+
     // TODO：移入模板，通过{{Echart}}显示
     const title = `User:${username}/siteStatistics.json`;
     const statistics = await new GetJSON(api).get(title);
 
-    statistics[moment().format("YYYY-MM-DD")] = { articles, edits, users, activeusers };
+    statistics[moment().format("YYYY-MM-DD")] = { articles, edits, users, activeusers, editCount };
 
     const text = JSON.stringify(statistics, null, 4);
 
