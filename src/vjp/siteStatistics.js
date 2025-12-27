@@ -15,8 +15,8 @@ async function getLastDayEditCount() {
         const {
             data,
             data: {
-                query: { recentchanges: list }
-            }
+                query: { recentchanges: list },
+            },
         } = await api.get({
             list: "recentchanges",
             rcprop: "timestamp",
