@@ -2,7 +2,7 @@
     "name": "wikibots",
     "description": "用于多站点的MediaWiki机器人",
     "scripts": {
-        "test": "node --env-file=.env src/test.js",
+        "test": "node --env-file=.env src/tmp/test.js",
         "lint": "eslint .",
         "lint:fix": "eslint --fix .",
         "prettier": "prettier --check .",
@@ -27,6 +27,7 @@
         "moment-timezone": "^0.6.0",
         "opencc-js": "^1.0.5",
         "pinyin-pro": "^3.27.0",
+        "rss-parser": "^3.13.0",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.4.1",
         "wikiparser-node": "^1.32.0"
