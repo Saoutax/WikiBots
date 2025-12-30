@@ -71,7 +71,7 @@ async function getRecentMoves() {
         unused,
         "移动残留重定向",
         username,
-        "文件移动残留重定向",
+        "自动挂删文件移动残留重定向",
     );
 
     if (successList.length > 0) {
