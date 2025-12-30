@@ -109,6 +109,7 @@ function reportPage(obj) {
             title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
             text,
             summary: "更新数据报告",
+            minor: true,
             tags: "Bot",
             bot: true,
         });
