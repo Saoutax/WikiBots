@@ -80,7 +80,7 @@ function reportPage(obj) {
             text += "|-\n";
             text += `| [[${key}]] || ${values}\n`;
         }
-        text += "|}\n";
+        text += "|}\n\n[[Category:萌娘百科数据报告]]";
         result[page] = text;
     }
 
