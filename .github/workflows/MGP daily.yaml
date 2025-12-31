@@ -2,8 +2,11 @@ name: "MGP daily"
 
 on:
     schedule:
-        - cron: "35 16 * * *" # 00:35 CST
-        - cron: "00 20 * * *" # 04:00 CST
+        - cron: "10 16 * * *" # 00:10 CST Everyday
+        - cron: "10 0,4,8,13,16 * * *" # 00:10 08:10 12:10 16:10 21:10 CST Everyday
+        - cron: "00 20 * * *" # 04:00 CST Everyday
+        - cron: "00 19 * * 3" # 03:00 CST Wednesday
+        - cron: "00 21 * * 5" # 05:00 CST Friday
     workflow_dispatch:
         inputs:
             task:
@@ -23,7 +26,7 @@ env:
 jobs:
     deleteRedirect:
         if: |
-            github.event.schedule == '35 16 * * *' ||
+            github.event.schedule == '10 0,4,8,13,16 * * *' ||
             github.event.inputs.task == 'deleteRedirect'
         runs-on: ubuntu-latest
         steps:
@@ -67,7 +70,7 @@ jobs:
 
     highRiskCount:
         if: |
-            github.event.schedule == '00 20 * * 3' ||
+            github.event.schedule == '00 19 * * 3' ||
             github.event.inputs.task == 'highRiskCount'
         runs-on: ubuntu-latest
         steps:
@@ -88,7 +91,7 @@ jobs:
 
     deleteUnused:
         if: |
-            github.event.schedule == '00 20 * * 5' ||
+            github.event.schedule == '00 21 * * 5' ||
             github.event.inputs.task == 'deleteUnused'
         runs-on: ubuntu-latest
         steps:
@@ -110,7 +113,7 @@ jobs:
 
     disambigLinks:
         if: |
-            github.event.schedule == '35 16 * * *' ||
+            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'disambigLinks'
         runs-on: ubuntu-latest
         steps:

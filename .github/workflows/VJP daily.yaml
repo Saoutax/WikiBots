@@ -2,8 +2,9 @@ name: "VJP daily"
 
 on:
     schedule:
-        - cron: "35 16 * * *" # 00:35 CST
-        - cron: "30 20 * * *" # 04:30 CST
+        - cron: "10 16 * * *" # 00:10 CST Everyday
+        - cron: "30 20 * * *" # 04:30 CST Everyday
+        - cron: "30 19 * * 2" # 03:30 CST Tuesday
     workflow_dispatch:
         inputs:
             task:
@@ -46,7 +47,7 @@ jobs:
 
     invisibleCharacter:
         if: |
-            github.event.schedule == '35 16 * * *' ||
+            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
@@ -88,7 +89,7 @@ jobs:
 
     mostTranscludedPages:
         if: |
-            github.event.schedule == '30 20 * * 2' ||
+            github.event.schedule == '30 19 * * 2' ||
             github.event.inputs.task == 'mostTranscludedPages'
         runs-on: ubuntu-latest
         steps:
@@ -109,7 +110,7 @@ jobs:
 
     editCount:
         if: |
-            github.event.schedule == '30 20 * * 2' ||
+            github.event.schedule == '30 19 * * 2' ||
             github.event.inputs.task == 'editCount'
         runs-on: ubuntu-latest
         steps:
@@ -130,7 +131,7 @@ jobs:
 
     archiveThread:
         if: |
-            github.event.schedule == '35 16 * * *' ||
+            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'archiveThread'
         runs-on: ubuntu-latest
         steps:
@@ -151,7 +152,7 @@ jobs:
 
     siteStatistics:
         if: |
-            github.event.schedule == '35 16 * * *' ||
+            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'siteStatistics'
         runs-on: ubuntu-latest
         steps:
