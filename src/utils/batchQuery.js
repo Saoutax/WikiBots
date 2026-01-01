@@ -5,8 +5,8 @@ export class BatchQuery {
         this.api = api;
     }
 
-    async query(titles, timeout = 3000) {
-        const batchTitles = splitAndJoin(titles, 500);
+    async query(titlesArray, timeout = 3000) {
+        const batchTitles = splitAndJoin(titlesArray, 500);
         const result = {};
 
         const total = batchTitles.length;

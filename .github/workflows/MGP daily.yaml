@@ -136,7 +136,7 @@ jobs:
 
     correctNavFormat:
         if: |
-            github.event.schedule == '10 16 * * *' ||
+            github.event.schedule == '00 18 * * 2' ||
             github.event.inputs.task == 'correctNavFormat'
         runs-on: ubuntu-latest
         steps:

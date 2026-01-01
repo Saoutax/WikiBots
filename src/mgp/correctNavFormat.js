@@ -45,7 +45,8 @@ function fixFormat(obj) {
             minor: true,
             tags: "Bot",
             bot: true,
-        }).then(console.log(`√ ${title}`));
+        });
+        console.log(`√ ${title}`);
     }
 
     console.log(`End time: ${new Date().toISOString()}`);
