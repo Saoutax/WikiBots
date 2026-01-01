@@ -1,9 +1,12 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
 import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
 
-const now = moment.utc();
+dayjs.extend(utc);
+
+const now = dayjs.utc();
 const start = now.toISOString();
-const end = now.clone().subtract(26, "hours").toISOString();
+const end = now.subtract(260, "hour").toISOString();
 
 async function getPages() {
     const pages = new Set();
