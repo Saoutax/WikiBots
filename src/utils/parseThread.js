@@ -41,7 +41,7 @@ function parseThread(text) {
         const thread = text.slice(start, end);
 
         const timestamps = [...thread.matchAll(timestampRegex)].map(m =>
-            dayjs.utc(m[1], "YYYY年M月D日 HH:mm")
+            dayjs.utc(m[1], "YYYY年M月D日 HH:mm"),
         );
 
         const newTimestamp = timestamps.length

@@ -7,6 +7,7 @@ on:
         - cron: "00 20 * * *" # 04:00 CST Everyday
         - cron: "00 19 * * 3" # 03:00 CST Wednesday
         - cron: "00 21 * * 5" # 05:00 CST Friday
+        - cron: "00 18 * * 2" # 02:00 CST Tuesday
     workflow_dispatch:
         inputs:
             task:
@@ -19,6 +20,7 @@ on:
                     - highRiskCount
                     - deleteUnused
                     - disambigLinks
+                    - correctNavFormat
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -131,3 +133,24 @@ jobs:
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
               run: node src/mgp/disambigLinks.js
+
+    correctNavFormat:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'correctNavFormat'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+            - name: Set Node Version
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: pnpm
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Run Script
+              env:
+                  ZH_BOT: ${{ secrets.ZH_BOT }}
+              run: node src/mgp/correctNavFormat.js
