@@ -9,8 +9,8 @@ function fixFormat(obj) {
         const fixedContent = content
             .replace(/(<\/noinclude>)\s*\n\s*({{[\s]*navbox)/gi, "$1$2")
             .replace(/(<\/noinclude>)\s*\n\s*({{#invoke:Nav\|box)/gi, "$1$2")
-            .replace(/(\]\])•/g, "$1 •")
-            .replace(/•(\[\[)/g, "• $1");
+            .replace(/(\]\])•/gu, "$1 •")
+            .replace(/•(\[\[)/gu, "• $1");
 
         if (fixedContent !== content) {
             result[pageName] = fixedContent;
