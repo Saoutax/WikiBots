@@ -21,6 +21,7 @@
     "homepage": "https://github.com/Saoutax/WikiBots#readme",
     "packageManager": "pnpm@10.20.0",
     "dependencies": {
+        "dayjs": "^1.11.19",
         "dotenv": "^17.2.3",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",

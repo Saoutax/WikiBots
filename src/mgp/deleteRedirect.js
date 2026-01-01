@@ -1,11 +1,11 @@
-import moment from "moment";
+import dayjs from "dayjs";
 import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
 import FlagDelete from "../utils/flagDelete.js";
 import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
 
-const now = new Date();
-const day = now.getDay() === 1 ? 7 : 1;
-const time = new Date(now - 86400000 * day);
+const now = dayjs();
+const day = now.day() === 1 ? 7 : 1;
+const time = now.subtract(day, "day");
 
 async function getRecentMoves() {
     try {
@@ -49,8 +49,9 @@ async function getRecentMoves() {
     const used = Object.keys(usage).filter(key => usage[key] === true);
 
     if (used.length > 0) {
-        const today = moment().format("YYYY年MM月DD日");
+        const today = dayjs().format("YYYY年MM月DD日");
         const text = used.map(item => `* [[cm:${item}|${item}]]`).join("\n");
+
         await zhapi.postWithToken(
             "csrf",
             {
@@ -64,6 +65,7 @@ async function getRecentMoves() {
             },
             { retry: 10 },
         );
+
         console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
     }
 
