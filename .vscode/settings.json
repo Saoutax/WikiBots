@@ -1,5 +1,6 @@
 {
     "conventionalCommits.scopes": [
+        "MGP/correctNavFormat",
         "MGP/deleteRedirect",
         "MGP/deleteUnused",
         "MGP/disambigLinks",
@@ -15,6 +16,7 @@
         "VJP/mostTranscludedPages",
         "VJP/siteStatistics",
         "utils/apiLogin",
+        "utils/batchQuery",
         "utils/config",
         "utils/flagDelete",
         "utils/getJSON",
