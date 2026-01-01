@@ -29,7 +29,7 @@
         "rss-parser": "^3.13.0",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.4.1",
-        "wikiparser-node": "^1.32.0"
+        "wikiparser-node": "^1.33.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",

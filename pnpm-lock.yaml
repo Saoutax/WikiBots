@@ -33,8 +33,8 @@ importers:
         specifier: ^7.4.1
         version: 7.4.1
       wikiparser-node:
-        specifier: ^1.32.0
-        version: 1.32.0(wikilint@2.32.0)
+        specifier: ^1.33.0
+        version: 1.33.0(wikilint@2.32.0)
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.1
@@ -76,11 +76,11 @@ packages:
     resolution: {integrity: sha512-oo5MIVtWIea1oHOywTIeKaFYeo7YThAw77WsJysHYAcK4TK+JwtEWn+F3MzUM/pdRVQk6yusOV8rc5Dmomj2Zw==}
     engines: {node: '>=18.17.0'}
 
-  '@cacheable/memory@2.0.6':
-    resolution: {integrity: sha512-7e8SScMocHxcAb8YhtkbMhGG+EKLRIficb1F5sjvhSYsWTZGxvg4KIDp8kgxnV2PUJ3ddPe6J9QESjKvBWRDkg==}
+  '@cacheable/memory@2.0.7':
+    resolution: {integrity: sha512-RbxnxAMf89Tp1dLhXMS7ceft/PGsDl1Ip7T20z5nZ+pwIAsQ1p2izPjVG69oCLv/jfQ7HDPHTWK0c9rcAWXN3A==}
 
-  '@cacheable/utils@2.3.2':
-    resolution: {integrity: sha512-8kGE2P+HjfY8FglaOiW+y8qxcaQAfAhVML+i66XJR3YX5FtyDqn6Txctr3K2FrbxLKixRRYYBWMbuGciOhYNDg==}
+  '@cacheable/utils@2.3.3':
+    resolution: {integrity: sha512-JsXDL70gQ+1Vc2W/KUFfkAJzgb4puKwwKehNLuB+HrNKWf91O736kGfxn4KujXCCSuh6mRRL4XEB0PkAFjWS0A==}
 
   '@csstools/css-parser-algorithms@3.0.5':
     resolution: {integrity: sha512-DaDeUkXZKjdGhgYaHNJTV9pV7Y9B3b644jCLs9Upc3VeNGg6LWARAT6O+Q+/COo+2gg/bM5rhpMAtf70WqfBdQ==}
@@ -603,8 +603,8 @@ packages:
     resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
     engines: {node: '>= 4.9.1'}
 
-  fastq@1.19.1:
-    resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
+  fastq@1.20.1:
+    resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
 
   fault@2.0.1:
     resolution: {integrity: sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==}
@@ -737,8 +737,8 @@ packages:
     resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
     engines: {node: '>= 0.4'}
 
-  hashery@1.3.0:
-    resolution: {integrity: sha512-fWltioiy5zsSAs9ouEnvhsVJeAXRybGCNNv0lvzpzNOSDbULXRy7ivFWwCCv4I5Am6kSo75hmbsCduOoc2/K4w==}
+  hashery@1.4.0:
+    resolution: {integrity: sha512-Wn2i1In6XFxl8Az55kkgnFRiAlIAushzh26PTjL2AKtQcEfXrcLa7Hn5QOWGZEf3LU057P9TwwZjFyxfS1VuvQ==}
     engines: {node: '>=20'}
 
   hasown@2.0.2:
@@ -1243,8 +1243,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  prism-wiki@1.1.0:
-    resolution: {integrity: sha512-FVyaYdPERk0/aOjr4dxpcygPJukgzR4WEOJMalkl/+MoKw7TGu8ZwIYk7hh+l8Ca3HOVPxnnWT/frECye99ohw==}
+  prism-wiki@1.2.0:
+    resolution: {integrity: sha512-3wb6icpQ6Z7Qyl6C6tljo8e60iysD+QSSmobtoTW0bW2khvjRlc3BZIMydDvsbIJlOPLRhCTmhpHJBJwInXO9w==}
     peerDependencies:
       prismjs: ^1.30.0
       wikilint: ^2.32.0
@@ -1536,8 +1536,8 @@ packages:
     engines: {node: '>=18.17.0'}
     hasBin: true
 
-  wikiparser-node@1.32.0:
-    resolution: {integrity: sha512-XaJxHHcYChuNSHAxCrMDjO/7eN7j1OdH1MrYbPmMqCT57oG+/UfYhNrbq18yd3z0x9996FI13D0Lz4BOA98C1A==}
+  wikiparser-node@1.33.0:
+    resolution: {integrity: sha512-0nsP4Jt4L1b540YqRyDBL4dbcR1ssy3ldtZiyC5gWp3O1+gJ9frxgYyzEn4wv3M9x800/7BscrF3/ELGZlYtnQ==}
     engines: {node: '>=18.17.0'}
     hasBin: true
 
@@ -1584,16 +1584,16 @@ snapshots:
     transitivePeerDependencies:
       - stylelint
 
-  '@cacheable/memory@2.0.6':
+  '@cacheable/memory@2.0.7':
     dependencies:
-      '@cacheable/utils': 2.3.2
+      '@cacheable/utils': 2.3.3
       '@keyv/bigmap': 1.3.0(keyv@5.5.5)
       hookified: 1.14.0
       keyv: 5.5.5
 
-  '@cacheable/utils@2.3.2':
+  '@cacheable/utils@2.3.3':
     dependencies:
-      hashery: 1.3.0
+      hashery: 1.4.0
       keyv: 5.5.5
 
   '@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4)':
@@ -1696,7 +1696,7 @@ snapshots:
 
   '@keyv/bigmap@1.3.0(keyv@5.5.5)':
     dependencies:
-      hashery: 1.3.0
+      hashery: 1.4.0
       hookified: 1.14.0
       keyv: 5.5.5
 
@@ -1712,7 +1712,7 @@ snapshots:
   '@nodelib/fs.walk@1.2.8':
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
-      fastq: 1.19.1
+      fastq: 1.20.1
 
   '@rtsao/scc@1.1.0': {}
 
@@ -1842,8 +1842,8 @@ snapshots:
 
   cacheable@2.3.1:
     dependencies:
-      '@cacheable/memory': 2.0.6
-      '@cacheable/utils': 2.3.2
+      '@cacheable/memory': 2.0.7
+      '@cacheable/utils': 2.3.3
       hookified: 1.14.0
       keyv: 5.5.5
       qified: 0.5.3
@@ -2209,7 +2209,7 @@ snapshots:
 
   fastest-levenshtein@1.0.16: {}
 
-  fastq@1.19.1:
+  fastq@1.20.1:
     dependencies:
       reusify: 1.1.0
 
@@ -2354,7 +2354,7 @@ snapshots:
     dependencies:
       has-symbols: 1.1.0
 
-  hashery@1.3.0:
+  hashery@1.4.0:
     dependencies:
       hookified: 1.14.0
 
@@ -3017,7 +3017,7 @@ snapshots:
 
   prettier@3.7.4: {}
 
-  prism-wiki@1.1.0(prismjs@1.30.0)(wikilint@2.32.0):
+  prism-wiki@1.2.0(prismjs@1.30.0)(wikilint@2.32.0):
     dependencies:
       prismjs: 1.30.0
       wikilint: 2.32.0
@@ -3470,7 +3470,7 @@ snapshots:
       - typescript
     optional: true
 
-  wikiparser-node@1.32.0(wikilint@2.32.0):
+  wikiparser-node@1.33.0(wikilint@2.32.0):
     dependencies:
       '@bhsd/cm-util': 0.1.0
       '@bhsd/common': 1.0.1
@@ -3482,7 +3482,7 @@ snapshots:
       color-name: 2.1.0
       entities: 7.0.0
       mathoid-texvcjs: 0.6.0
-      prism-wiki: 1.1.0(prismjs@1.30.0)(wikilint@2.32.0)
+      prism-wiki: 1.2.0(prismjs@1.30.0)(wikilint@2.32.0)
       prismjs: 1.30.0
       stylelint: 16.26.1
       vscode-css-languageservice: 6.3.9
