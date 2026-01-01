@@ -1,11 +1,19 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import timezone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
 import { vjpapi as api, Login } from "../utils/apiLogin.js";
 
-const now = moment.utc();
-const start = now.toISOString();
-const end = now.clone().subtract(30, "days").toISOString();
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
+dayjs.tz.setDefault("Asia/Shanghai");
 
-const timestampCST = ts => moment(ts).utcOffset(8).format("YYYY-MM-DD HH:mm:ss [(CST)]");
+const now = dayjs.utc();
+const start = now.toISOString();
+const end = now.subtract(30, "day").toISOString();
+
+const timestampCST = ts => dayjs(ts).tz("Asia/Shanghai").format("YYYY-MM-DD HH:mm:ss [(CST)]");
 
 async function getRecentChanges() {
     const users = new Map();
@@ -32,7 +40,7 @@ async function getRecentChanges() {
             if (regex.test(comment)) {
                 continue;
             }
-            const time = moment(timestamp);
+            const time = dayjs(timestamp);
             const userData = users.get(user) || { count: 0, latest: time };
             userData.count++;
             if (time.isAfter(userData.latest)) {

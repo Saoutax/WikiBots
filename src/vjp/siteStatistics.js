@@ -1,15 +1,19 @@
-import moment from "moment-timezone";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
 import { vjpapi as api, Login } from "../utils/apiLogin.js";
 import GetJSON from "../utils/getJSON.js";
 
-moment.tz.setDefault("Asia/Shanghai");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Shanghai");
 
 async function getLastDayEditCount() {
     let cont;
     let count = 0;
 
-    const end = moment().toISOString();
-    const start = moment().subtract(1, "day").toISOString();
+    const end = dayjs().tz().toISOString();
+    const start = dayjs().tz().subtract(1, "day").toISOString();
 
     do {
         const {
@@ -60,7 +64,7 @@ async function getLastDayEditCount() {
     const statistics = await new GetJSON(api).get(title);
 
     statistics.dataset.source.push([
-        moment().format("YYYY-MM-DD"),
+        dayjs().tz().format("YYYY-MM-DD"),
         users,
         activeusers,
         editCount,

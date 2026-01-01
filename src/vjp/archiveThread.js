@@ -1,10 +1,16 @@
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import timezone from "dayjs/plugin/timezone.js";
+import utc from "dayjs/plugin/utc.js";
 import _ from "lodash";
-import moment from "moment-timezone";
 import Parser from "wikiparser-node";
 import { vjpapi as api, Login } from "../utils/apiLogin.js";
 import parseThread from "../utils/parseThread.js";
 
-moment.tz.setDefault("Asia/Shanghai");
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(customParseFormat);
+dayjs.tz.setDefault("Asia/Shanghai");
 
 async function getParsedThread() {
     const {
@@ -34,8 +40,8 @@ async function getParsedThread() {
 
     const discussionThread = await getParsedThread();
 
-    const currentTime = moment().format("YYYYMMDD");
-    const currentYear = moment().format("YYYY年");
+    const currentTime = dayjs().tz().format("YYYYMMDD");
+    const currentYear = dayjs().tz().format("YYYY年");
 
     let archive = "";
     const discussion = _.cloneDeep(discussionThread);
@@ -45,14 +51,15 @@ async function getParsedThread() {
         .forEach(([key, value]) => {
             const parsedThread = Parser.parse(value.thread);
             const saved = parsedThread.querySelector("template#Template:Saved");
-            if (saved && moment().day() === 1) {
+            if (saved && dayjs().tz().day() === 1) {
                 delete discussion[key];
                 console.log(`周一移除已存档讨论串：${value.title}`);
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
-                const archiveTime = moment(mar.getValue().time, "YYYYMMDD")
-                    .add(Number(mar.getValue()["archive-offset"]), "days")
+                const archiveTime = dayjs(mar.getValue().time, "YYYYMMDD")
+                    .tz()
+                    .add(Number(mar.getValue()["archive-offset"]), "day")
                     .format("YYYYMMDD");
                 if (currentTime >= archiveTime) {
                     discussion[key].content =

@@ -1,4 +1,9 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+import utc from "dayjs/plugin/utc.js";
+
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
 
 /**
  * 解析讨论串
@@ -36,11 +41,11 @@ function parseThread(text) {
         const thread = text.slice(start, end);
 
         const timestamps = [...thread.matchAll(timestampRegex)].map(m =>
-            moment(m[1], "YYYY年M月D日 HH:mm"),
+            dayjs.utc(m[1], "YYYY年M月D日 HH:mm")
         );
 
         const newTimestamp = timestamps.length
-            ? moment(Math.max(...timestamps.map(t => t.valueOf()))).toISOString()
+            ? dayjs.utc(Math.max(...timestamps.map(t => t.valueOf()))).toISOString()
             : null;
 
         result[i + 1] = {
