@@ -7,7 +7,7 @@ on:
         - cron: "00 20 * * *" # 04:00 CST Everyday
         - cron: "00 19 * * 3" # 03:00 CST Wednesday
         - cron: "00 21 * * 5" # 05:00 CST Friday
-        - cron: "00 18 * * 2" # 02:00 CST Tuesday
+        - cron: "00 18 * * *" # 02:00 CST Everyday
     workflow_dispatch:
         inputs:
             task:
@@ -136,7 +136,7 @@ jobs:
 
     correctNavFormat:
         if: |
-            github.event.schedule == '00 18 * * 2' ||
+            github.event.schedule == '00 18 * * *' ||
             github.event.inputs.task == 'correctNavFormat'
         runs-on: ubuntu-latest
         steps:
