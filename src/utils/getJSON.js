@@ -19,7 +19,7 @@ class GetJSON {
                     ],
                 },
             },
-        } = await this.api.get({
+        } = await this.api.post({
             action: "query",
             prop: "revisions",
             rvprop: "content",
