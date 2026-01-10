@@ -57,9 +57,11 @@ async function getParsedThread() {
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
+                const defaultOffset = ["s", "suspended", "n", "noreply"].includes(mar.getValue().status) ? 10 : 3;
+                const offset = Number(mar.getValue()["archive-offset"] || defaultOffset);
                 const archiveTime = dayjs(mar.getValue().time, "YYYYMMDD")
                     .tz()
-                    .add(Number(mar.getValue()["archive-offset"]), "day")
+                    .add(offset, "day")
                     .format("YYYYMMDD");
                 if (currentTime >= archiveTime) {
                     discussion[key].content =
