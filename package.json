@@ -28,7 +28,7 @@
         "pinyin-pro": "^3.27.0",
         "rss-parser": "^3.13.0",
         "wanakana": "^5.3.1",
-        "wiki-saikou": "^7.4.1",
+        "wiki-saikou": "^7.5.0",
         "wikiparser-node": "^1.33.0"
     },
     "devDependencies": {
