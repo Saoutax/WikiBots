@@ -30,8 +30,8 @@ importers:
         specifier: ^5.3.1
         version: 5.3.1
       wiki-saikou:
-        specifier: ^7.4.1
-        version: 7.4.1
+        specifier: ^7.5.0
+        version: 7.5.0
       wikiparser-node:
         specifier: ^1.33.0
         version: 1.33.0(wikilint@2.32.0)
@@ -70,6 +70,10 @@ packages:
 
   '@bhsd/common@1.0.1':
     resolution: {integrity: sha512-BmSHLslcb8xq2XUnFmP2q4lu+dXX/JItv6exwSarH1a0DDnU4tvDWonPJv87pqHW+H/fT/hxJ2fO8rVXW/KP7A==}
+    engines: {node: '>=18.17.0'}
+
+  '@bhsd/common@1.2.0':
+    resolution: {integrity: sha512-5jal52/XSrdvGYpsoMQwJdmeasG4+9ywnVeIyMrsiSYtgh7AQ5RCZ3LH4samtHyL94w/RItMzT8z3x0QeQwllg==}
     engines: {node: '>=18.17.0'}
 
   '@bhsd/stylelint-util@0.1.0':
@@ -609,8 +613,8 @@ packages:
   fault@2.0.1:
     resolution: {integrity: sha512-WtySTkS4OKev5JtpHXnib4Gxiurzh5NCGvWrFaZ34m6JehfTUhKZvn9njTfw48t6JumVQOmrKqpmGcdwxnhqBQ==}
 
-  fexios@5.2.0:
-    resolution: {integrity: sha512-GwwDAQQols1qyIRDGfYLX6cJrpx5V6jSTTYW6xVLepIyXx1OGhsFyd4Ln3/G27yhYD9YBgZc8km2fP05iwjuLQ==}
+  fexios@6.1.1:
+    resolution: {integrity: sha512-tQVIJoDovBiyqNZCJDG0w7ybtxcx34tslAREW/bCM2s/f/quSK4wJOjdSFR1kYGQz2gCqoDAwbO5xwqsCsf1Pw==}
     engines: {node: ^16.15.0 || >=18.0.0}
 
   file-entry-cache@11.1.1:
@@ -1528,8 +1532,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  wiki-saikou@7.4.1:
-    resolution: {integrity: sha512-AizHfx7QMUA5fMFZpV26e6ngl03Csu+tOWDKt1cHV3AO1JeAJ7X7of/gU8WAkmv95IWCzPG1bQ9KZMkUHsh0Ww==}
+  wiki-saikou@7.5.0:
+    resolution: {integrity: sha512-q2OHcUuW0Zxd2/Ng5SVIC6oF5oKZ2xVOGp/OB05da1DtyLl+a4TplunYr0iL09LTELlHZxHDJlDYjRbuEv93XA==}
 
   wikilint@2.32.0:
     resolution: {integrity: sha512-UuN91Se4KoAJPZZh+hPCK6m9YrduXpwfzDkFfRGfv4zsalCSJEhaZdfy5SmRm82mH5qxGUNRFREaBFZLiJ3mPA==}
@@ -1577,6 +1581,9 @@ snapshots:
   '@bhsd/cm-util@0.1.0': {}
 
   '@bhsd/common@1.0.1': {}
+
+  '@bhsd/common@1.2.0':
+    optional: true
 
   '@bhsd/stylelint-util@0.1.0(stylelint@16.26.1)':
     dependencies:
@@ -2217,7 +2224,7 @@ snapshots:
     dependencies:
       format: 0.2.2
 
-  fexios@5.2.0: {}
+  fexios@6.1.1: {}
 
   file-entry-cache@11.1.1:
     dependencies:
@@ -3444,14 +3451,14 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  wiki-saikou@7.4.1:
+  wiki-saikou@7.5.0:
     dependencies:
-      fexios: 5.2.0
+      fexios: 6.1.1
 
   wikilint@2.32.0:
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.0.1
+      '@bhsd/common': 1.2.0
       '@bhsd/stylelint-util': 0.1.0(stylelint@16.26.1)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
