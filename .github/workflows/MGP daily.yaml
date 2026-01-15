@@ -28,7 +28,7 @@ env:
 jobs:
     deleteRedirect:
         if: |
-            github.event.schedule == '10 0,4,8,13,16 * * *' ||
+            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'deleteRedirect'
         runs-on: ubuntu-latest
         steps:
