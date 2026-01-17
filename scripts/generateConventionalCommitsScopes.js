@@ -1,12 +1,16 @@
+import { Buffer } from "buffer";
 import { promises as fs } from "fs";
 import path from "path";
+import process from "process";
+import { Octokit } from "octokit";
 
-const SRC = path.resolve("src");
-const SETTINGS = path.resolve(".vscode/settings.json");
-
-const formatFolder = name => (name === "utils" ? name : name.toUpperCase());
+const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+});
 
 async function getScopes() {
+    const SRC = path.resolve("src");
+    const formatFolder = name => (name === "utils" ? name : name.toUpperCase());
     const entries = await fs.readdir(SRC, { withFileTypes: true });
     const scopes = [];
 
@@ -24,22 +28,37 @@ async function getScopes() {
     return scopes.sort();
 }
 
-async function updateSettings(scopes) {
-    let settings = {};
+async function getData() {
+    const { data } = await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
+        owner: "Saoutax",
+        repo: "WikiBots",
+        path: ".vscode/settings.json",
+    });
 
-    try {
-        settings = JSON.parse(await fs.readFile(SETTINGS, "utf8"));
-    } catch {
-        // ignore: settings.json不存在时使用默认设置
-    }
+    const decoded = Buffer.from(data.content, "base64").toString("utf-8");
 
-    settings["conventionalCommits.scopes"] = scopes;
-
-    await fs.writeFile(SETTINGS, JSON.stringify(settings, null, 4));
+    return {
+        settings: JSON.parse(decoded),
+        sha: data.sha,
+    };
 }
 
 (async () => {
+    const branch = process.env.TARGET_BRANCH || "main";
+
+    const { settings, sha } = await getData();
     const scopes = await getScopes();
-    await updateSettings(scopes);
-    console.log("Updated scopes:", scopes);
+    settings["conventionalCommits.scopes"] = scopes;
+
+    const content = Buffer.from(JSON.stringify(settings, null, 4), "utf-8").toString("base64");
+
+    await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+        owner: "Saoutax",
+        repo: "WikiBots",
+        path: ".vscode/settings.json",
+        message: "auto: generate conventionalCommits.scopes",
+        content,
+        sha,
+        branch,
+    });
 })();
