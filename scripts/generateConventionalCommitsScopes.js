@@ -56,7 +56,7 @@ async function getData() {
         owner: "Saoutax",
         repo: "WikiBots",
         path: ".vscode/settings.json",
-        message: "auto: generate conventionalCommits.scopes",
+        message: "chore: auto generate conventionalCommits.scopes",
         content,
         sha,
         branch,
