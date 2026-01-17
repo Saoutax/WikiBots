@@ -21,9 +21,12 @@
     "homepage": "https://github.com/Saoutax/WikiBots#readme",
     "packageManager": "pnpm@10.20.0",
     "dependencies": {
+        "buffer": "^6.0.3",
         "dayjs": "^1.11.19",
         "dotenv": "^17.2.3",
+        "js-yaml": "^4.1.1",
         "lodash": "^4.17.21",
+        "octokit": "^5.0.5",
         "opencc-js": "^1.0.5",
         "pinyin-pro": "^3.27.0",
         "rss-parser": "^3.13.0",
