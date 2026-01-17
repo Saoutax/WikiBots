@@ -76,7 +76,7 @@ export class Login {
                 },
             )
             .then(res => {
-                console.log(`Successfully logged in to ${sitename} as Uesr:${res.lgusername}.`);
+                console.log(`Successfully logged in to ${sitename} as User:${res.lgusername}.`);
                 return res;
             });
     }
