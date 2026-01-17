@@ -27,12 +27,12 @@ import GetJSON from "../utils/getJSON.js";
     });
 
     const parsed = Parser.parse(content);
-    const links = parsed.querySelectorAll("link");
+    const links = parsed.querySelectorAll("list + link");
 
     const pages = [...new Set(
         links
             .map(item => item.name)
-            .filter(name => name.startsWith("User_talk:") && name !== "User_talk:示例用户")
+            .filter(name => name.startsWith("User_talk:"))
     )];
 
     const text = "{{subst:User:SaoMikoto/Bot/config/monthly}}<span style=\"display:none\">~~~~</span>";
