@@ -7,7 +7,9 @@ import GetJSON from "../utils/getJSON.js";
 
     await new Login(api).login("zh.bot");
 
-    const { sectiontitle, summary } = await new GetJSON(api).get("User:SaoMikoto/Bot/config/monthly.json");
+    const { sectiontitle, summary } = await new GetJSON(api).get(
+        "User:SaoMikoto/Bot/config/monthly.json",
+    );
 
     const {
         data: {
@@ -29,13 +31,13 @@ import GetJSON from "../utils/getJSON.js";
     const parsed = Parser.parse(content);
     const links = parsed.querySelectorAll("list + link");
 
-    const pages = [...new Set(
-        links
-            .map(item => item.name)
-            .filter(name => name.startsWith("User_talk:"))
-    )];
+    const pages = [
+        ...new Set(links.map(item => item.name).filter(name => name.startsWith("User_talk:"))),
+    ];
 
-    const text = "{{subst:User:SaoMikoto/Bot/config/monthly}}<span style=\"display:none\">~~~~</span>";
+    // prettier-ignore
+    const text =
+        "{{subst:User:SaoMikoto/Bot/config/monthly}}<span style=\"display:none\">~~~~</span>";
 
     for (const title of pages) {
         await api.postWithToken("csrf", {

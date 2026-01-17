@@ -57,7 +57,8 @@ async function getParsedThread() {
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
-                const defaultOffset = ["s", "suspended", "n", "noreply"].includes(mar.getValue().status) ? 10 : 3;
+                const longerType = ["s", "suspended", "n", "noreply"];
+                const defaultOffset = longerType.includes(mar.getValue().status) ? 10 : 3;
                 const offset = Number(mar.getValue()["archive-offset"] || defaultOffset);
                 const archiveTime = dayjs(mar.getValue().time, "YYYYMMDD")
                     .tz()
