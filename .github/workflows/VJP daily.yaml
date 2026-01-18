@@ -4,7 +4,7 @@ on:
     schedule:
         - cron: "10 16 * * *" # 00:10 CST Everyday
         - cron: "30 20 * * *" # 04:30 CST Everyday
-        - cron: "30 19 * * 2" # 03:30 CST Tuesday
+        - cron: "30 19 * * 2" # 03:30 CST Wednesday
     workflow_dispatch:
         inputs:
             task:

@@ -3,10 +3,10 @@ name: "MGP daily"
 on:
     schedule:
         - cron: "10 16 * * *" # 00:10 CST Everyday
-        - cron: "10 16 * * 5" # 00:10 CST Firday
+        - cron: "10 16 * * 5" # 00:10 CST Saturday
         - cron: "00 20 * * *" # 04:00 CST Everyday
-        - cron: "00 19 * * 3" # 03:00 CST Wednesday
-        - cron: "00 21 * * 5" # 05:00 CST Friday
+        - cron: "00 19 * * 3" # 03:00 CST Thursday
+        - cron: "00 21 * * 5" # 05:00 CST Saturday
         - cron: "00 18 * * *" # 02:00 CST Everyday
     workflow_dispatch:
         inputs:
