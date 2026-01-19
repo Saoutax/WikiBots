@@ -42,8 +42,8 @@ importers:
         specifier: ^7.5.1
         version: 7.5.1
       wikiparser-node:
-        specifier: ^1.33.0
-        version: 1.33.0(wikilint@2.32.0)
+        specifier: ^1.34.0
+        version: 1.34.0(wikilint@2.32.0)
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.1
@@ -66,8 +66,8 @@ importers:
 
 packages:
 
-  '@babel/code-frame@7.27.1':
-    resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
+  '@babel/code-frame@7.28.6':
+    resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
     engines: {node: '>=6.9.0'}
 
   '@babel/helper-validator-identifier@7.28.5':
@@ -76,10 +76,6 @@ packages:
 
   '@bhsd/cm-util@0.1.0':
     resolution: {integrity: sha512-gqwObmIVosIH3WulV9p/IoO8Rm90QofFN44XoaitjN3uopAMt3E6ipPm3OegjvUqrUPAbwcUrwZoUCZ5cI+OqA==}
-
-  '@bhsd/common@1.0.1':
-    resolution: {integrity: sha512-BmSHLslcb8xq2XUnFmP2q4lu+dXX/JItv6exwSarH1a0DDnU4tvDWonPJv87pqHW+H/fT/hxJ2fO8rVXW/KP7A==}
-    engines: {node: '>=18.17.0'}
 
   '@bhsd/common@1.2.0':
     resolution: {integrity: sha512-5jal52/XSrdvGYpsoMQwJdmeasG4+9ywnVeIyMrsiSYtgh7AQ5RCZ3LH4samtHyL94w/RItMzT8z3x0QeQwllg==}
@@ -101,8 +97,8 @@ packages:
     peerDependencies:
       '@csstools/css-tokenizer': ^3.0.4
 
-  '@csstools/css-syntax-patches-for-csstree@1.0.22':
-    resolution: {integrity: sha512-qBcx6zYlhleiFfdtzkRgwNC7VVoAwfK76Vmsw5t+PbvtdknO9StgRk7ROvq9so1iqbdW4uLIDAsXRsTfUrIoOw==}
+  '@csstools/css-syntax-patches-for-csstree@1.0.25':
+    resolution: {integrity: sha512-g0Kw9W3vjx5BEBAF8c5Fm2NcB/Fs8jJXh85aXqwEXiL+tqtOut07TWgyaGzAAfTM+gKckrrncyeGEZPcaRgm2Q==}
     engines: {node: '>=18'}
 
   '@csstools/css-tokenizer@3.0.4':
@@ -444,8 +440,8 @@ packages:
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
-  cacheable@2.3.1:
-    resolution: {integrity: sha512-yr+FSHWn1ZUou5LkULX/S+jhfgfnLbuKQjE40tyEd4fxGZVMbBL5ifno0J0OauykS8UiCSgHi+DV/YD+rjFxFg==}
+  cacheable@2.3.2:
+    resolution: {integrity: sha512-w+ZuRNmex9c1TR9RcsxbfTKCjSL0rh1WA5SABbrWprIHeNBdmyQLSYonlDy9gpD+63XT8DgZ/wNh1Smvc9WnJA==}
 
   call-bind-apply-helpers@1.0.2:
     resolution: {integrity: sha512-Sp1ablJ0ivDkSzjcaJdxEunN5/XvksFJ2sMBFfq6x0ryhQV/2b/KwFe21cMpmHtPOSij8K99/wSfoEuTObmuMQ==}
@@ -751,8 +747,8 @@ packages:
     resolution: {integrity: sha512-tQVIJoDovBiyqNZCJDG0w7ybtxcx34tslAREW/bCM2s/f/quSK4wJOjdSFR1kYGQz2gCqoDAwbO5xwqsCsf1Pw==}
     engines: {node: ^16.15.0 || >=18.0.0}
 
-  file-entry-cache@11.1.1:
-    resolution: {integrity: sha512-TPVFSDE7q91Dlk1xpFLvFllf8r0HyOMOlnWy7Z2HBku5H3KhIeOGInexrIeg2D64DosVB/JXkrrk6N/7Wriq4A==}
+  file-entry-cache@11.1.2:
+    resolution: {integrity: sha512-N2WFfK12gmrK1c1GXOqiAJ1tc5YE+R53zvQ+t5P8S5XhnmKYVB5eZEiLNZKDSmoG8wqqbF9EXYBBW/nef19log==}
 
   file-entry-cache@8.0.0:
     resolution: {integrity: sha512-XXTUwCvisa5oacNGRP9SfNtYBNAMi+RPwBFmblZEF7N7swHYQS6/Zfk7SRwx4D5j3CH211YNRco1DEMNVfZCnQ==}
@@ -770,8 +766,8 @@ packages:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
     engines: {node: '>=16'}
 
-  flat-cache@6.1.19:
-    resolution: {integrity: sha512-l/K33newPTZMTGAnnzaiqSl6NnH7Namh8jBNjrgjprWxGmZUuxx/sJNIRaijOh3n7q7ESbhNZC+pvVZMFdeU4A==}
+  flat-cache@6.1.20:
+    resolution: {integrity: sha512-AhHYqwvN62NVLp4lObVXGVluiABTHapoB57EyegZVmazN+hhGhLTn3uZbOofoTw4DSDvVCadzzyChXhOAvy8uQ==}
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -883,8 +879,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hookified@1.14.0:
-    resolution: {integrity: sha512-pi1ynXIMFx/uIIwpWJ/5CEtOHLGtnUB0WhGeeYT+fKcQ+WCQbm3/rrkAXnpfph++PgepNqPdTC2WTj8A6k6zoQ==}
+  hookified@1.15.0:
+    resolution: {integrity: sha512-51w+ZZGt7Zw5q7rM3nC4t3aLn/xvKDETsXqMczndvwyVQhAHfUmUuFBRFcos8Iyebtk7OAE9dL26wFNzZVVOkw==}
 
   html-tags@3.3.1:
     resolution: {integrity: sha512-ztqyC3kLto0e9WbNp0aeP+M3kTt+nbaIveGmUxAtZa+8iFgKLUOD4YKM5j+f3QD89bra7UeumolZHKuOXnTmeQ==}
@@ -1402,8 +1398,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  qified@0.5.3:
-    resolution: {integrity: sha512-kXuQdQTB6oN3KhI6V4acnBSZx8D2I4xzZvn9+wFLLFCoBNQY/sFnCW6c43OL7pOQ2HvGV4lnWIXNmgfp7cTWhQ==}
+  qified@0.6.0:
+    resolution: {integrity: sha512-tsSGN1x3h569ZSU1u6diwhltLyfUWDp3YbFHedapTmpBl0B3P6U3+Qptg7xu+v+1io1EwhdPyyRHYbEw0KN2FA==}
     engines: {node: '>=20'}
 
   queue-microtask@1.2.3:
@@ -1642,9 +1638,6 @@ packages:
   vscode-html-languageservice@5.6.1:
     resolution: {integrity: sha512-5Mrqy5CLfFZUgkyhNZLA1Ye5g12Cb/v6VM7SxUzZUaRKWMDz4md+y26PrfRTSU0/eQAl3XpO9m2og+GGtDMuaA==}
 
-  vscode-json-languageservice@5.6.4:
-    resolution: {integrity: sha512-i0MhkFmnQAbYr+PiE6Th067qa3rwvvAErCEUo0ql+ghFXHvxbwG3kLbwMaIUrrbCLUDEeULiLgROJjtuyYoIsA==}
-
   vscode-json-languageservice@5.7.1:
     resolution: {integrity: sha512-sMK2F8p7St0lJCr/4IfbQRoEUDUZRR7Ud0IiSl8I/JtN+m9Gv+FJlNkSAYns2R7Ebm/PKxqUuWYOfBej/rAdBQ==}
 
@@ -1694,8 +1687,8 @@ packages:
     engines: {node: '>=18.17.0'}
     hasBin: true
 
-  wikiparser-node@1.33.0:
-    resolution: {integrity: sha512-0nsP4Jt4L1b540YqRyDBL4dbcR1ssy3ldtZiyC5gWp3O1+gJ9frxgYyzEn4wv3M9x800/7BscrF3/ELGZlYtnQ==}
+  wikiparser-node@1.34.0:
+    resolution: {integrity: sha512-qf4ytqyIxWPyMAeTIpHDfcwnEl6ZedGVeNL67gzqCQg2om2rEvvzrBtawhuKABCTbQAMiGsOsCEHpAyTc+FI/A==}
     engines: {node: '>=18.17.0'}
     hasBin: true
 
@@ -1724,7 +1717,7 @@ packages:
 
 snapshots:
 
-  '@babel/code-frame@7.27.1':
+  '@babel/code-frame@7.28.6':
     dependencies:
       '@babel/helper-validator-identifier': 7.28.5
       js-tokens: 4.0.0
@@ -1734,10 +1727,7 @@ snapshots:
 
   '@bhsd/cm-util@0.1.0': {}
 
-  '@bhsd/common@1.0.1': {}
-
-  '@bhsd/common@1.2.0':
-    optional: true
+  '@bhsd/common@1.2.0': {}
 
   '@bhsd/stylelint-util@0.1.0(stylelint@16.26.1)':
     dependencies:
@@ -1749,7 +1739,7 @@ snapshots:
     dependencies:
       '@cacheable/utils': 2.3.3
       '@keyv/bigmap': 1.3.0(keyv@5.5.5)
-      hookified: 1.14.0
+      hookified: 1.15.0
       keyv: 5.5.5
 
   '@cacheable/utils@2.3.3':
@@ -1761,7 +1751,7 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 3.0.4
 
-  '@csstools/css-syntax-patches-for-csstree@1.0.22': {}
+  '@csstools/css-syntax-patches-for-csstree@1.0.25': {}
 
   '@csstools/css-tokenizer@3.0.4': {}
 
@@ -1858,7 +1848,7 @@ snapshots:
   '@keyv/bigmap@1.3.0(keyv@5.5.5)':
     dependencies:
       hashery: 1.4.0
-      hookified: 1.14.0
+      hookified: 1.15.0
       keyv: 5.5.5
 
   '@keyv/serialize@1.1.1': {}
@@ -2161,13 +2151,13 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  cacheable@2.3.1:
+  cacheable@2.3.2:
     dependencies:
       '@cacheable/memory': 2.0.7
       '@cacheable/utils': 2.3.3
-      hookified: 1.14.0
+      hookified: 1.15.0
       keyv: 5.5.5
-      qified: 0.5.3
+      qified: 0.6.0
 
   call-bind-apply-helpers@1.0.2:
     dependencies:
@@ -2542,9 +2532,9 @@ snapshots:
 
   fexios@6.1.1: {}
 
-  file-entry-cache@11.1.1:
+  file-entry-cache@11.1.2:
     dependencies:
-      flat-cache: 6.1.19
+      flat-cache: 6.1.20
 
   file-entry-cache@8.0.0:
     dependencies:
@@ -2564,11 +2554,11 @@ snapshots:
       flatted: 3.3.3
       keyv: 4.5.4
 
-  flat-cache@6.1.19:
+  flat-cache@6.1.20:
     dependencies:
-      cacheable: 2.3.1
+      cacheable: 2.3.2
       flatted: 3.3.3
-      hookified: 1.14.0
+      hookified: 1.15.0
 
   flatted@3.3.3: {}
 
@@ -2679,13 +2669,13 @@ snapshots:
 
   hashery@1.4.0:
     dependencies:
-      hookified: 1.14.0
+      hookified: 1.15.0
 
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
 
-  hookified@1.14.0: {}
+  hookified@1.15.0: {}
 
   html-tags@3.3.1: {}
 
@@ -3312,7 +3302,7 @@ snapshots:
 
   parse-json@5.2.0:
     dependencies:
-      '@babel/code-frame': 7.27.1
+      '@babel/code-frame': 7.28.6
       error-ex: 1.3.4
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.2.4
@@ -3367,9 +3357,9 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  qified@0.5.3:
+  qified@0.6.0:
     dependencies:
-      hookified: 1.14.0
+      hookified: 1.15.0
 
   queue-microtask@1.2.3: {}
 
@@ -3556,7 +3546,7 @@ snapshots:
   stylelint@16.26.1:
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
-      '@csstools/css-syntax-patches-for-csstree': 1.0.22
+      '@csstools/css-syntax-patches-for-csstree': 1.0.25
       '@csstools/css-tokenizer': 3.0.4
       '@csstools/media-query-list-parser': 4.0.3(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)
       '@csstools/selector-specificity': 5.0.0(postcss-selector-parser@7.1.1)
@@ -3569,7 +3559,7 @@ snapshots:
       debug: 4.4.3
       fast-glob: 3.3.3
       fastest-levenshtein: 1.0.16
-      file-entry-cache: 11.1.1
+      file-entry-cache: 11.1.2
       global-modules: 2.0.0
       globby: 11.1.0
       globjoin: 0.1.4
@@ -3721,15 +3711,6 @@ snapshots:
       vscode-uri: 3.1.0
     optional: true
 
-  vscode-json-languageservice@5.6.4:
-    dependencies:
-      '@vscode/l10n': 0.0.18
-      jsonc-parser: 3.3.1
-      vscode-languageserver-textdocument: 1.0.12
-      vscode-languageserver-types: 3.17.5
-      vscode-uri: 3.1.0
-    optional: true
-
   vscode-json-languageservice@5.7.1:
     dependencies:
       '@vscode/l10n': 0.0.18
@@ -3824,15 +3805,14 @@ snapshots:
       - typescript
     optional: true
 
-  wikiparser-node@1.33.0(wikilint@2.32.0):
+  wikiparser-node@1.34.0(wikilint@2.32.0):
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.0.1
+      '@bhsd/common': 1.2.0
       '@bhsd/stylelint-util': 0.1.0(stylelint@16.26.1)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
     optionalDependencies:
-      chalk: 4.1.2
       color-name: 2.1.0
       entities: 7.0.0
       mathoid-texvcjs: 0.6.0
@@ -3841,7 +3821,7 @@ snapshots:
       stylelint: 16.26.1
       vscode-css-languageservice: 6.3.9
       vscode-html-languageservice: 5.6.1
-      vscode-json-languageservice: 5.6.4
+      vscode-json-languageservice: 5.7.1
     transitivePeerDependencies:
       - supports-color
       - typescript
