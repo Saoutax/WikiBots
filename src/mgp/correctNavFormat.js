@@ -1,5 +1,5 @@
 import { zhapi as api, Login } from "../utils/apiLogin.js";
-import { BatchQuery } from "../utils/batchQuery.js";
+import BatchQuery from "../utils/batchQuery.js";
 import { GetEmbeddedPages } from "../utils/pageInfo.js";
 
 function fixFormat(obj) {
