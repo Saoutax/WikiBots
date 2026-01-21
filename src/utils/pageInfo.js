@@ -11,7 +11,7 @@ function chunk(arr, size = 500) {
     return res;
 }
 
-export class CheckGlobalUsage {
+class CheckGlobalUsage {
     constructor(api) {
         this.api = api;
     }
@@ -62,7 +62,7 @@ export class CheckGlobalUsage {
     }
 }
 
-export class CheckRedirect {
+class CheckRedirect {
     constructor(api) {
         this.api = api;
     }
@@ -101,7 +101,7 @@ export class CheckRedirect {
     }
 }
 
-export class GetEmbeddedPages {
+class GetEmbeddedPages {
     constructor(api) {
         this.api = api;
     }
@@ -140,7 +140,7 @@ export class GetEmbeddedPages {
     }
 }
 
-export class GetLinkedPages {
+class GetLinkedPages {
     constructor(api) {
         this.api = api;
     }
@@ -191,3 +191,5 @@ export class GetLinkedPages {
         return Object.assign({}, ...results);
     }
 }
+
+export { CheckRedirect, CheckGlobalUsage, GetEmbeddedPages, GetLinkedPages };

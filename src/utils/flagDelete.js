@@ -1,4 +1,4 @@
-export class FlagDelete {
+class FlagDelete {
     constructor(api) {
         this.api = api;
     }

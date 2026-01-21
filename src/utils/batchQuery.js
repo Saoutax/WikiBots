@@ -1,6 +1,6 @@
 import splitAndJoin from "./splitAndJoin.js";
 
-export class BatchQuery {
+class BatchQuery {
     constructor(api) {
         this.api = api;
     }
@@ -46,3 +46,5 @@ export class BatchQuery {
         return result;
     }
 }
+
+export default BatchQuery;

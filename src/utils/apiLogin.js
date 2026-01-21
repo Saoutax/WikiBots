@@ -1,28 +1,28 @@
 import { MediaWikiApi } from "wiki-saikou";
 import config from "./config.js";
 
-export const zhapi = new MediaWikiApi({
+const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
     },
 });
 
-export const cmapi = new MediaWikiApi({
+const cmapi = new MediaWikiApi({
     baseURL: config.cm.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
     },
 });
 
-export const vjpapi = new MediaWikiApi({
+const vjpapi = new MediaWikiApi({
     baseURL: config.vjp.api,
     fexiosConfigs: {
         headers: { "user-agent": config.useragent },
     },
 });
 
-export const uewapi = new MediaWikiApi({
+const uewapi = new MediaWikiApi({
     baseURL: config.uew.api,
     fexiosConfigs: {
         headers: {
@@ -41,7 +41,7 @@ function getPaths(str) {
     return result;
 }
 
-export class Login {
+class Login {
     constructor(api) {
         this.api = api;
     }
@@ -81,3 +81,5 @@ export class Login {
             });
     }
 }
+
+export { cmapi, zhapi, vjpapi, uewapi, Login };
