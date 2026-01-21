@@ -73,4 +73,6 @@ async function getData() {
         sha,
         branch,
     });
+
+    console.log("Updated conventionalCommits.scopes and committed.");
 })();
