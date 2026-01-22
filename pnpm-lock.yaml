@@ -61,8 +61,8 @@ importers:
         specifier: ^17.0.0
         version: 17.0.0
       prettier:
-        specifier: ^3.8.0
-        version: 3.8.0
+        specifier: ^3.8.1
+        version: 3.8.1
 
 packages:
 
@@ -79,6 +79,10 @@ packages:
 
   '@bhsd/common@1.2.0':
     resolution: {integrity: sha512-5jal52/XSrdvGYpsoMQwJdmeasG4+9ywnVeIyMrsiSYtgh7AQ5RCZ3LH4samtHyL94w/RItMzT8z3x0QeQwllg==}
+    engines: {node: '>=18.17.0'}
+
+  '@bhsd/common@1.3.0':
+    resolution: {integrity: sha512-TdanA2sRfCRHVabYWkuo0aAfnJmH5CgqO8Febme96Q8tguqVhnHofKUDELVXwndAtvbEFkCZoBsoqZQAJBRycA==}
     engines: {node: '>=18.17.0'}
 
   '@bhsd/stylelint-util@0.1.0':
@@ -1383,8 +1387,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.8.0:
-    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
+  prettier@3.8.1:
+    resolution: {integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -1732,6 +1736,9 @@ snapshots:
   '@bhsd/cm-util@0.1.0': {}
 
   '@bhsd/common@1.2.0': {}
+
+  '@bhsd/common@1.3.0':
+    optional: true
 
   '@bhsd/stylelint-util@0.1.0(stylelint@16.26.1)':
     dependencies:
@@ -3351,7 +3358,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.8.0: {}
+  prettier@3.8.1: {}
 
   prism-wiki@1.2.0(prismjs@1.30.0)(wikilint@2.32.0):
     dependencies:
@@ -3793,7 +3800,7 @@ snapshots:
   wikilint@2.32.0:
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.2.0
+      '@bhsd/common': 1.3.0
       '@bhsd/stylelint-util': 0.1.0(stylelint@16.26.1)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
