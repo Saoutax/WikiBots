@@ -28,11 +28,12 @@ async function getScopes() {
     return scopes.sort();
 }
 
-async function getData() {
+async function getData(branch) {
     const { data } = await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
         owner: "Saoutax",
         repo: "WikiBots",
         path: ".vscode/settings.json",
+        ref: branch,
     });
 
     const decoded = Buffer.from(data.content, "base64").toString("utf-8");
@@ -46,7 +47,7 @@ async function getData() {
 (async () => {
     const branch = process.env.TARGET_BRANCH || "main";
 
-    const { settings, sha } = await getData();
+    const { settings, sha } = await getData(branch);
     const scopes = await getScopes();
 
     const oldScopes = settings["conventionalCommits.scopes"] || [];
