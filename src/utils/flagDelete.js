@@ -15,7 +15,7 @@ class FlagDelete {
         const successList = [];
         const flagDel = async title => {
             try {
-                const del = await this.api.postWithToken("csrf", {
+                const { data } = await this.api.postWithToken("csrf", {
                     action: "edit",
                     title,
                     text: `<noinclude>{{即将删除|user=${user}|1=${reason}}}</noinclude>`,
@@ -24,7 +24,6 @@ class FlagDelete {
                     bot: true,
                     minor: true,
                 });
-                const data = del.data;
                 if (data?.error?.code === "badtoken") {
                     await this.api.getToken("csrf", true);
                     return await flagDel(title);
