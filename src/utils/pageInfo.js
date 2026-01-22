@@ -1,15 +1,4 @@
-/**
- * 分割数组
- * @param {Array} arr - 原数组
- * @returns {Array[]} - 分割后的数组
- */
-function chunk(arr, size = 500) {
-    const res = [];
-    for (let i = 0; i < arr.length; i += size) {
-        res.push(arr.slice(i, i + size));
-    }
-    return res;
-}
+import { chunkArray } from "./arrayUtils.js";
 
 class CheckGlobalUsage {
     constructor(api) {
@@ -18,21 +7,18 @@ class CheckGlobalUsage {
 
     /**
      * 检查文件是否有全域使用
-     * @param {string|string[]} input - 文件名或文件名数组
-     * @returns {Promise<boolean|Object<string, boolean>>} - 单文件返回 boolean，多文件返回对象
+     * @param {string[]} titles - 文件名数组
+     * @returns {Promise<boolean|Object<string, boolean>>} - 对象
      */
-    async check(input) {
-        const isSingle = typeof input === "string";
-        const titles = isSingle ? [input] : input;
-
+    async check(titles) {
         try {
             const results = await Promise.all(
-                chunk(titles).map(async group => {
+                chunkArray(titles).map(async group => {
                     const chunkResult = new Map(group.map(t => [t, false]));
                     let gucontinue;
 
                     do {
-                        const res = await this.api.post({
+                        const { data } = await this.api.post({
                             action: "query",
                             prop: "globalusage",
                             titles: group.join("|"),
@@ -40,13 +26,13 @@ class CheckGlobalUsage {
                             gulimit: "max",
                         });
 
-                        for (const page of Object.values(res?.data?.query?.pages || {})) {
+                        for (const page of Object.values(data?.query?.pages || {})) {
                             if (page.globalusage?.length) {
                                 chunkResult.set(page.title, true);
                             }
                         }
 
-                        gucontinue = res?.data?.continue?.gucontinue;
+                        gucontinue = data?.continue?.gucontinue;
                     } while (gucontinue);
 
                     return Object.fromEntries(chunkResult);
@@ -54,10 +40,10 @@ class CheckGlobalUsage {
             );
 
             const result = Object.assign({}, ...results);
-            return isSingle ? result[input] : result;
+            return result;
         } catch (err) {
             console.error("CheckGlobalUsage error:", err);
-            return isSingle ? false : Object.fromEntries(titles.map(t => [t, true]));
+            return Object.fromEntries(titles.map(t => [t, true]));
         }
     }
 }
@@ -78,7 +64,7 @@ class CheckRedirect {
 
         try {
             const results = await Promise.all(
-                chunk(titles).map(async group => {
+                chunkArray(titles).map(async group => {
                     const res = await this.api.post({
                         action: "query",
                         prop: "info",
@@ -156,7 +142,7 @@ class GetLinkedPages {
         const titles = Array.isArray(input) ? input : [input];
 
         const results = await Promise.all(
-            chunk(titles).map(async group => {
+            chunkArray(titles).map(async group => {
                 const chunkResult = new Map(group.map(title => [title, []]));
                 let lhcontinue;
 

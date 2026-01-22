@@ -1,4 +1,4 @@
-import splitAndJoin from "./splitAndJoin.js";
+import { splitAndJoin } from "./arrayUtils.js";
 
 class BatchQuery {
     constructor(api) {
