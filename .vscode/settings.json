@@ -17,13 +17,13 @@
         "VJP/mostTranscludedPages",
         "VJP/siteStatistics",
         "utils/apiLogin",
-        "utils/arrayUtils",
         "utils/batchQuery",
         "utils/config",
         "utils/flagDelete",
         "utils/getJSON",
         "utils/pageInfo",
         "utils/parseThread",
-        "utils/queryCats"
+        "utils/queryCats",
+        "utils/splitAndJoin"
     ]
 }
