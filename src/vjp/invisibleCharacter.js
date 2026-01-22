@@ -4,7 +4,7 @@
  */
 
 import { vjpapi as api, Login } from "../utils/apiLogin.js";
-import splitAndJoin from "../utils/splitAndJoin.js";
+import { splitAndJoin } from "../utils/arrayUtils.js";
 
 const regexMap = {
     3164: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\uFEFF]+/gu,
