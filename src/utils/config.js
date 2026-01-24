@@ -47,6 +47,14 @@ const config = {
             password: env.UEW_MAIN,
         },
     },
+    qw: {
+        api: "https://www.qiuwenbaike.cn/api.php",
+        useragent: `${env.API_USER_AGENT} (Github Actions; Saoutax-bot; Qiuwen/1.1)`,
+        main: {
+            name: "SaoMikoto@SaoMikoto",
+            password: env.QW_MAIN,
+        },
+    },
 };
 
 export default config;

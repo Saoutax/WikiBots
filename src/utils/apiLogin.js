@@ -32,6 +32,13 @@ const uewapi = new MediaWikiApi({
     },
 });
 
+const qwapi = new MediaWikiApi({
+    baseURL: config.qw.api,
+    fexiosConfigs: {
+        headers: { "user-agent": config.qw.useragent },
+    },
+});
+
 function getPaths(str) {
     const path = str.split(".");
     const result = {
@@ -63,6 +70,9 @@ class Login {
             case "uew":
                 sitename = "United Earth Wiki";
                 break;
+            case "qw":
+                sitename = "QiuwenBaike";
+                break;
         }
 
         return await this.api
@@ -82,4 +92,4 @@ class Login {
     }
 }
 
-export { cmapi, zhapi, vjpapi, uewapi, Login };
+export { cmapi, zhapi, vjpapi, uewapi, qwapi, Login };
