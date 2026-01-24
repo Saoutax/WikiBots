@@ -77,8 +77,8 @@ packages:
   '@bhsd/cm-util@0.1.0':
     resolution: {integrity: sha512-gqwObmIVosIH3WulV9p/IoO8Rm90QofFN44XoaitjN3uopAMt3E6ipPm3OegjvUqrUPAbwcUrwZoUCZ5cI+OqA==}
 
-  '@bhsd/common@1.3.0':
-    resolution: {integrity: sha512-TdanA2sRfCRHVabYWkuo0aAfnJmH5CgqO8Febme96Q8tguqVhnHofKUDELVXwndAtvbEFkCZoBsoqZQAJBRycA==}
+  '@bhsd/common@1.2.0':
+    resolution: {integrity: sha512-5jal52/XSrdvGYpsoMQwJdmeasG4+9ywnVeIyMrsiSYtgh7AQ5RCZ3LH4samtHyL94w/RItMzT8z3x0QeQwllg==}
     engines: {node: '>=18.17.0'}
 
   '@bhsd/common@1.3.0':
@@ -224,11 +224,11 @@ packages:
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
 
-  '@keyv/bigmap@1.3.1':
-    resolution: {integrity: sha512-WbzE9sdmQtKy8vrNPa9BRnwZh5UF4s1KTmSK0KUVLo3eff5BlQNNWDnFOouNpKfPKDnms9xynJjsMYjMaT/aFQ==}
+  '@keyv/bigmap@1.3.0':
+    resolution: {integrity: sha512-KT01GjzV6AQD5+IYrcpoYLkCu1Jod3nau1Z7EsEuViO3TZGRacSbO9MfHmbJ1WaOXFtWLxPVj169cn2WNKPkIg==}
     engines: {node: '>= 18'}
     peerDependencies:
-      keyv: ^5.6.0
+      keyv: ^5.5.4
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
@@ -640,8 +640,8 @@ packages:
   entities@2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
 
-  entities@7.0.1:
-    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
+  entities@7.0.0:
+    resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
 
   env-paths@2.2.1:
@@ -1133,8 +1133,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  keyv@5.6.0:
-    resolution: {integrity: sha512-CYDD3SOtsHtyXeEORYRx2qBtpDJFjRTGXUtmNEMGyzYOKj1TE3tycdlho7kA1Ufx9OYWZzg52QFBGALTirzDSw==}
+  keyv@5.5.5:
+    resolution: {integrity: sha512-FA5LmZVF1VziNc0bIdCSA1IoSVnDCqE8HJIZZv2/W8YmoAM50+tnUgJR/gQZwEeIMleuIOnRnHA/UaZRNeV4iQ==}
 
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
@@ -1845,10 +1845,10 @@ snapshots:
 
   '@bhsd/cm-util@0.1.0': {}
 
-  '@bhsd/common@1.3.0': {}
-
-  '@bhsd/common@1.3.0':
+  '@bhsd/common@1.2.0':
     optional: true
+
+  '@bhsd/common@1.3.0': {}
 
   '@bhsd/stylelint-util@0.1.0(stylelint@16.26.1)':
     dependencies:
@@ -1866,14 +1866,14 @@ snapshots:
   '@cacheable/memory@2.0.7':
     dependencies:
       '@cacheable/utils': 2.3.3
-      '@keyv/bigmap': 1.3.1(keyv@5.6.0)
+      '@keyv/bigmap': 1.3.0(keyv@5.5.5)
       hookified: 1.15.0
-      keyv: 5.6.0
+      keyv: 5.5.5
 
   '@cacheable/utils@2.3.3':
     dependencies:
       hashery: 1.4.0
-      keyv: 5.6.0
+      keyv: 5.5.5
 
   '@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4)':
     dependencies:
@@ -1997,11 +1997,11 @@ snapshots:
       '@isaacs/balanced-match': 4.0.1
     optional: true
 
-  '@keyv/bigmap@1.3.1(keyv@5.6.0)':
+  '@keyv/bigmap@1.3.0(keyv@5.5.5)':
     dependencies:
       hashery: 1.4.0
       hookified: 1.15.0
-      keyv: 5.6.0
+      keyv: 5.5.5
 
   '@keyv/serialize@1.1.1': {}
 
@@ -2316,7 +2316,7 @@ snapshots:
       '@cacheable/memory': 2.0.7
       '@cacheable/utils': 2.3.3
       hookified: 1.15.0
-      keyv: 5.6.0
+      keyv: 5.5.5
       qified: 0.6.0
 
   call-bind-apply-helpers@1.0.2:
@@ -2458,7 +2458,7 @@ snapshots:
 
   entities@2.2.0: {}
 
-  entities@7.0.1:
+  entities@7.0.0:
     optional: true
 
   env-paths@2.2.1: {}
@@ -3027,7 +3027,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  keyv@5.6.0:
+  keyv@5.5.5:
     dependencies:
       '@keyv/serialize': 1.1.1
 
@@ -4049,14 +4049,14 @@ snapshots:
   wikilint@2.32.0:
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.3.0
+      '@bhsd/common': 1.2.0
       '@bhsd/stylelint-util': 0.1.0(stylelint@16.26.1)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
     optionalDependencies:
       chalk: 4.1.2
       color-name: 2.1.0
-      entities: 7.0.1
+      entities: 7.0.0
       mathoid-texvcjs: 0.6.0
       minimatch: 10.1.1
       stylelint: 16.26.1
@@ -4077,7 +4077,7 @@ snapshots:
       vscode-languageserver-types: 3.17.5
     optionalDependencies:
       color-name: 2.1.0
-      entities: 7.0.1
+      entities: 7.0.0
       mathoid-texvcjs: 0.6.0
       prism-wiki: 1.2.0(prismjs@1.30.0)(wikilint@2.32.0)
       prismjs: 1.30.0
