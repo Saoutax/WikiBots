@@ -58,8 +58,8 @@ importers:
         specifier: ^2.32.0
         version: 2.32.0(eslint@9.39.2)
       globals:
-        specifier: ^17.0.0
-        version: 17.0.0
+        specifier: ^17.1.0
+        version: 17.1.0
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
@@ -76,10 +76,6 @@ packages:
 
   '@bhsd/cm-util@0.1.0':
     resolution: {integrity: sha512-gqwObmIVosIH3WulV9p/IoO8Rm90QofFN44XoaitjN3uopAMt3E6ipPm3OegjvUqrUPAbwcUrwZoUCZ5cI+OqA==}
-
-  '@bhsd/common@1.2.0':
-    resolution: {integrity: sha512-5jal52/XSrdvGYpsoMQwJdmeasG4+9ywnVeIyMrsiSYtgh7AQ5RCZ3LH4samtHyL94w/RItMzT8z3x0QeQwllg==}
-    engines: {node: '>=18.17.0'}
 
   '@bhsd/common@1.3.0':
     resolution: {integrity: sha512-TdanA2sRfCRHVabYWkuo0aAfnJmH5CgqO8Febme96Q8tguqVhnHofKUDELVXwndAtvbEFkCZoBsoqZQAJBRycA==}
@@ -114,6 +110,9 @@ packages:
   '@csstools/css-syntax-patches-for-csstree@1.0.25':
     resolution: {integrity: sha512-g0Kw9W3vjx5BEBAF8c5Fm2NcB/Fs8jJXh85aXqwEXiL+tqtOut07TWgyaGzAAfTM+gKckrrncyeGEZPcaRgm2Q==}
     engines: {node: '>=18'}
+
+  '@csstools/css-syntax-patches-for-csstree@1.0.26':
+    resolution: {integrity: sha512-6boXK0KkzT5u5xOgF6TKB+CLq9SOpEGmkZw0g5n9/7yg85wab3UzSxB8TxhLJ31L4SGJ6BCFRw/iftTha1CJXA==}
 
   '@csstools/css-tokenizer@3.0.4':
     resolution: {integrity: sha512-Vd/9EVDiu6PPJt9yAh6roZP6El1xHrdvIVGjyBsHR0RYwNHgL7FJPyIIW4fANJNG6FtyZfvlRPpFI4ZM/lubvw==}
@@ -644,6 +643,10 @@ packages:
     resolution: {integrity: sha512-FDWG5cmEYf2Z00IkYRhbFrwIwvdFKH07uV8dvNy0omp/Qb1xcyCWp2UDtcwJF4QZZvk0sLudP6/hAu42TaqVhQ==}
     engines: {node: '>=0.12'}
 
+  entities@7.0.1:
+    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
+    engines: {node: '>=0.12'}
+
   env-paths@2.2.1:
     resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
     engines: {node: '>=6'}
@@ -882,8 +885,8 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-  globals@17.0.0:
-    resolution: {integrity: sha512-gv5BeD2EssA793rlFWVPMMCqefTlpusw6/2TbAVMy0FzcG8wKJn4O+NqJ4+XWmmwrayJgw5TzrmWjFgmz1XPqw==}
+  globals@17.1.0:
+    resolution: {integrity: sha512-8HoIcWI5fCvG5NADj4bDav+er9B9JMj2vyL2pI8D0eismKyUvPLTSs+Ln3wqhwcp306i73iyVnEKx3F6T47TGw==}
     engines: {node: '>=18'}
 
   globalthis@1.0.4:
@@ -1845,9 +1848,6 @@ snapshots:
 
   '@bhsd/cm-util@0.1.0': {}
 
-  '@bhsd/common@1.2.0':
-    optional: true
-
   '@bhsd/common@1.3.0': {}
 
   '@bhsd/stylelint-util@0.1.0(stylelint@16.26.1)':
@@ -1885,6 +1885,9 @@ snapshots:
       '@csstools/css-tokenizer': 4.0.0
 
   '@csstools/css-syntax-patches-for-csstree@1.0.25': {}
+
+  '@csstools/css-syntax-patches-for-csstree@1.0.26':
+    optional: true
 
   '@csstools/css-tokenizer@3.0.4':
     optional: true
@@ -2461,6 +2464,9 @@ snapshots:
   entities@7.0.0:
     optional: true
 
+  entities@7.0.1:
+    optional: true
+
   env-paths@2.2.1: {}
 
   error-ex@1.3.4:
@@ -2792,7 +2798,7 @@ snapshots:
 
   globals@14.0.0: {}
 
-  globals@17.0.0: {}
+  globals@17.1.0: {}
 
   globalthis@1.0.4:
     dependencies:
@@ -3754,7 +3760,7 @@ snapshots:
   stylelint@16.26.1:
     dependencies:
       '@csstools/css-parser-algorithms': 3.0.5(@csstools/css-tokenizer@3.0.4)
-      '@csstools/css-syntax-patches-for-csstree': 1.0.25
+      '@csstools/css-syntax-patches-for-csstree': 1.0.26
       '@csstools/css-tokenizer': 3.0.4
       '@csstools/media-query-list-parser': 4.0.3(@csstools/css-parser-algorithms@3.0.5(@csstools/css-tokenizer@3.0.4))(@csstools/css-tokenizer@3.0.4)
       '@csstools/selector-specificity': 5.0.0(postcss-selector-parser@7.1.1)
@@ -4049,14 +4055,14 @@ snapshots:
   wikilint@2.32.0:
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.2.0
+      '@bhsd/common': 1.3.0
       '@bhsd/stylelint-util': 0.1.0(stylelint@16.26.1)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
     optionalDependencies:
       chalk: 4.1.2
       color-name: 2.1.0
-      entities: 7.0.0
+      entities: 7.0.1
       mathoid-texvcjs: 0.6.0
       minimatch: 10.1.1
       stylelint: 16.26.1
