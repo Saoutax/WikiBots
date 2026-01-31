@@ -7,6 +7,7 @@
         "MGP/highRiskCount",
         "MGP/markImg",
         "MGP/monthly",
+        "MGP/removeExtraPipe",
         "UEW/cleanSandbox",
         "UEW/invisibleCharacter",
         "VJP/activeCount",
