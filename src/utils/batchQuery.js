@@ -10,7 +10,7 @@ class BatchQuery {
      * @async
      * @param {*} titlesArray 标题数组
      * @param {number} [timeout=3000] 延时，可选
-     * @returns {object} {标题:内容}
+     * @returns {Promise<object>} {标题:内容}
      */
     async query(titlesArray, timeout = 3000) {
         const batchTitles = splitAndJoin(titlesArray, 500);
