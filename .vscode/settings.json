@@ -8,6 +8,7 @@
         "MGP/markImg",
         "MGP/monthly",
         "MGP/removeExtraPipe",
+        "UEW/archiveThread",
         "UEW/cleanSandbox",
         "UEW/invisibleCharacter",
         "VJP/activeCount",
