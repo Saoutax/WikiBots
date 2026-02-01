@@ -56,7 +56,7 @@ async function getPages() {
             if (link.length === 1 || link.fragment) {
                 continue;
             }
-            const {innerText} = link,
+            const { innerText } = link,
                 newLink = link.normalizeTitle(innerText);
             if (newLink.valid && !newLink.fragment && newLink.title === link.link.title) {
                 link.link = innerText;
