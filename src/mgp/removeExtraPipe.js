@@ -53,10 +53,15 @@ async function getPages() {
             links = parsed.querySelectorAll("link");
         for (const link of links) {
             // 暂时忽略带有锚点#的情况
-            if (link.fragment || link.name !== link.innerText) {
+            if (link.length === 1 || link.fragment) {
                 continue;
             }
-            link.innerText = undefined;
+            const { innerText } = link,
+                newLink = link.normalizeTitle(innerText);
+            if (newLink.valid && !newLink.fragment && newLink.title === link.link.title) {
+                link.link = innerText;
+                link.innerText = undefined;
+            }
         }
 
         const newContent = parsed.toString();
