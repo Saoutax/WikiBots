@@ -23,6 +23,7 @@ class FlagDelete {
                     tags: "Bot",
                     bot: true,
                     minor: true,
+                    nocreate: true,
                 });
                 if (data?.error?.code === "badtoken") {
                     await this.api.getToken("csrf", true);
