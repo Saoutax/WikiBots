@@ -59,7 +59,7 @@ async function matchFiles(titles) {
 
         const content = page.revisions[0].content;
 
-        const filepathRegex = /\{\{filepath:(.*?)\}\}/g;
+        const filepathRegex = /\{\{filepath:([^|}]+)/g;
         const urlRegex =
             /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
         const extTest =
