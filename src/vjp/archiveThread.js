@@ -66,10 +66,16 @@ async function getParsedThread() {
                     .format("YYYYMMDD");
                 if (currentTime >= archiveTime) {
                     discussion[key].content =
-                        `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}#${value.title}}}\n\n`;
+                        `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${value.title}}}\n\n`;
                     archive += discussionThread[key].content;
                     console.log(`存档讨论串：${value.title}`);
                 }
+            }
+            if (!mar && Math.abs(dayjs(currentTime).diff(dayjs(value.timestamp), "day")) >= 10) {
+                discussion[key].content =
+                    `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${value.title}}}\n\n`;
+                archive += discussionThread[key].content;
+                console.log(`存档讨论串：${value.title}`);
             }
         });
 
