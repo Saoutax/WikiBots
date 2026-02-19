@@ -1,4 +1,6 @@
-import { env } from "process";
+import "dotenv/config";
+
+const env = process.env;
 
 const config = {
     useragent: `${env.API_USER_AGENT} (Github Actions; Saoutax-bot) `,

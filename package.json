@@ -2,7 +2,7 @@
     "name": "wikibots",
     "description": "用于多站点的MediaWiki机器人",
     "scripts": {
-        "test": "node --env-file=.env src/tmp/test.js",
+        "test": "node src/tmp/test.js",
         "lint": "eslint .",
         "lint:fix": "eslint --fix .",
         "prettier": "prettier --check .",
