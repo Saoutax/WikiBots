@@ -31,7 +31,7 @@ async function getRecentMoves() {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(zhapi).login("zh.bot");
-    const { lgusername: username } = await new Login(cmapi).login("cm.bot");
+    const { lgusername } = await new Login(cmapi).login("cm.bot");
 
     const movedFiles = await getRecentMoves();
 
@@ -41,12 +41,12 @@ async function getRecentMoves() {
         return;
     }
 
-    const redirects = await new CheckRedirect(cmapi).check(movedFiles);
-    const isRedirect = Object.keys(redirects).filter(key => redirects[key] === true);
+    const redirects = await new CheckRedirect(cmapi).check(movedFiles),
+        isRedirect = Object.keys(redirects).filter(key => redirects[key] === true);
 
-    const usage = await new CheckGlobalUsage(cmapi).check(isRedirect);
-    const unused = Object.keys(usage).filter(key => usage[key] === false);
-    const used = Object.keys(usage).filter(key => usage[key] === true);
+    const usage = await new CheckGlobalUsage(cmapi).check(isRedirect),
+        unused = Object.keys(usage).filter(key => usage[key] === false),
+        used = Object.keys(usage).filter(key => usage[key] === true);
 
     if (used.length > 0) {
         const today = dayjs().format("YYYY年MM月DD日");
@@ -69,15 +69,15 @@ async function getRecentMoves() {
         console.log(`共 ${used.length} 个重定向仍存在使用：\n${used.join("\n")}`);
     }
 
-    const successList = await new FlagDelete(cmapi).flagDelete(
+    const success = await new FlagDelete(cmapi).flagDelete(
         unused,
         "移动残留重定向",
-        username,
+        lgusername,
         "自动挂删文件移动残留重定向",
     );
 
-    if (successList.length > 0) {
-        console.log(`成功挂删 ${successList.length} 个重定向：\n${successList.join("\n")}`);
+    if (success.length > 0) {
+        console.log(`成功挂删 ${success.length} 个重定向：\n${success.join("\n")}`);
     } else {
         console.log("没有需要挂删的重定向");
     }

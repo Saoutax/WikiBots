@@ -72,17 +72,17 @@ function formatNum(num) {
     await Promise.all(
         riskTemplates.map(async tpl => {
             try {
-                const pages = await gep.get(tpl);
-                const newCount = formatNum(pages.length);
-                const oldCount = oldResults[tpl];
+                const pages = await gep.get(tpl),
+                    newCount = formatNum(pages.length),
+                    oldCount = oldResults[tpl];
 
                 if (newCount === oldCount) {
                     return;
                 }
 
-                const pageTitle = `${tpl}/doc`;
-                const parsedPage = await getParsedPage(pageTitle);
-                const highrisk = parsedPage.querySelector("template#Template:High-risk");
+                const pageTitle = `${tpl}/doc`,
+                    parsedPage = await getParsedPage(pageTitle),
+                    highrisk = parsedPage.querySelector("template#Template:High-risk");
                 highrisk.setValue("1", `${newCount}`);
 
                 await api.postWithToken(
@@ -101,8 +101,8 @@ function formatNum(num) {
                 );
 
                 console.log(`${tpl}：「${oldCount}」→「${newCount}」`);
-            } catch (e) {
-                console.error(`处理模板 ${tpl} 时出错:`, e);
+            } catch (err) {
+                console.error(`处理模板 ${tpl} 时出错:`, err);
             }
         }),
     );

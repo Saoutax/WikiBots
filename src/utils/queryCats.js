@@ -13,8 +13,8 @@ class QueryCategory {
     async queryCat(categories, recursive = false, cmtype = "page|subcat|file") {
         categories = [].concat(categories);
 
-        const visited = new Set();
-        const results = new Set();
+        const visited = new Set(),
+            results = new Set();
 
         for (const cat of categories) {
             await this._queryCategory(cat, recursive, visited, results, cmtype);

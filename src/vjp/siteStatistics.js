@@ -12,8 +12,8 @@ async function getLastDayEditCount() {
     let cont;
     let count = 0;
 
-    const end = dayjs().tz().toISOString();
-    const start = dayjs().tz().subtract(1, "day").toISOString();
+    const end = dayjs().tz().toISOString(),
+        start = dayjs().tz().subtract(1, "day").toISOString();
 
     do {
         const {
@@ -58,10 +58,9 @@ async function getLastDayEditCount() {
         siprop: "statistics",
     });
 
-    const editCount = await getLastDayEditCount();
-
-    const title = "Template:站点数据.json";
-    const statistics = await new GetJSON(api).get(title);
+    const editCount = await getLastDayEditCount(),
+        title = "Template:站点数据.json",
+        statistics = await new GetJSON(api).get(title);
 
     statistics.dataset.source.push([
         dayjs().tz().format("YYYY-MM-DD"),

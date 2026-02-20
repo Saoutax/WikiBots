@@ -44,8 +44,8 @@ async function getPages() {
 
     await new Login(api).login("zh.bot");
 
-    const pages = await getPages();
-    const pageContent = await new BatchQuery(api).query(pages);
+    const pages = await getPages(),
+        pageContent = await new BatchQuery(api).query(pages);
 
     const modify = {};
     for (const [title, content] of Object.entries(pageContent)) {

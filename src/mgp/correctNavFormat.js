@@ -25,15 +25,12 @@ function fixFormat(obj) {
 
     await new Login(api).login("zh.bot");
 
-    const navTemplates = await new GetEmbeddedPages(api).get("Template:Navbox", 10);
-    const navModules = await new GetEmbeddedPages(api).get("Module:Nav", 10);
-    const allTemplates = [...new Set([...navTemplates, ...navModules])];
+    const navTemplates = await new GetEmbeddedPages(api).get("Template:Navbox", 10),
+        navModules = await new GetEmbeddedPages(api).get("Module:Nav", 10),
+        allTemplates = [...new Set([...navTemplates, ...navModules])];
     console.log(`共计 ${allTemplates.length} 个链入`);
 
-    const pagesObj = await new BatchQuery(api).query(allTemplates);
-
-    const fixed = fixFormat(pagesObj);
-
+    const fixed = fixFormat(await new BatchQuery(api).query(allTemplates));
     console.log(`共计 ${Object.keys(fixed).length} 个模板需要修正`);
 
     for (const [title, text] of Object.entries(fixed)) {

@@ -8,7 +8,7 @@ import QueryCategory from "../utils/queryCats.js";
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(zhapi).login("zh.bot");
-    const { lgusername: username } = await new Login(cmapi).login("cm.bot");
+    const { lgusername } = await new Login(cmapi).login("cm.bot");
 
     const { categories } = await new GetJSON(zhapi).get(
         "User:SaoMikoto/Bot/config/deleteUnused.json",
@@ -22,7 +22,7 @@ import QueryCategory from "../utils/queryCats.js";
     const success = await new FlagDelete(cmapi).flagDelete(
         unused,
         "无使用或不再使用的文件",
-        username,
+        lgusername,
     );
     console.log(success);
 

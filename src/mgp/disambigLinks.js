@@ -99,9 +99,7 @@ function reportPage(obj) {
     const deDuplicate = processObject(disambig, linkPages);
     console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
 
-    const inGroup = grouping(deDuplicate);
-
-    const report = reportPage(inGroup);
+    const report = reportPage(grouping(deDuplicate));
 
     for (const [title, text] of Object.entries(report)) {
         await api.postWithToken("csrf", {
@@ -113,7 +111,7 @@ function reportPage(obj) {
             tags: "Bot",
             bot: true,
         });
-        console.log(`${title} done.`);
+        console.log(`Done: ${title}`);
     }
 
     console.log(`End time: ${new Date().toISOString()}`);

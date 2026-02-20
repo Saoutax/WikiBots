@@ -12,7 +12,7 @@ class FlagDelete {
      * @returns {Promise<string[]|void>} - 成功挂删的页面数组
      */
     async flagDelete(page, reason, user, summary = reason) {
-        const successList = [];
+        const success = [];
         const flagDel = async title => {
             try {
                 const { data } = await this.api.postWithToken("csrf", {
@@ -30,7 +30,7 @@ class FlagDelete {
                     return await flagDel(title);
                 }
                 if (data?.edit?.newtimestamp) {
-                    successList.push(title);
+                    success.push(title);
                 }
             } catch (err) {
                 console.error(`挂删失败（${title}）：`, err);
@@ -43,7 +43,7 @@ class FlagDelete {
             await flagDel(page);
         }
 
-        return successList;
+        return success;
     }
 }
 

@@ -28,8 +28,8 @@ import GetJSON from "../utils/getJSON.js";
         titles: "萌娘百科:萌娘百科月报/订阅",
     });
 
-    const parsed = Parser.parse(content);
-    const links = parsed.querySelectorAll("list + link");
+    const parsed = Parser.parse(content),
+        links = parsed.querySelectorAll("list + link");
 
     const pages = [
         ...new Set(links.map(item => item.name).filter(name => name.startsWith("User_talk:"))),

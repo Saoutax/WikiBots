@@ -40,8 +40,8 @@ async function getParsedThread() {
 
     const discussionThread = await getParsedThread();
 
-    const currentTime = dayjs().tz().format("YYYYMMDD");
-    const currentYear = dayjs().tz().format("YYYY年");
+    const currentTime = dayjs().tz().format("YYYYMMDD"),
+        currentYear = dayjs().tz().format("YYYY年");
 
     let archive = "";
     const discussion = _.cloneDeep(discussionThread);
@@ -57,9 +57,9 @@ async function getParsedThread() {
             }
             const mar = parsedThread.querySelector("template#Template:MarkAsResolved");
             if (mar) {
-                const longerType = ["s", "suspended", "n", "noreply"];
-                const defaultOffset = longerType.includes(mar.getValue().status) ? 10 : 3;
-                const offset = Number(mar.getValue()["archive-offset"] || defaultOffset);
+                const longerType = ["s", "suspended", "n", "noreply"],
+                    defaultOffset = longerType.includes(mar.getValue().status) ? 10 : 3,
+                    offset = Number(mar.getValue()["archive-offset"] || defaultOffset);
                 const archiveTime = dayjs(mar.getValue().time, "YYYYMMDD")
                     .tz()
                     .add(offset, "day")
