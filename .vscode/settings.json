@@ -5,6 +5,7 @@
         "MGP/deleteUnused",
         "MGP/disambigLinks",
         "MGP/highRiskCount",
+        "MGP/linkModifier",
         "MGP/markImg",
         "MGP/monthly",
         "MGP/removeExtraPipe",
