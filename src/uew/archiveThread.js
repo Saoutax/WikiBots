@@ -39,7 +39,7 @@ async function getParsedThread() {
 
     const discussionThread = await getParsedThread();
 
-    const currentMonth = dayjs().tz().format("YYYY年MM月");
+    const lastMonth = dayjs().tz().subtract(1, "month").format("YYYY年MM月");
 
     let archive = "";
     const discussion = _.cloneDeep(discussionThread);
@@ -61,7 +61,7 @@ async function getParsedThread() {
             .join("");
 
     const PAGE_MAP = {
-        [`地球联合百科讨论:会议大厅/存档/${currentMonth}`]: {
+        [`地球联合百科讨论:会议大厅/存档/${lastMonth}`]: {
             content: archive ? `\n\n${archive}` : "",
             append: true,
         },
