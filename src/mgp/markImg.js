@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
+import QueryCategory from "../utils/queryCats.js";
 
 dayjs.extend(utc);
 
@@ -43,7 +44,17 @@ async function getPages() {
 async function matchFiles(titles) {
     const matches = {};
 
+    const editGroups = await new QueryCategory(zhapi).queryCat(
+        ["Category:用户编辑组签名版", "Category:用户编辑组模板"],
+        false,
+        "page",
+    );
+
     for (const title of titles) {
+        if (editGroups.includes(title)) {
+            continue;
+        }
+
         const { data } = await zhapi.post({
             action: "query",
             prop: "revisions",
