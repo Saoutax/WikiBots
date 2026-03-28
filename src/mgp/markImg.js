@@ -7,7 +7,7 @@ dayjs.extend(utc);
 
 const now = dayjs.utc();
 const start = now.toISOString();
-const end = now.subtract(260, "hour").toISOString();
+const end = now.subtract(26, "hour").toISOString();
 
 async function getPages() {
     const pages = new Set();
