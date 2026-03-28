@@ -50,7 +50,7 @@ async function matchFiles(titles) {
         "page",
     );
 
-    const exlude = [
+    const exclude = [
         ...editGroups,
         "Help:沙盒",
         "Template:沙盒",
@@ -59,7 +59,7 @@ async function matchFiles(titles) {
     ];
 
     for (const title of titles) {
-        if (exlude.includes(title)) {
+        if (exclude.includes(title)) {
             continue;
         }
 
