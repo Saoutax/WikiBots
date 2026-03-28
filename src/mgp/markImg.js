@@ -50,8 +50,16 @@ async function matchFiles(titles) {
         "page",
     );
 
+    const exlude = [
+        ...editGroups,
+        "Help:沙盒",
+        "Template:沙盒",
+        "Help:沙盒/styles.css",
+        "Template:沙盒/styles.css",
+    ];
+
     for (const title of titles) {
-        if (editGroups.includes(title)) {
+        if (exlude.includes(title)) {
             continue;
         }
 
