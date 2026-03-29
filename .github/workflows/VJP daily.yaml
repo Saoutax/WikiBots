@@ -19,6 +19,7 @@ on:
                     - editCount
                     - archiveThread
                     - siteStatistics
+                    - doubleRedirects
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -170,3 +171,24 @@ jobs:
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
               run: node src/vjp/siteStatistics.js
+
+    doubleRedirects:
+        if: |
+            github.event.schedule == '30 20 * * *' ||
+            github.event.inputs.task == 'doubleRedirects'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+            - name: Set Node Version
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: pnpm
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Run Script
+              env:
+                  VJP_BOT: ${{ secrets.VJP_BOT }}
+              run: node src/vjp/doubleRedirects.js
