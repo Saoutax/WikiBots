@@ -15,7 +15,11 @@ import QueryCategory from "../utils/queryCats.js";
     );
 
     const files = await new QueryCategory(cmapi).queryCat(categories, true, "file");
-    const unLink = await new QueryCategory(cmapi).queryCat("Category:非链入使用的文件", true, "file");
+    const unLink = await new QueryCategory(cmapi).queryCat(
+        "Category:非链入使用的文件",
+        true,
+        "file",
+    );
 
     const usage = await new CheckGlobalUsage(cmapi).check(files);
     const unused = Object.keys(usage).filter(key => usage[key] === false);

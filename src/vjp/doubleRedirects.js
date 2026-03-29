@@ -8,7 +8,7 @@ import { vjpapi as api, Login } from "../utils/apiLogin.js";
     const {
         data: {
             query: {
-                querypage: { results: doubleRedirects },
+                querypage: { results },
             },
         },
     } = await api.post({
@@ -23,11 +23,8 @@ import { vjpapi as api, Login } from "../utils/apiLogin.js";
     for (const {
         title,
         databaseResult: { c_namespace, c_title },
-    } of doubleRedirects) {
-        const text =
-            Number(c_namespace) === 14
-                ? `{{分类重定向|${c_title}}}\n#REDIRECT [[:${c_title}]]`
-                : `#REDIRECT [[:${c_title}]]`;
+    } of results) {
+        const text = `#REDIRECT [[:${c_title}]]${Number(c_namespace) === 14 ? `\n{{分类重定向|${c_title}}}` : ""}`;
         await api.postWithToken("csrf", {
             action: "edit",
             title,
