@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
 import { zhapi, cmapi, Login } from "../config/apiLogin.js";
+import GetJSON from "../utils/getJSON.js";
 import QueryCategory from "../utils/queryCats.js";
 
 dayjs.extend(utc);
@@ -44,22 +45,17 @@ async function getPages() {
 async function matchFiles(titles) {
     const matches = {};
 
-    const editGroups = await new QueryCategory(zhapi).queryCat(
-        ["Category:用户编辑组签名版", "Category:用户编辑组模板"],
-        false,
-        "page",
+    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } = await GetJSON(zhapi).get(
+        "User:SaoMikoto/Bot/config/markImg.json",
     );
 
     const exclude = [
-        ...editGroups,
-        "Help:沙盒",
-        "Template:沙盒",
-        "Help:沙盒/styles.css",
-        "Template:沙盒/styles.css",
+        ...(await new QueryCategory(zhapi).queryCat(excludeCategory, false, "page")),
+        ...excludeTitle,
     ];
 
     for (const title of titles) {
-        if (exclude.includes(title)) {
+        if (exclude.includes(title) || excludePrefix.some(prefix => title.startsWith(prefix))) {
             continue;
         }
 
@@ -89,7 +85,10 @@ async function matchFiles(titles) {
         while ((match = filepathRegex.exec(content))) {
             const file = match[1].trim();
             if (extTest.test(file)) {
-                matches[`File:${file}`] = title;
+                const fileName = `File:${file}`;
+                if (!excludeFile.includes(fileName)) {
+                    matches[fileName] = title;
+                }
             }
         }
 
@@ -101,7 +100,10 @@ async function matchFiles(titles) {
                 continue;
             }
             if (extTest.test(file)) {
-                matches[`File:${file}`] = title;
+                const fileName = `File:${file}`;
+                if (!excludeFile.includes(fileName)) {
+                    matches[fileName] = title;
+                }
             }
         }
     }

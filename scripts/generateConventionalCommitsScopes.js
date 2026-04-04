@@ -10,7 +10,8 @@ const octokit = new Octokit({
 
 async function getScopes() {
     const SRC = path.resolve("src");
-    const formatFolder = name => (name === "utils" || name === "config" ? name : name.toUpperCase());
+    const formatFolder = name =>
+        name === "utils" || name === "config" ? name : name.toUpperCase();
     const entries = await fs.readdir(SRC, { withFileTypes: true });
     const scopes = [];
 
