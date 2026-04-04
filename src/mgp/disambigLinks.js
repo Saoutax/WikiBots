@@ -1,6 +1,6 @@
 import { pinyin } from "pinyin-pro";
 import { toRomaji } from "wanakana";
-import { zhapi as api, Login } from "../utils/apiLogin.js";
+import { zhapi as api, Login } from "../config/apiLogin.js";
 import { GetLinkedPages } from "../utils/pageInfo.js";
 import QueryCategory from "../utils/queryCats.js";
 

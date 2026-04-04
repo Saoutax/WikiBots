@@ -1,4 +1,4 @@
-import { uewapi as api, Login } from "../utils/apiLogin.js";
+import { uewapi as api, Login } from "../config/apiLogin.js";
 import splitAndJoin from "../utils/splitAndJoin.js";
 
 const regexDefault =

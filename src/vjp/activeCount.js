@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

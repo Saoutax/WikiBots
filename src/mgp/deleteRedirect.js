@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
+import { zhapi, cmapi, Login } from "../config/apiLogin.js";
 import FlagDelete from "../utils/flagDelete.js";
 import { CheckGlobalUsage, CheckRedirect } from "../utils/pageInfo.js";
 

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
-import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
+import { zhapi, cmapi, Login } from "../config/apiLogin.js";
 import QueryCategory from "../utils/queryCats.js";
 
 dayjs.extend(utc);

@@ -3,7 +3,7 @@
  * @author 星海 <https://github.com/lovelyCARDINAL/WikiBots/blob/main/src/Clean/invisibleCharacter.js>
  */
 
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 import { splitAndJoin } from "../utils/arrayUtils.js";
 
 const regexMap = {

@@ -1,4 +1,4 @@
-import { zhapi as api, Login } from "../utils/apiLogin.js";
+import { zhapi as api, Login } from "../config/apiLogin.js";
 import BatchQuery from "../utils/batchQuery.js";
 import { GetEmbeddedPages } from "../utils/pageInfo.js";
 

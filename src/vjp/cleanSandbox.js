@@ -1,4 +1,4 @@
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 
 const PAGE_MAP = {
     "Help:沙盒": {

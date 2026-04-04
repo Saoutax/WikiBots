@@ -1,5 +1,5 @@
 import Parser from "wikiparser-node";
-import { zhapi as api, Login } from "../utils/apiLogin.js";
+import { zhapi as api, Login } from "../config/apiLogin.js";
 import { GetEmbeddedPages } from "../utils/pageInfo.js";
 
 async function getParsedPage(titles) {

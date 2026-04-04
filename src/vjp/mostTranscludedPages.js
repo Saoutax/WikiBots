@@ -2,7 +2,7 @@
  * @description 高引用量页面保护数据
  * @author 星海 <https://github.com/lovelyCARDINAL/WikiBots/blob/main/src/Report/mostTranscludedPages.js>
  */
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);

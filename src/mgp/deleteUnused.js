@@ -1,4 +1,4 @@
-import { zhapi, cmapi, Login } from "../utils/apiLogin.js";
+import { zhapi, cmapi, Login } from "../config/apiLogin.js";
 import FlagDelete from "../utils/flagDelete.js";
 import GetJSON from "../utils/getJSON.js";
 import { CheckGlobalUsage } from "../utils/pageInfo.js";

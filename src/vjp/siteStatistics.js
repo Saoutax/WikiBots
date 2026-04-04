@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 import GetJSON from "../utils/getJSON.js";
 
 dayjs.extend(utc);

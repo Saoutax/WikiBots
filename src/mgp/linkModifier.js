@@ -1,5 +1,5 @@
 import Parser from "wikiparser-node";
-import { zhapi as api, Login } from "../utils/apiLogin.js";
+import { zhapi as api, Login } from "../config/apiLogin.js";
 import BatchQuery from "../utils/batchQuery.js";
 import GetJSON from "../utils/getJSON.js";
 import { GetLinkedPages } from "../utils/pageInfo.js";

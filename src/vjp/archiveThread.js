@@ -4,7 +4,7 @@ import timezone from "dayjs/plugin/timezone.js";
 import utc from "dayjs/plugin/utc.js";
 import _ from "lodash";
 import Parser from "wikiparser-node";
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 import parseThread from "../utils/parseThread.js";
 
 dayjs.extend(utc);

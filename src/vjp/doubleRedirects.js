@@ -1,4 +1,4 @@
-import { vjpapi as api, Login } from "../utils/apiLogin.js";
+import { vjpapi as api, Login } from "../config/apiLogin.js";
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
