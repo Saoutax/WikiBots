@@ -1,8 +1,8 @@
-import { pinyin } from "pinyin-pro";
-import { toRomaji } from "wanakana";
-import { zhapi as api, Login } from "../config/apiLogin.js";
-import { GetLinkedPages } from "../utils/pageInfo.js";
-import QueryCategory from "../utils/queryCats.js";
+import { pinyin } from 'pinyin-pro';
+import { toRomaji } from 'wanakana';
+import { zhapi as api, Login } from '../config/apiLogin.js';
+import { GetLinkedPages } from '../utils/pageInfo.js';
+import QueryCategory from '../utils/queryCats.js';
 
 function processObject(array, obj) {
     const setArray = new Set(array);
@@ -17,32 +17,32 @@ function processObject(array, obj) {
 }
 
 function format(text) {
-    const py = pinyin(text, { toneType: "none", separator: "" });
+    const py = pinyin(text, { toneType: 'none', separator: '' });
     const rm = toRomaji(py, { passRomaji: true });
     return rm.toUpperCase();
 }
 
 function grouping(obj) {
     const ranges = [
-        ["A", "C", "A-C"],
-        ["D", "F", "D-F"],
-        ["G", "I", "G-I"],
-        ["J", "L", "J-L"],
-        ["M", "O", "M-O"],
-        ["P", "R", "P-R"],
-        ["S", "U", "S-U"],
-        ["V", "X", "V-X"],
-        ["Y", "Z", "Y-Z"],
+        ['A', 'C', 'A-C'],
+        ['D', 'F', 'D-F'],
+        ['G', 'I', 'G-I'],
+        ['J', 'L', 'J-L'],
+        ['M', 'O', 'M-O'],
+        ['P', 'R', 'P-R'],
+        ['S', 'U', 'S-U'],
+        ['V', 'X', 'V-X'],
+        ['Y', 'Z', 'Y-Z'],
     ];
 
     const result = {};
 
     for (const originalKey of Object.keys(obj)) {
         const formatted = format(originalKey);
-        const firstChar = formatted.charAt(0) || "";
+        const firstChar = formatted.charAt(0) || '';
 
         const isEnglish = /^[A-Za-z]$/.test(firstChar);
-        let groupLabel = "其它";
+        let groupLabel = '其它';
 
         if (isEnglish) {
             const up = firstChar.toUpperCase();
@@ -68,19 +68,17 @@ function reportPage(obj) {
 
     for (const page of Object.keys(obj)) {
         const entries = obj[page] || {};
-        let text = "* 本页面是由[[U:机娘亚衣琴|机器人]]生成的疑似链入消歧义页面的条目报告。\n";
-        text += "* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n";
-        // prettier-ignore
-        text += "{| class=\"wikitable\"\n";
-        // prettier-ignore
-        text += "|+\n! width=\"10%\" | 消歧义页面\n! width=\"90%\" | 链入消歧义页面的条目\n";
+        let text = '* 本页面是由[[U:机娘亚衣琴|机器人]]生成的疑似链入消歧义页面的条目报告。\n';
+        text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n';
+        text += '{| class="wikitable"\n';
+        text += '|+\n! width="10%" | 消歧义页面\n! width="90%" | 链入消歧义页面的条目\n';
         for (const key of Object.keys(entries)) {
             const arr = Array.isArray(entries[key]) ? entries[key] : [];
-            const values = arr.map(v => `[[${v}]]`).join("、");
-            text += "|-\n";
+            const values = arr.map(v => `[[${v}]]`).join('、');
+            text += '|-\n';
             text += `| [[${key}]] || ${values}\n`;
         }
-        text += "|}\n\n[[Category:萌娘百科数据报告]]";
+        text += '|}\n\n[[Category:萌娘百科数据报告]]';
         result[page] = text;
     }
 
@@ -90,11 +88,11 @@ function reportPage(obj) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(api).login("zh.bot");
+    await new Login(api).login('zh.bot');
 
-    const disambig = await new QueryCategory(api).queryCat("Category:消歧义页", false, "page");
+    const disambig = await new QueryCategory(api).queryCat('Category:消歧义页', false, 'page');
 
-    const linkPages = await new GetLinkedPages(api).get(disambig, "0", false);
+    const linkPages = await new GetLinkedPages(api).get(disambig, '0', false);
 
     const deDuplicate = processObject(disambig, linkPages);
     console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
@@ -102,13 +100,13 @@ function reportPage(obj) {
     const report = reportPage(grouping(deDuplicate));
 
     for (const [title, text] of Object.entries(report)) {
-        await api.postWithToken("csrf", {
-            action: "edit",
+        await api.postWithToken('csrf', {
+            action: 'edit',
             title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
             text,
-            summary: "更新数据报告",
+            summary: '更新数据报告',
             minor: true,
-            tags: "Bot",
+            tags: 'Bot',
             bot: true,
         });
         console.log(`Done: ${title}`);

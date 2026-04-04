@@ -8,8 +8,8 @@ function splitAndJoin(list, chunkSize) {
     for (let i = 0; i < list.length; i += chunkSize) {
         const chunk = list
             .slice(i, i + chunkSize)
-            .map(item => String(item).replaceAll(" ", "_"))
-            .join("|");
+            .map(item => String(item).replaceAll(' ', '_'))
+            .join('|');
         result.push(chunk);
     }
     return result;

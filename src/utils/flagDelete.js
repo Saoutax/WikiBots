@@ -15,18 +15,18 @@ class FlagDelete {
         const success = [];
         const flagDel = async title => {
             try {
-                const { data } = await this.api.postWithToken("csrf", {
-                    action: "edit",
+                const { data } = await this.api.postWithToken('csrf', {
+                    action: 'edit',
                     title,
                     text: `<noinclude>{{即将删除|user=${user}|1=${reason}}}</noinclude>`,
                     summary,
-                    tags: "Bot",
+                    tags: 'Bot',
                     bot: true,
                     minor: true,
                     nocreate: true,
                 });
-                if (data?.error?.code === "badtoken") {
-                    await this.api.getToken("csrf", true);
+                if (data?.error?.code === 'badtoken') {
+                    await this.api.getToken('csrf', true);
                     return await flagDel(title);
                 }
                 if (data?.edit?.newtimestamp) {

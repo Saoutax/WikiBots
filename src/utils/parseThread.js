@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat.js";
-import utc from "dayjs/plugin/utc.js";
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import utc from 'dayjs/plugin/utc.js';
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
@@ -14,7 +14,7 @@ function parseThread(text) {
     const headingRegex = /^==\s*(.+?)\s*==\s*$/gm,
         timestampRegex =
             /([1-9]\d{3}年(?:0?[1-9]|1[012])月(?:0?[1-9]|[12]\d|3[01])日 *(?:[(（](?:[金木水火土日月]|(?:星期)?[一二三四五六日])[)）])? *(?:[01]\d|2[0-3]):(?:[0-5]\d)(?::[0-5]\d)? *[(（](?:[CJ]ST|UTC(?:[+-](?:[1-9]|1[012]))?)[)）])/gmu;
-    const result = { preface: "" },
+    const result = { preface: '' },
         headings = [];
 
     let match;
@@ -41,7 +41,7 @@ function parseThread(text) {
             thread = text.slice(start, end);
 
         const timestamps = [...thread.matchAll(timestampRegex)].map(m =>
-            dayjs.utc(m[1], "YYYY年M月D日 HH:mm"),
+            dayjs.utc(m[1], 'YYYY年M月D日 HH:mm'),
         );
 
         const newTimestamp = timestamps.length

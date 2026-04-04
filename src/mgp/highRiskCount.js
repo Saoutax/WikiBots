@@ -1,6 +1,6 @@
-import Parser from "wikiparser-node";
-import { zhapi as api, Login } from "../config/apiLogin.js";
-import { GetEmbeddedPages } from "../utils/pageInfo.js";
+import Parser from 'wikiparser-node';
+import { zhapi as api, Login } from '../config/apiLogin.js';
+import { GetEmbeddedPages } from '../utils/pageInfo.js';
 
 async function getParsedPage(titles) {
     const {
@@ -15,11 +15,11 @@ async function getParsedPage(titles) {
         },
     } = await api.post(
         {
-            action: "query",
-            prop: "revisions",
+            action: 'query',
+            prop: 'revisions',
             titles,
-            rvprop: "content",
-            format: "json",
+            rvprop: 'content',
+            format: 'json',
         },
         { retry: 15 },
     );
@@ -29,10 +29,10 @@ async function getParsedPage(titles) {
 async function getOldCount(pages) {
     const results = await Promise.all(
         pages.map(async page => {
-            const key = page.split("/")[0];
+            const key = page.split('/')[0];
             try {
                 const parsedPage = await getParsedPage(page);
-                const tpl = parsedPage.querySelector("template#Template:High-risk");
+                const tpl = parsedPage.querySelector('template#Template:High-risk');
                 const anonArg = tpl?.getValue(1) ?? null;
                 return [key, anonArg];
             } catch {
@@ -47,7 +47,7 @@ function formatNum(num) {
     if (num < 500) {
         return `${num}`;
     } else if (num < 1000) {
-        return "500+";
+        return '500+';
     } else {
         return `${Math.floor(num / 1000) * 1000}+`;
     }
@@ -56,16 +56,16 @@ function formatNum(num) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(api).login("zh.bot");
+    await new Login(api).login('zh.bot');
 
     const gep = new GetEmbeddedPages(api);
-    const risk = (await gep.get("Template:High-risk", "10")).filter(
-        item => item !== "Template:High-risk",
+    const risk = (await gep.get('Template:High-risk', '10')).filter(
+        item => item !== 'Template:High-risk',
     );
     const riskDocs = risk
-        .filter(item => item.includes("/doc"))
-        .filter(item => item !== "Template:High-risk/doc");
-    const riskTemplates = riskDocs.map(item => item.replace("/doc", ""));
+        .filter(item => item.includes('/doc'))
+        .filter(item => item !== 'Template:High-risk/doc');
+    const riskTemplates = riskDocs.map(item => item.replace('/doc', ''));
 
     const oldResults = await getOldCount(riskDocs);
 
@@ -82,20 +82,20 @@ function formatNum(num) {
 
                 const pageTitle = `${tpl}/doc`,
                     parsedPage = await getParsedPage(pageTitle),
-                    highrisk = parsedPage.querySelector("template#Template:High-risk");
-                highrisk.setValue("1", `${newCount}`);
+                    highrisk = parsedPage.querySelector('template#Template:High-risk');
+                highrisk.setValue('1', `${newCount}`);
 
                 await api.postWithToken(
-                    "csrf",
+                    'csrf',
                     {
-                        action: "edit",
+                        action: 'edit',
                         title: pageTitle,
                         text: parsedPage.toString(),
-                        summary: "更新模板链入数据",
+                        summary: '更新模板链入数据',
                         bot: true,
                         minor: true,
-                        tags: "Bot",
-                        format: "json",
+                        tags: 'Bot',
+                        format: 'json',
                     },
                     { retry: 10 },
                 );

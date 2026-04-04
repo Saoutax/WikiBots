@@ -1,48 +1,48 @@
-import { vjpapi as api, Login } from "../config/apiLogin.js";
+import { vjpapi as api, Login } from '../config/apiLogin.js';
 
 const PAGE_MAP = {
-    "Help:沙盒": {
+    'Help:沙盒': {
         content:
-            "<noinclude><!-- 请勿删除此行 -->{{沙盒页顶}}<!-- Please do not delete this line --></noinclude>\n== 请在这行文字底下开始测试 ==",
+            '<noinclude><!-- 请勿删除此行 -->{{沙盒页顶}}<!-- Please do not delete this line --></noinclude>\n== 请在这行文字底下开始测试 ==',
         summary:
-            "沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。",
+            '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
     },
-    "Template:沙盒": {
+    'Template:沙盒': {
         content:
-            "<noinclude><!-- 请勿删除此行 -->{{沙盒页顶}}<!-- Please do not delete this line --></noinclude>",
+            '<noinclude><!-- 请勿删除此行 -->{{沙盒页顶}}<!-- Please do not delete this line --></noinclude>',
         summary:
-            "沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。",
+            '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
     },
-    "Help:沙盒/styles.css": {
-        content: "/* [[Category:沙盒]] */",
+    'Help:沙盒/styles.css': {
+        content: '/* [[Category:沙盒]] */',
         summary:
-            "沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。",
+            '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
     },
-    "Template:沙盒/styles.css": {
-        content: "/* [[Category:在模板命名空间下的CSS页面]][[Category:沙盒]] */",
+    'Template:沙盒/styles.css': {
+        content: '/* [[Category:在模板命名空间下的CSS页面]][[Category:沙盒]] */',
         summary:
-            "沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。",
+            '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
     },
-    "Module:沙盒": {
-        content: "",
+    'Module:沙盒': {
+        content: '',
         summary:
-            "沙盒清理作业，若想保留较长时间，可建立「Module:沙盒/用户名/沙盒名」进行测试，或查阅页面历史并再次编辑本页。",
+            '沙盒清理作业，若想保留较长时间，可建立「Module:沙盒/用户名/沙盒名」进行测试，或查阅页面历史并再次编辑本页。',
     },
 };
 
 async function pageEdit(title) {
     await api
         .postWithToken(
-            "csrf",
+            'csrf',
             {
-                action: "edit",
+                action: 'edit',
                 title,
                 text: PAGE_MAP[title].content,
                 minor: true,
                 bot: true,
-                tags: "Bot",
+                tags: 'Bot',
                 summary: PAGE_MAP[title].summary,
-                watchlist: "nochange",
+                watchlist: 'nochange',
             },
             {
                 retry: 50,
@@ -55,7 +55,7 @@ async function pageEdit(title) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(api).login("vjp.bot");
+    await new Login(api).login('vjp.bot');
 
     const {
         data: {
@@ -63,10 +63,10 @@ async function pageEdit(title) {
         },
     } = await api.post(
         {
-            prop: "revisions|info",
+            prop: 'revisions|info',
             titles: Object.keys(PAGE_MAP),
-            rvprop: "timestamp|content",
-            inprop: "touched",
+            rvprop: 'timestamp|content',
+            inprop: 'touched',
         },
         {
             retry: 15,

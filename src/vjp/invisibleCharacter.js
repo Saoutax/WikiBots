@@ -3,28 +3,27 @@
  * @author 星海 <https://github.com/lovelyCARDINAL/WikiBots/blob/main/src/Clean/invisibleCharacter.js>
  */
 
-import { vjpapi as api, Login } from "../config/apiLogin.js";
-import { splitAndJoin } from "../utils/arrayUtils.js";
+import { vjpapi as api, Login } from '../config/apiLogin.js';
+import { splitAndJoin } from '../utils/arrayUtils.js';
 
 const regexMap = {
     3164: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\uFEFF]+/gu,
     default: /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu,
 };
 
-// prettier-ignore
 function replaceSpecialCharacters(wikitext, pageid, setting) {
     switch (true) {
-        case setting["3164"].includes(pageid):
-            return wikitext.replaceAll(regexMap["3164"], "");
+        case setting['3164'].includes(pageid):
+            return wikitext.replaceAll(regexMap['3164'], '');
         default:
-            return wikitext.replaceAll(regexMap.default, "");
+            return wikitext.replaceAll(regexMap.default, '');
     }
 }
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(api).login("vjp.bot");
+    await new Login(api).login('vjp.bot');
 
     const {
         data: {
@@ -39,15 +38,15 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
         },
     } = await api.post(
         {
-            prop: "revisions",
-            titles: "User:SaoMikoto/Bot/config/invisibleCharacter.json",
-            rvprop: "content",
-            list: "recentchanges",
-            rcprop: "timestamp|ids",
+            prop: 'revisions',
+            titles: 'User:SaoMikoto/Bot/config/invisibleCharacter.json',
+            rvprop: 'content',
+            list: 'recentchanges',
+            rcprop: 'timestamp|ids',
             rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            rclimit: "max",
-            rcnamespace: "*",
-            rctag: "invisibleCharacter",
+            rclimit: 'max',
+            rcnamespace: '*',
+            rctag: 'invisibleCharacter',
             rctoponly: true,
         },
         {
@@ -55,7 +54,7 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
         },
     );
 
-    const setting = JSON.parse(content || "{}");
+    const setting = JSON.parse(content || '{}');
     const pagelists = splitAndJoin(
         recentchanges.map(({ pageid }) => pageid),
         500,
@@ -69,9 +68,9 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
                     },
                 } = await api.post(
                     {
-                        prop: "revisions",
+                        prop: 'revisions',
                         pageids: pagelist,
-                        rvprop: "content",
+                        rvprop: 'content',
                     },
                     {
                         retry: 15,
@@ -84,17 +83,17 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
                             const { content: wikitext } = revisions[0];
                             await api
                                 .postWithToken(
-                                    "csrf",
+                                    'csrf',
                                     {
-                                        action: "edit",
+                                        action: 'edit',
                                         pageid,
                                         text: replaceSpecialCharacters(wikitext, pageid, setting),
                                         minor: true,
                                         bot: true,
                                         nocreate: true,
-                                        tags: "Bot",
-                                        summary: "移除不可见字符",
-                                        watchlist: "nochange",
+                                        tags: 'Bot',
+                                        summary: '移除不可见字符',
+                                        watchlist: 'nochange',
                                     },
                                     {
                                         retry: 50,
@@ -108,7 +107,7 @@ function replaceSpecialCharacters(wikitext, pageid, setting) {
             }),
         );
     } else {
-        console.log("No pages has invisible characters.");
+        console.log('No pages has invisible characters.');
     }
 
     console.log(`End time: ${new Date().toISOString()}`);

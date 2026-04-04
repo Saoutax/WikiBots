@@ -1,17 +1,17 @@
-import { uewapi as api, Login } from "../config/apiLogin.js";
-import splitAndJoin from "../utils/splitAndJoin.js";
+import { uewapi as api, Login } from '../config/apiLogin.js';
+import splitAndJoin from '../utils/splitAndJoin.js';
 
 const regexDefault =
     /[\u180E\u2005-\u200C\u200E\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFEFF]+/gu;
 
 function replaceSpecialCharacters(wikitext) {
-    return wikitext.replaceAll(regexDefault, "");
+    return wikitext.replaceAll(regexDefault, '');
 }
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(api).login("zh.bot");
+    await new Login(api).login('zh.bot');
 
     const {
         data: {
@@ -19,12 +19,12 @@ function replaceSpecialCharacters(wikitext) {
         },
     } = await api.post(
         {
-            list: "recentchanges",
-            rcprop: "timestamp|ids",
+            list: 'recentchanges',
+            rcprop: 'timestamp|ids',
             rcend: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-            rclimit: "max",
-            rcnamespace: "*",
-            rctag: "包含不可见字符",
+            rclimit: 'max',
+            rcnamespace: '*',
+            rctag: '包含不可见字符',
             rctoponly: true,
         },
         {
@@ -46,9 +46,9 @@ function replaceSpecialCharacters(wikitext) {
                     },
                 } = await api.post(
                     {
-                        prop: "revisions",
+                        prop: 'revisions',
                         pageids: pagelist,
-                        rvprop: "content",
+                        rvprop: 'content',
                     },
                     {
                         retry: 15,
@@ -61,17 +61,17 @@ function replaceSpecialCharacters(wikitext) {
                             const { content: wikitext } = revisions[0];
                             await api
                                 .postWithToken(
-                                    "csrf",
+                                    'csrf',
                                     {
-                                        action: "edit",
+                                        action: 'edit',
                                         pageid,
                                         text: replaceSpecialCharacters(wikitext),
                                         minor: true,
                                         bot: true,
                                         nocreate: true,
-                                        tags: "Bot",
-                                        summary: "移除不可见字符",
-                                        watchlist: "nochange",
+                                        tags: 'Bot',
+                                        summary: '移除不可见字符',
+                                        watchlist: 'nochange',
                                     },
                                     {
                                         retry: 50,
@@ -85,7 +85,7 @@ function replaceSpecialCharacters(wikitext) {
             }),
         );
     } else {
-        console.log("No pages has invisible characters.");
+        console.log('No pages has invisible characters.');
     }
 
     console.log(`End time: ${new Date().toISOString()}`);

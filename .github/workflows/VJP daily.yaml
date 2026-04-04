@@ -1,14 +1,14 @@
-name: "VJP daily"
+name: 'VJP daily'
 
 on:
     schedule:
-        - cron: "10 16 * * *" # 00:10 CST Everyday
-        - cron: "30 20 * * *" # 04:30 CST Everyday
-        - cron: "30 19 * * 2" # 03:30 CST Wednesday
+        - cron: '10 16 * * *' # 00:10 CST Everyday
+        - cron: '30 20 * * *' # 04:30 CST Everyday
+        - cron: '30 19 * * 2' # 03:30 CST Wednesday
     workflow_dispatch:
         inputs:
             task:
-                description: "选择任务"
+                description: '选择任务'
                 type: choice
                 required: true
                 options:

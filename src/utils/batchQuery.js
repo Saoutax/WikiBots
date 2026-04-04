@@ -1,4 +1,4 @@
-import { splitAndJoin } from "./arrayUtils.js";
+import { splitAndJoin } from './arrayUtils.js';
 
 class BatchQuery {
     constructor(api) {
@@ -20,10 +20,10 @@ class BatchQuery {
         let index = 0;
 
         for (const titles of batchTitles) {
-            const { data } = await this.api.postWithToken("csrf", {
-                action: "query",
-                prop: "revisions",
-                rvprop: "content",
+            const { data } = await this.api.postWithToken('csrf', {
+                action: 'query',
+                prop: 'revisions',
+                rvprop: 'content',
                 titles,
                 formatversion: 2,
             });

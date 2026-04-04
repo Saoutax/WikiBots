@@ -1,14 +1,14 @@
-import Parser from "wikiparser-node";
-import { zhapi as api, Login } from "../config/apiLogin.js";
-import GetJSON from "../utils/getJSON.js";
+import Parser from 'wikiparser-node';
+import { zhapi as api, Login } from '../config/apiLogin.js';
+import GetJSON from '../utils/getJSON.js';
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(api).login("zh.bot");
+    await new Login(api).login('zh.bot');
 
     const { sectiontitle, summary } = await new GetJSON(api).get(
-        "User:SaoMikoto/Bot/config/monthly.json",
+        'User:SaoMikoto/Bot/config/monthly.json',
     );
 
     const {
@@ -22,33 +22,32 @@ import GetJSON from "../utils/getJSON.js";
             },
         },
     } = await api.get({
-        action: "query",
-        prop: "revisions",
-        rvprop: "content",
-        titles: "萌娘百科:萌娘百科月报/订阅",
+        action: 'query',
+        prop: 'revisions',
+        rvprop: 'content',
+        titles: '萌娘百科:萌娘百科月报/订阅',
     });
 
     const parsed = Parser.parse(content),
-        links = parsed.querySelectorAll("list + link");
+        links = parsed.querySelectorAll('list + link');
 
     const pages = [
-        ...new Set(links.map(item => item.name).filter(name => name.startsWith("User_talk:"))),
+        ...new Set(links.map(item => item.name).filter(name => name.startsWith('User_talk:'))),
     ];
 
-    // prettier-ignore
     const text =
-        "{{subst:User:SaoMikoto/Bot/config/monthly}}<span style=\"display:none\">~~~~</span>";
+        '{{subst:User:SaoMikoto/Bot/config/monthly}}<span style="display:none">~~~~</span>';
 
     for (const title of pages) {
-        await api.postWithToken("csrf", {
-            action: "edit",
+        await api.postWithToken('csrf', {
+            action: 'edit',
             title,
-            section: "new",
+            section: 'new',
             sectiontitle,
             text,
-            tags: "Bot",
+            tags: 'Bot',
             summary,
-            watchlist: "nochange",
+            watchlist: 'nochange',
             bot: true,
         });
         console.log(`Done: ${title}`);

@@ -1,24 +1,24 @@
-import { zhapi, cmapi, Login } from "../config/apiLogin.js";
-import FlagDelete from "../utils/flagDelete.js";
-import GetJSON from "../utils/getJSON.js";
-import { CheckGlobalUsage } from "../utils/pageInfo.js";
-import QueryCategory from "../utils/queryCats.js";
+import { zhapi, cmapi, Login } from '../config/apiLogin.js';
+import FlagDelete from '../utils/flagDelete.js';
+import GetJSON from '../utils/getJSON.js';
+import { CheckGlobalUsage } from '../utils/pageInfo.js';
+import QueryCategory from '../utils/queryCats.js';
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await new Login(zhapi).login("zh.bot");
-    const { lgusername } = await new Login(cmapi).login("cm.bot");
+    await new Login(zhapi).login('zh.bot');
+    const { lgusername } = await new Login(cmapi).login('cm.bot');
 
     const { categories } = await new GetJSON(zhapi).get(
-        "User:SaoMikoto/Bot/config/deleteUnused.json",
+        'User:SaoMikoto/Bot/config/deleteUnused.json',
     );
 
-    const files = await new QueryCategory(cmapi).queryCat(categories, true, "file");
+    const files = await new QueryCategory(cmapi).queryCat(categories, true, 'file');
     const unLink = await new QueryCategory(cmapi).queryCat(
-        "Category:非链入使用的文件",
+        'Category:非链入使用的文件',
         true,
-        "file",
+        'file',
     );
 
     const usage = await new CheckGlobalUsage(cmapi).check(files);
@@ -28,7 +28,7 @@ import QueryCategory from "../utils/queryCats.js";
 
     const success = await new FlagDelete(cmapi).flagDelete(
         needDel,
-        "无使用或不再使用的文件",
+        '无使用或不再使用的文件',
         lgusername,
     );
     console.log(success);

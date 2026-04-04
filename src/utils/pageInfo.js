@@ -1,4 +1,4 @@
-import { chunkArray } from "./arrayUtils.js";
+import { chunkArray } from './arrayUtils.js';
 
 class CheckGlobalUsage {
     constructor(api) {
@@ -19,11 +19,11 @@ class CheckGlobalUsage {
 
                     do {
                         const { data } = await this.api.post({
-                            action: "query",
-                            prop: "globalusage",
-                            titles: group.join("|"),
+                            action: 'query',
+                            prop: 'globalusage',
+                            titles: group.join('|'),
                             ...(gucontinue ? { gucontinue } : {}),
-                            gulimit: "max",
+                            gulimit: 'max',
                         });
 
                         for (const page of Object.values(data?.query?.pages || {})) {
@@ -42,7 +42,7 @@ class CheckGlobalUsage {
             const result = Object.assign({}, ...results);
             return result;
         } catch (err) {
-            console.error("CheckGlobalUsage error:", err);
+            console.error('CheckGlobalUsage error:', err);
             return Object.fromEntries(titles.map(t => [t, true]));
         }
     }
@@ -59,21 +59,21 @@ class CheckRedirect {
      * @returns {Promise<boolean|Object<string, boolean>>} - 单个查询返回 boolean，批量查询返回对象
      */
     async check(input) {
-        const isSingle = typeof input === "string";
+        const isSingle = typeof input === 'string';
         const titles = isSingle ? [input] : input;
 
         try {
             const results = await Promise.all(
                 chunkArray(titles).map(async group => {
                     const res = await this.api.post({
-                        action: "query",
-                        prop: "info",
-                        titles: group.join("|"),
+                        action: 'query',
+                        prop: 'info',
+                        titles: group.join('|'),
                     });
 
                     const pages = res?.data?.query?.pages || {};
                     return Object.fromEntries(
-                        Object.values(pages).map(p => [p.title, "redirect" in p]),
+                        Object.values(pages).map(p => [p.title, 'redirect' in p]),
                     );
                 }),
             );
@@ -81,7 +81,7 @@ class CheckRedirect {
             const result = Object.assign({}, ...results);
             return isSingle ? result[input] : result;
         } catch (err) {
-            console.error("CheckRedirect error:", err);
+            console.error('CheckRedirect error:', err);
             return isSingle ? false : Object.fromEntries(titles.map(t => [t, false]));
         }
     }
@@ -98,7 +98,7 @@ class GetEmbeddedPages {
      * @param {string} [namespace="*"] - 命名空间
      * @returns {Promise<string[]>} 页面标题数组
      */
-    async get(title, namespace = "*") {
+    async get(title, namespace = '*') {
         const result = [];
         const eol = Symbol();
         let geicontinue;
@@ -106,10 +106,10 @@ class GetEmbeddedPages {
         while (geicontinue !== eol) {
             const { data } = await this.api.post(
                 {
-                    generator: "embeddedin",
+                    generator: 'embeddedin',
                     geititle: title,
                     geinamespace: namespace,
-                    geilimit: "500",
+                    geilimit: '500',
                     ...(geicontinue ? { geicontinue } : {}),
                 },
                 { retry: 10 },
@@ -138,7 +138,7 @@ class GetLinkedPages {
      * @param {boolean} [redirect=false] - 是否包含重定向
      * @returns {Promise<Object<string, string[]>>} - 对象键为输入标题，值为链入页面标题数组
      */
-    async get(input, namespace = "*", redirect = false) {
+    async get(input, namespace = '*', redirect = false) {
         const titles = Array.isArray(input) ? input : [input];
 
         const results = await Promise.all(
@@ -148,12 +148,12 @@ class GetLinkedPages {
 
                 do {
                     const res = await this.api.post({
-                        prop: "linkshere",
-                        titles: group.join("|"),
-                        lhprop: "title",
+                        prop: 'linkshere',
+                        titles: group.join('|'),
+                        lhprop: 'title',
                         lhnamespace: namespace,
-                        lhshow: redirect ? "redirects|!redirects" : "!redirects",
-                        lhlimit: "max",
+                        lhshow: redirect ? 'redirects|!redirects' : '!redirects',
+                        lhlimit: 'max',
                         formatversion: 2,
                         ...(lhcontinue ? { lhcontinue } : {}),
                     });

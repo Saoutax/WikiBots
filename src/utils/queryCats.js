@@ -10,7 +10,7 @@ class QueryCategory {
      * @param {string} [cmtype='page|subcat|file'] - 默认查询页面、子分类和文件
      * @returns {Promise<string[]>} - 分类下页面
      */
-    async queryCat(categories, recursive = false, cmtype = "page|subcat|file") {
+    async queryCat(categories, recursive = false, cmtype = 'page|subcat|file') {
         categories = [].concat(categories);
 
         const visited = new Set(),
@@ -37,11 +37,11 @@ class QueryCategory {
         do {
             const { data } = await this.api.post(
                 {
-                    action: "query",
-                    list: "categorymembers",
+                    action: 'query',
+                    list: 'categorymembers',
                     cmtitle: cat,
                     cmtype,
-                    cmlimit: "max",
+                    cmlimit: 'max',
                     cmcontinue,
                 },
                 { retry: 10 },

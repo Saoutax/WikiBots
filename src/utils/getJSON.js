@@ -20,9 +20,9 @@ class GetJSON {
                 },
             },
         } = await this.api.post({
-            action: "query",
-            prop: "revisions",
-            rvprop: "content",
+            action: 'query',
+            prop: 'revisions',
+            rvprop: 'content',
             titles: title,
         });
 

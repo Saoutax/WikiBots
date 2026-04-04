@@ -1,14 +1,14 @@
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc.js";
-import { zhapi, cmapi, Login } from "../config/apiLogin.js";
-import GetJSON from "../utils/getJSON.js";
-import QueryCategory from "../utils/queryCats.js";
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc.js';
+import { zhapi, cmapi, Login } from '../config/apiLogin.js';
+import GetJSON from '../utils/getJSON.js';
+import QueryCategory from '../utils/queryCats.js';
 
 dayjs.extend(utc);
 
 const now = dayjs.utc();
 const start = now.toISOString();
-const end = now.subtract(26, "hour").toISOString();
+const end = now.subtract(26, 'hour').toISOString();
 
 async function getPages() {
     const pages = new Set();
@@ -16,14 +16,14 @@ async function getPages() {
 
     do {
         const { data } = await zhapi.post({
-            list: "recentchanges",
-            rcprop: "title|timestamp",
-            rctype: "edit|new",
-            rctag: "疑似外链调用内部文件",
-            rcnamespace: "0|4|8|10|12|14|274|828",
+            list: 'recentchanges',
+            rcprop: 'title|timestamp',
+            rctype: 'edit|new',
+            rctag: '疑似外链调用内部文件',
+            rcnamespace: '0|4|8|10|12|14|274|828',
             rcstart: start,
             rcend: end,
-            rclimit: "max",
+            rclimit: 'max',
             rccontinue: cont,
         });
 
@@ -46,11 +46,11 @@ async function matchFiles(titles) {
     const matches = {};
 
     const { excludeCategory, excludePrefix, excludeTitle, excludeFile } = await GetJSON(zhapi).get(
-        "User:SaoMikoto/Bot/config/markImg.json",
+        'User:SaoMikoto/Bot/config/markImg.json',
     );
 
     const exclude = [
-        ...(await new QueryCategory(zhapi).queryCat(excludeCategory, false, "page")),
+        ...(await new QueryCategory(zhapi).queryCat(excludeCategory, false, 'page')),
         ...excludeTitle,
     ];
 
@@ -60,10 +60,10 @@ async function matchFiles(titles) {
         }
 
         const { data } = await zhapi.post({
-            action: "query",
-            prop: "revisions",
+            action: 'query',
+            prop: 'revisions',
             titles: title,
-            rvprop: "content",
+            rvprop: 'content',
             formatversion: 2,
         });
 
@@ -115,10 +115,10 @@ async function notInCat(fileList, category) {
     const results = await Promise.all(
         fileList.map(async file => {
             const { data } = await cmapi.post({
-                action: "query",
-                prop: "categories",
+                action: 'query',
+                prop: 'categories',
                 titles: file,
-                cllimit: "max",
+                cllimit: 'max',
                 formatversion: 2,
             });
             const page = data?.query?.pages?.[0];
@@ -135,15 +135,15 @@ async function notInCat(fileList, category) {
 
 async function addTemplate(file, pageName) {
     await cmapi.postWithToken(
-        "csrf",
+        'csrf',
         {
-            action: "edit",
+            action: 'edit',
             title: file,
             appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
-            summary: "标记存在非链入使用的文件",
+            summary: '标记存在非链入使用的文件',
             minor: true,
             bot: true,
-            tags: "Bot",
+            tags: 'Bot',
         },
         { retry: 10 },
     );
@@ -154,12 +154,12 @@ async function addTemplate(file, pageName) {
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
-    await Promise.all([new Login(zhapi).login("zh.bot"), new Login(cmapi).login("cm.bot")]);
+    await Promise.all([new Login(zhapi).login('zh.bot'), new Login(cmapi).login('cm.bot')]);
 
     const pages = await getPages();
     const fileList = await matchFiles(pages);
     const titles = Object.keys(fileList);
-    const needMark = await notInCat(titles, "非链入使用的文件");
+    const needMark = await notInCat(titles, '非链入使用的文件');
 
     for (const file of needMark) {
         await addTemplate(file, fileList[file]);
