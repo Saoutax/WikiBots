@@ -7,7 +7,7 @@ import GetJSON from '../utils/getJSON.js';
 
     await new Login(api).login('zh.bot');
 
-    const { sectiontitle, summary } = await new GetJSON(api).get(
+    const { sectiontitle, pretext, summary } = await new GetJSON(api).get(
         'User:SaoMikoto/Bot/config/monthly.json',
     );
 
@@ -35,10 +35,12 @@ import GetJSON from '../utils/getJSON.js';
         ...new Set(links.map(item => item.name).filter(name => name.startsWith('User_talk:'))),
     ];
 
-    const text =
+    const monthly =
         '{{subst:User:SaoMikoto/Bot/config/monthly}}<span style="display:none">~~~~</span>';
 
     for (const title of pages) {
+        const user = title.match(/User_talk:([^/\]]+)(?:\/[^\]]*)?/)?.[1],
+            text = `<span style="display:none">${user ? `{{@|${user}}}` : ''}${pretext}</span>${monthly}`;
         await api.postWithToken('csrf', {
             action: 'edit',
             title,
