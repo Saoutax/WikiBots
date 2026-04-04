@@ -45,8 +45,8 @@ importers:
         specifier: ^7.6.0
         version: 7.6.0
       wikiparser-node:
-        specifier: ^1.37.1
-        version: 1.37.1
+        specifier: ^1.36.0
+        version: 1.36.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.4
@@ -77,9 +77,16 @@ packages:
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
+  '@bhsd/cm-util@0.1.0':
+    resolution: {integrity: sha512-gqwObmIVosIH3WulV9p/IoO8Rm90QofFN44XoaitjN3uopAMt3E6ipPm3OegjvUqrUPAbwcUrwZoUCZ5cI+OqA==}
+
   '@bhsd/cm-util@1.0.0':
     resolution: {integrity: sha512-M6mxMlLd1TxTVj632Be4MegmmRRnUx3V7LhaVO3J7+UdJFzWTYH5qvhCp77gIsQcBXfegn+84b1yiPtWAa7zSw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+
+  '@bhsd/common@1.4.0':
+    resolution: {integrity: sha512-zA/WQcjnhmM3ltprPnbDgDBVcg2WOawP65cdyxyhQhwmGmHIVzvjeqAPkyg0rKKEZT7UcCCm2Nkd+fiP1oFvnQ==}
+    engines: {node: '>=20.19.0'}
 
   '@bhsd/common@2.0.0':
     resolution: {integrity: sha512-vROxpbtwZUneugg/cbbziqaqAvZKuxne3oDM8/fUUhCy51d1SSNv27ifnlk5dB0K7h5NyFoyHUguRVrbsgp6sA==}
@@ -642,6 +649,10 @@ packages:
 
   entities@2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
+
+  entities@7.0.1:
+    resolution: {integrity: sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==}
+    engines: {node: '>=0.12'}
 
   entities@8.0.0:
     resolution: {integrity: sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA==}
@@ -1478,9 +1489,8 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  prism-wiki@2.0.0:
-    resolution: {integrity: sha512-5BV0tIQQqQD7AN5GEeqnqldiPdkhjU13JWXfn5NgsYq+dwO7Nb+86X6QUHRQ6Oz7JDuInl5RybyKGCpNhbojVg==}
-    engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+  prism-wiki@1.3.1:
+    resolution: {integrity: sha512-e1VN9bvSqr6hGA2DTRUQFsx9axkI0wo9m6p5vRM4938d3a9kg0IpH2WZu8pUKYNG2dCMnjaGhrbxo3/K5rkqng==}
 
   prismjs@1.30.0:
     resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
@@ -1821,9 +1831,9 @@ packages:
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
 
-  wikiparser-node@1.37.1:
-    resolution: {integrity: sha512-wWK4l4ZMAZONqc99r++npqKb6x9/Zxyv0radrGPtbsI3XDTvc0MlYBbbyc40JHkWuTPkNwavghBZXugcxiMvCQ==}
-    engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+  wikiparser-node@1.36.0:
+    resolution: {integrity: sha512-Majv6OoKJ6MuXDOlW4au4RAkLosoTCpDfXjBSwxmbawiwoyZAgY8UTPCopVt+N/XOTRIkkOI6bG8egOvdYTeWg==}
+    engines: {node: '>=20.19.0'}
     hasBin: true
 
   word-wrap@1.2.5:
@@ -1859,9 +1869,15 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.28.5': {}
 
-  '@bhsd/cm-util@1.0.0': {}
+  '@bhsd/cm-util@0.1.0': {}
 
-  '@bhsd/common@2.0.0': {}
+  '@bhsd/cm-util@1.0.0':
+    optional: true
+
+  '@bhsd/common@1.4.0': {}
+
+  '@bhsd/common@2.0.0':
+    optional: true
 
   '@bhsd/stylelint-util@1.0.1(stylelint@17.6.0)':
     dependencies:
@@ -2471,6 +2487,9 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   entities@2.2.0: {}
+
+  entities@7.0.1:
+    optional: true
 
   entities@8.0.0:
     optional: true
@@ -3577,7 +3596,7 @@ snapshots:
 
   prettier@3.8.1: {}
 
-  prism-wiki@2.0.0:
+  prism-wiki@1.3.1:
     dependencies:
       '@types/prismjs': 1.26.6
       wikilint: 2.38.0
@@ -4076,18 +4095,18 @@ snapshots:
       - typescript
     optional: true
 
-  wikiparser-node@1.37.1:
+  wikiparser-node@1.36.0:
     dependencies:
-      '@bhsd/cm-util': 1.0.0
-      '@bhsd/common': 2.0.0
+      '@bhsd/cm-util': 0.1.0
+      '@bhsd/common': 1.4.0
       '@bhsd/stylelint-util': 1.0.1(stylelint@17.6.0)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
     optionalDependencies:
       color-name: 2.1.0
-      entities: 8.0.0
+      entities: 7.0.1
       mathoid-texvcjs: 0.6.0
-      prism-wiki: 2.0.0
+      prism-wiki: 1.3.1
       prismjs: 1.30.0
       stylelint: 17.6.0
       vscode-css-languageservice: 6.3.10

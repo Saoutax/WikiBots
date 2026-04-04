@@ -45,7 +45,7 @@ async function getPages() {
 async function matchFiles(titles) {
     const matches = {};
 
-    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } = await GetJSON(zhapi).get(
+    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } = await new GetJSON(zhapi).get(
         'User:SaoMikoto/Bot/config/markImg.json',
     );
 

@@ -19,7 +19,7 @@
         "url": "https://github.com/Saoutax/WikiBots/issues"
     },
     "homepage": "https://github.com/Saoutax/WikiBots#readme",
-    "packageManager": "pnpm@10.30.3",
+    "packageManager": "pnpm@10.33.0",
     "dependencies": {
         "buffer": "^6.0.3",
         "dayjs": "^1.11.20",
@@ -33,7 +33,7 @@
         "rss-parser": "^3.13.0",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.6.0",
-        "wikiparser-node": "^1.37.1"
+        "wikiparser-node": "^1.36.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",
