@@ -41,6 +41,6 @@
         "eslint": "^9.39.2",
         "eslint-plugin-import": "^2.32.0",
         "globals": "^17.4.0",
-        "prettier": "^3.8.1"
+        "prettier": "^3.8.2"
     }
 }
