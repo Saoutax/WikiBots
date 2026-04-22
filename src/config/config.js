@@ -56,6 +56,10 @@ const config = {
             name: 'SaoMikoto@SaoMikoto',
             password: env.QW_MAIN,
         },
+        bot: {
+            name: 'Saoutax-bot@Saoutax-bot',
+            password: env.QW_BOT,
+        },
     },
 };
 
