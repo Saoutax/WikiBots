@@ -32,6 +32,8 @@
         "utils/chunkArray",
         "utils/formatNamespace",
         "utils/parseThread",
+        "utils/readAndWrite",
+        "utils/recordTime",
         "utils/splitAndJoin"
     ]
 }
