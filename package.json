@@ -1,25 +1,23 @@
 {
     "name": "wikibots",
     "description": "用于多站点的MediaWiki机器人",
-    "scripts": {
-        "test": "node src/tmp/test.js",
-        "lint": "eslint .",
-        "lint:fix": "eslint --fix .",
-        "prettier": "prettier --check .",
-        "prettier:fix": "prettier --write ."
+    "homepage": "https://github.com/Saoutax/WikiBots#readme",
+    "bugs": {
+        "url": "https://github.com/Saoutax/WikiBots/issues"
     },
+    "license": "MIT",
+    "author": "Saoutax",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Saoutax/WikiBots.git"
     },
-    "author": "Saoutax",
-    "license": "MIT",
     "type": "module",
-    "bugs": {
-        "url": "https://github.com/Saoutax/WikiBots/issues"
+    "scripts": {
+        "test": "tsx src/bot/tmp/test.ts",
+        "lint": "oxlint",
+        "lint:fix": "oxlint --fix",
+        "fmt": "oxfmt"
     },
-    "homepage": "https://github.com/Saoutax/WikiBots#readme",
-    "packageManager": "pnpm@10.33.0",
     "dependencies": {
         "buffer": "^6.0.3",
         "dayjs": "^1.11.20",
@@ -29,18 +27,19 @@
         "mwn": "^3.0.1",
         "octokit": "^5.0.5",
         "opencc-js": "^1.0.5",
+        "p-limit": "^7.3.0",
         "pinyin-pro": "^3.28.1",
-        "rss-parser": "^3.13.0",
+        "tsx": "^4.21.0",
+        "typescript": "^6.0.3",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.6.0",
         "wikiparser-node": "^1.38.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.4",
-        "@eslint/markdown": "^8.0.1",
-        "eslint": "^9.39.2",
-        "eslint-plugin-import": "^2.32.0",
-        "globals": "^17.5.0",
-        "prettier": "^3.8.3"
-    }
+        "@types/lodash": "^4.17.24",
+        "@types/node": "^25.6.0",
+        "oxfmt": "^0.46.0",
+        "oxlint": "^1.61.0"
+    },
+    "packageManager": "pnpm@10.33.0"
 }
