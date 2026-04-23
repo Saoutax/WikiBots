@@ -33,7 +33,7 @@
         "typescript": "^6.0.3",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.6.0",
-        "wikiparser-node": "^1.38.1"
+        "wikiparser-node": "^1.39.1"
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",
