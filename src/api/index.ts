@@ -39,6 +39,13 @@ const qwapi = new MediaWikiApi({
     },
 });
 
+const elainaapi = new MediaWikiApi({
+    baseURL: config.elaina.api,
+    fexiosConfigs: {
+        headers: { 'user-agent': config.useragent },
+    },
+});
+
 class Login {
     constructor(private api: MediaWikiApi) {}
 
@@ -59,6 +66,9 @@ class Login {
                 break;
             case 'qw':
                 sitename = 'QiuwenBaike';
+                break;
+            case 'elaina':
+                sitename = 'ElainaWiki';
                 break;
         }
 
@@ -82,4 +92,4 @@ class Login {
     }
 }
 
-export { cmapi, zhapi, vjpapi, uewapi, qwapi, Login };
+export { cmapi, zhapi, vjpapi, uewapi, qwapi, elainaapi, Login };

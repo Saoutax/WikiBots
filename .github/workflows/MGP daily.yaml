@@ -42,7 +42,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -64,7 +64,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -86,7 +86,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -107,7 +107,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -129,7 +129,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -150,7 +150,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -171,7 +171,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -191,7 +191,7 @@ jobs:
             - name: Set Node Version
               uses: actions/setup-node@v4
               with:
-                  node-version: 20.x
+                  node-version: 22.x
                   cache: pnpm
             - name: Install dependencies
               run: pnpm install --frozen-lockfile

@@ -67,6 +67,19 @@ const config = {
             },
         },
     },
+    elaina: {
+        api: 'https://elaina.miraheze.org/w/api.php',
+        accounts: {
+            bot: {
+                name: 'MisakaNetwork@MisakaNetwork',
+                password: env.MH_BOT,
+            },
+            main: {
+                name: 'Saoutax@Saoutax',
+                password: env.MH_MAIN,
+            },
+        },
+    },
 };
 
 export default config as Config;

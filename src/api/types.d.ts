@@ -17,9 +17,10 @@ interface Config {
     vjp: Site;
     uew: Site;
     qw: Site;
+    elaina: Site;
 }
 
 interface SiteAccount {
-    site: 'zh' | 'cm' | 'uew' | 'vjp' | 'qw';
+    site: 'zh' | 'cm' | 'uew' | 'vjp' | 'qw' | 'elaina';
     account: 'main' | 'bot';
 }

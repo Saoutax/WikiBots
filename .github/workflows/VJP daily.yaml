@@ -23,6 +23,7 @@ on:
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
+    VJP_BOT: ${{ secrets.VJP_BOT }}
 
 jobs:
     cleanSandbox:
@@ -42,9 +43,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/cleanSandbox.js
+              run: npx tsx src/bot/vjp/cleanSandbox.ts
 
     invisibleCharacter:
         if: |
@@ -63,9 +62,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/invisibleCharacter.js
+              run: npx tsx src/bot/vjp/invisibleCharacter.ts
 
     activeCount:
         if: |
@@ -84,9 +81,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/activeCount.js
+              run: npx tsx src/bot/vjp/activeCount.ts
 
     mostTranscludedPages:
         if: |
@@ -105,9 +100,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/mostTranscludedPages.js
+              run: npx tsx src/bot/vjp/mostTranscludedPages.ts
 
     editCount:
         if: |
@@ -126,9 +119,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/editCount.js
+              run: npx tsx src/bot/vjp/editCount.ts
 
     archiveThread:
         if: |
@@ -147,9 +138,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/archiveThread.js
+              run: npx tsx src/bot/vjp/archiveThread.ts
 
     siteStatistics:
         if: |
@@ -168,9 +157,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/siteStatistics.js
+              run: npx tsx src/bot/vjp/siteStatistics.ts
 
     doubleRedirects:
         if: |
@@ -189,6 +176,4 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
             - name: Run Script
-              env:
-                  VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: npx tsx src/bot/vjp/doubleRedirects.js
+              run: npx tsx src/bot/vjp/doubleRedirects.ts
