@@ -27,6 +27,7 @@ on:
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
     deleteRedirect:
