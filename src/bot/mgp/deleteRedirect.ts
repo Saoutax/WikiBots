@@ -83,7 +83,7 @@ const getRecentMoves = async () => {
         console.log('没有需要挂删的重定向');
     }
 
-    await updateTimeData('deleteRedirect', leend);
+    await updateTimeData('deleteRedirect', lestart);
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();
