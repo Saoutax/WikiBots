@@ -44,7 +44,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/cleanSandbox.js
+              run: npx tsx src/bot/vjp/cleanSandbox.js
 
     invisibleCharacter:
         if: |
@@ -65,7 +65,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/invisibleCharacter.js
+              run: npx tsx src/bot/vjp/invisibleCharacter.js
 
     activeCount:
         if: |
@@ -86,7 +86,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/activeCount.js
+              run: npx tsx src/bot/vjp/activeCount.js
 
     mostTranscludedPages:
         if: |
@@ -107,7 +107,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/mostTranscludedPages.js
+              run: npx tsx src/bot/vjp/mostTranscludedPages.js
 
     editCount:
         if: |
@@ -128,7 +128,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/editCount.js
+              run: npx tsx src/bot/vjp/editCount.js
 
     archiveThread:
         if: |
@@ -149,7 +149,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/archiveThread.js
+              run: npx tsx src/bot/vjp/archiveThread.js
 
     siteStatistics:
         if: |
@@ -170,7 +170,7 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/siteStatistics.js
+              run: npx tsx src/bot/vjp/siteStatistics.js
 
     doubleRedirects:
         if: |
@@ -191,4 +191,4 @@ jobs:
             - name: Run Script
               env:
                   VJP_BOT: ${{ secrets.VJP_BOT }}
-              run: tsx src/bot/vjp/doubleRedirects.js
+              run: npx tsx src/bot/vjp/doubleRedirects.js

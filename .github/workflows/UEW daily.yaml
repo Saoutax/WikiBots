@@ -38,7 +38,7 @@ jobs:
             - name: Run Script
               env:
                   UEW_BOT: ${{ secrets.UEW_BOT }}
-              run: tsx src/bot/uew/cleanSandbox.js
+              run: npx tsx src/bot/uew/cleanSandbox.js
 
     invisibleCharacter:
         if: |
@@ -59,4 +59,4 @@ jobs:
             - name: Run Script
               env:
                   UEW_BOT: ${{ secrets.UEW_BOT }}
-              run: tsx src/bot/uew/invisibleCharacter.js
+              run: npx tsx src/bot/uew/invisibleCharacter.js

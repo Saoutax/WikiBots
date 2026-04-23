@@ -49,7 +49,7 @@ jobs:
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
                   CM_BOT: ${{ secrets.CM_BOT }}
-              run: tsx src/bot/mgp/deleteRedirect.ts
+              run: npx tsx src/bot/mgp/deleteRedirect.ts
 
     markImg:
         if: |
@@ -71,7 +71,7 @@ jobs:
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
                   CM_BOT: ${{ secrets.CM_BOT }}
-              run: tsx src/bot/mgp/markImg.ts
+              run: npx tsx src/bot/mgp/markImg.ts
 
     highRiskCount:
         if: |
@@ -92,7 +92,7 @@ jobs:
             - name: Run Script
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
-              run: tsx src/bot/mgp/highRiskCount.ts
+              run: npx tsx src/bot/mgp/highRiskCount.ts
 
     deleteUnused:
         if: |
@@ -114,7 +114,7 @@ jobs:
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
                   CM_BOT: ${{ secrets.CM_BOT }}
-              run: tsx src/bot/mgp/deleteUnused.ts
+              run: npx tsx src/bot/mgp/deleteUnused.ts
 
     disambigLinks:
         if: |
@@ -135,7 +135,7 @@ jobs:
             - name: Run Script
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
-              run: tsx src/bot/mgp/disambigLinks.ts
+              run: npx tsx src/bot/mgp/disambigLinks.ts
 
     correctNavFormat:
         if: |
@@ -156,7 +156,7 @@ jobs:
             - name: Run Script
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
-              run: tsx src/bot/mgp/correctNavFormat.ts
+              run: npx tsx src/bot/mgp/correctNavFormat.ts
 
     removeExtraPipe:
         if: |
@@ -177,7 +177,7 @@ jobs:
             - name: Run Script
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
-              run: tsx src/bot/mgp/removeExtraPipe.ts
+              run: npx tsx src/bot/mgp/removeExtraPipe.ts
 
     linkModifier:
         if: |
@@ -197,4 +197,4 @@ jobs:
             - name: Run Script
               env:
                   ZH_BOT: ${{ secrets.ZH_BOT }}
-              run: tsx src/bot/mgp/linkModifier.ts
+              run: npx tsx src/bot/mgp/linkModifier.ts

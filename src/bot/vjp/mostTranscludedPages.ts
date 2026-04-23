@@ -91,7 +91,9 @@ interface QueryPageResult {
                 noCache: true,
             },
         )
-        .then(({ data }: { data: any }) => console.log(JSON.stringify(data)));
+        .then(() => {
+            console.log('Done.');
+        });
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

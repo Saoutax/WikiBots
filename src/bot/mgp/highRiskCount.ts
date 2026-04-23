@@ -41,7 +41,7 @@ const getNewCount = async (templates: string[]) => {
         Object.entries(pageContent).map(async ([title, content]) => {
             const root = Parser.parse(content),
                 highRiskTemplate = root.querySelector<TranscludeToken>(
-                    `template[name="Template:High-risk"]`,
+                    'template[name="Template:High-risk"]',
                 ),
                 count = highRiskTemplate?.getValue(1),
                 newNum = newCount[title];
