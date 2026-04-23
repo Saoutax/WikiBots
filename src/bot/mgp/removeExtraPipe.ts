@@ -49,7 +49,7 @@ const getPages = async () => {
     const bot = new BotInstance(api);
 
     const pages = await getPages(),
-        pageContent = bot.batchQuery(pages);
+        pageContent = await bot.batchQuery(pages);
 
     const modify: Record<string, string> = {};
     for (const [title, content] of Object.entries(pageContent)) {

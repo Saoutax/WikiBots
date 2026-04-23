@@ -36,7 +36,7 @@ const getNewCount = async (templates: string[]) => {
 
     const newCount = await getNewCount(risk);
 
-    const pageContent = bot.batchQuery(riskDocs);
+    const pageContent = await bot.batchQuery(riskDocs);
     await Promise.all(
         Object.entries(pageContent).map(async ([title, content]) => {
             const root = Parser.parse(content),
