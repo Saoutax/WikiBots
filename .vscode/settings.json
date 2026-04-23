@@ -1,5 +1,6 @@
 {
     "conventionalCommits.scopes": [
+        "ELAINA/cleanSandbox",
         "MGP/correctNavFormat",
         "MGP/deleteRedirect",
         "MGP/deleteUnused",
