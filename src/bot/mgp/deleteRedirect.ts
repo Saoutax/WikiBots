@@ -10,7 +10,7 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Shanghai');
 
 const now = dayjs().utc(),
-    lestart = now.toString(),
+    lestart = now.toISOString(),
     leend = await getTimeData('deleteRedirect');
 
 const getRecentMoves = async () => {
