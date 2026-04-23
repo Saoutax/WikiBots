@@ -25,7 +25,7 @@ import { CleanSandbox } from '../modules';
                 '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
         },
         'Template:沙盒/styles.css': {
-            content: '/* [[Category:在模板命名空间下的CSS页面]] */',
+            content: '/* [[Category:位于模板命名空间的CSS页面]] */',
             summary:
                 '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/Sandbox|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
         },
