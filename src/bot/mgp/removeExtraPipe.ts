@@ -5,16 +5,17 @@ import type { MwApiResponse } from 'wiki-saikou';
 import Parser, { type LinkToken } from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
+import { getTimeData, updateTimeData } from '@/utils';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Shanghai');
 
-const now = dayjs.utc();
-const start = now.toISOString();
-const end = now.subtract(1, 'day').toISOString();
+const now = dayjs.utc(),
+    rcstart = now.toISOString(),
+    rcend = await getTimeData('removeExtraPipe');
 
-async function getPages() {
+const getPages = async () => {
     const titles = new Set<string>();
     let cont;
     do {
@@ -22,8 +23,8 @@ async function getPages() {
             format: 'json',
             list: 'recentchanges',
             formatversion: '2',
-            rcstart: start,
-            rcend: end,
+            rcstart,
+            rcend,
             rcnamespace: '0|10', // (main), Template
             rclimit: 'max',
             rccontinue: cont,
@@ -38,7 +39,7 @@ async function getPages() {
         cont = data.continue?.rccontinue;
     } while (cont);
     return [...titles];
-}
+};
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
@@ -85,6 +86,8 @@ async function getPages() {
         });
         console.log(`√ ${title}`);
     }
+
+    await updateTimeData('removeExtraPipe', rcstart);
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

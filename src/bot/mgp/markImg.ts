@@ -1,14 +1,18 @@
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import type { MwApiResponse } from 'wiki-saikou';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
+import { getTimeData, updateTimeData } from '@/utils';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Shanghai');
 
-const now = dayjs.utc();
-const start = now.toISOString();
-const end = now.subtract(26, 'hour').toISOString();
+const now = dayjs.utc(),
+    rcstart = now.toISOString(),
+    rcend = await getTimeData('markImg');
 
 const zhbot = new BotInstance(zhapi);
 
@@ -23,8 +27,8 @@ const getPages = async () => {
             rctype: 'edit|new',
             rctag: '疑似外链调用内部文件',
             rcnamespace: '0|4|8|10|12|14|274|828',
-            rcstart: start,
-            rcend: end,
+            rcstart,
+            rcend,
             rclimit: 'max',
             rccontinue: cont,
         })) as MwApiResponse;
@@ -176,6 +180,8 @@ const addTemplate = async (file: string, pageName: string) => {
         }
         await addTemplate(file, fileList[file]!);
     }
+
+    await updateTimeData('markImg', rcstart);
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

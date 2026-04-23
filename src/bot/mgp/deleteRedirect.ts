@@ -1,11 +1,18 @@
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { booleanFilter } from '@/utils';
+import { getTimeData, updateTimeData } from '@/utils';
 
-const now = dayjs();
-const day = now.day() === 1 ? 7 : 1;
-const time = now.subtract(day, 'day');
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Asia/Shanghai');
+
+const now = dayjs().utc(),
+    lestart = now.toString(),
+    leend = await getTimeData('deleteRedirect');
 
 const getRecentMoves = async () => {
     try {
@@ -15,8 +22,8 @@ const getRecentMoves = async () => {
             letype: 'move',
             lenamespace: 6,
             lelimit: 500,
-            lestart: time.toISOString(),
-            ledir: 'newer',
+            lestart,
+            leend,
         });
 
         const files = res.data?.query?.logevents || [];
@@ -36,12 +43,6 @@ const getRecentMoves = async () => {
     const cmbot = new BotInstance(cmapi);
 
     const movedFiles = await getRecentMoves();
-
-    if (!movedFiles.length) {
-        console.log(`最近 ${day} 日无文件移动记录`);
-        console.log(`End time: ${new Date().toISOString()}`);
-        return;
-    }
 
     const redirects = await cmbot.checkRedirect(movedFiles),
         isRedirect = Object.keys(redirects).filter(key => redirects[key] === true);
@@ -82,6 +83,8 @@ const getRecentMoves = async () => {
     } else {
         console.log('没有需要挂删的重定向');
     }
+
+    await updateTimeData('deleteRedirect', leend);
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();
