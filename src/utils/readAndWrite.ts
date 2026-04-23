@@ -29,7 +29,7 @@ const readFile = async (path: string) => {
         return { content, sha: data.sha };
     } catch (err) {
         console.error(err);
-        process.exit(6);
+        throw new Error();
     }
 };
 
@@ -54,7 +54,7 @@ const writeFile = async (path: string, content: string, message: string, sha?: s
         console.log('Update success.');
     } catch (err) {
         console.error(err);
-        process.exit(1);
+        throw new Error();
     }
 };
 

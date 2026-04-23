@@ -3,8 +3,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
-import { booleanFilter } from '@/utils';
-import { getTimeData, updateTimeData } from '@/utils';
+import { booleanFilter, getTimeData, updateTimeData } from '@/utils';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
