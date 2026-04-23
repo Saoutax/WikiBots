@@ -2,8 +2,6 @@ import { Buffer } from 'buffer';
 import process from 'node:process';
 import { Octokit } from 'octokit';
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN,
 });
