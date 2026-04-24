@@ -47,7 +47,7 @@ jobs:
 
     invisibleCharacter:
         if: |
-            github.event.schedule == '10 16 * * *' ||
+            # github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
