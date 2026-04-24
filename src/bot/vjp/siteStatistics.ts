@@ -66,7 +66,7 @@ async function getLastDayEditCount() {
         statistics = await bot.getJson(title);
 
     statistics.dataset.source.push([
-        dayjs().tz().format('YYYY-MM-DD'),
+        dayjs().tz().subtract(1, 'day').format('YYYY-MM-DD'),
         users,
         activeusers,
         editCount,
