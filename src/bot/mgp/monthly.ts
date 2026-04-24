@@ -15,9 +15,9 @@ interface Config {
 
     const bot = new BotInstance(api);
 
-    const { sectiontitle, pretext, summary } = (await bot.getJson(
+    const { sectiontitle, pretext, summary } = await bot.getJson<Config>(
         'User:SaoMikoto/Bot/config/monthly.json',
-    )) as Config;
+    );
 
     const {
         data: {

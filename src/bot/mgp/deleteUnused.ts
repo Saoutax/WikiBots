@@ -15,9 +15,9 @@ interface Config {
     const zhbot = new BotInstance(zhapi),
         cmbot = new BotInstance(cmapi);
 
-    const { categories } = (await zhbot.getJson(
+    const { categories } = await zhbot.getJson<Config>(
         'User:SaoMikoto/Bot/config/deleteUnused.json',
-    )) as Config;
+    );
 
     const files = await cmbot.queryCategory(categories, true, ['file']),
         unlink = await cmbot.queryCategory('Category:非链入使用的文件', false, ['file']);

@@ -17,9 +17,9 @@ interface Config {
 
     const bot = new BotInstance(api);
 
-    const { from, to, excludepages, excludecategory, extendsummary } = (await bot.getJson(
+    const { from, to, excludepages, excludecategory, extendsummary } = await bot.getJson<Config>(
         'User:SaoMikoto/Bot/config/linkModifier.json',
-    )) as Config;
+    );
 
     const exclude = [
         ...new Set([

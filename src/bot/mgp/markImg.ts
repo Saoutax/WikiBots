@@ -10,6 +10,13 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Shanghai');
 
+interface Config {
+    excludeCategory: string[];
+    excludePrefix: string[];
+    excludeTitle: string[];
+    excludeFile: string[];
+}
+
 const now = dayjs.utc(),
     rcstart = now.toISOString(),
     rcend = await getTimeData('markImg');
@@ -51,9 +58,8 @@ const getPages = async () => {
 const matchFiles = async (titles: string[]) => {
     const matches: Record<string, string> = {};
 
-    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } = await zhbot.getJson(
-        'User:SaoMikoto/Bot/config/markImg.json',
-    );
+    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } =
+        await zhbot.getJson<Config>('User:SaoMikoto/Bot/config/markImg.json');
 
     const exclude = [
         ...(await zhbot.queryCategory(excludeCategory, false, ['page'])),

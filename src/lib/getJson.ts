@@ -6,7 +6,7 @@ class GetJSON extends BaseApi {
      * @param title 页面标题
      * @returns 返回解析后的JSON
      */
-    get = async (title: string) => {
+    get = async <T = any>(title: string) => {
         const {
             data: {
                 query: {
@@ -24,7 +24,7 @@ class GetJSON extends BaseApi {
             titles: title,
         });
 
-        return JSON.parse(content);
+        return JSON.parse(content) as T;
     };
 }
 
