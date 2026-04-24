@@ -9,7 +9,7 @@ class CheckRedirect extends BaseApi {
      * @param size - 分组页面个数，默认为 500
      * @returns - 键为页面名，值为重定向结果
      */
-    check = async (titles: string[], size: number = 500) => {
+    check = async (titles: string[], size = 500) => {
         const result: Record<string, boolean> = {};
 
         await Promise.all(

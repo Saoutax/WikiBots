@@ -10,7 +10,7 @@
  * const chunks = chunkArray(data, 2);
  * // chunks: [[1, 2], [3, 4], [5]]
  */
-const chunkArray = (arr: unknown[], size: number = 500) => {
+const chunkArray = (arr: unknown[], size = 500) => {
     const result = [];
     for (let i = 0; i < arr.length; i += size) {
         result.push(arr.slice(i, i + size));

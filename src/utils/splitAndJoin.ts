@@ -11,7 +11,7 @@
  * const result = splitAndJoin(input, 2);
  * // result: ['hello_world|foo_bar', 'baz']
  */
-const splitAndJoin = (list: unknown[], size: number = 500) => {
+const splitAndJoin = (list: unknown[], size = 500) => {
     const result = [];
     for (let i = 0; i < list.length; i += size) {
         const chunk = list

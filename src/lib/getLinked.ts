@@ -20,8 +20,8 @@ class GetLinked extends BaseApi {
     get = async (
         titles: string | string[],
         namespace: number[] = [],
-        redirect: boolean = false,
-        size: number = 500,
+        redirect = false,
+        size = 500,
     ) => {
         const result: Record<string, string[]> = {},
             lhnamespace = formatNamespace(namespace);

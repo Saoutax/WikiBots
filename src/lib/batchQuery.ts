@@ -21,9 +21,9 @@ class BatchQuery extends BaseApi {
      */
     query = async (
         titles: string[],
-        size: number = 500,
-        limit: number = 5,
-        timeout: number = 3000,
+        size = 500,
+        limit = 5,
+        timeout = 3000,
     ): Promise<Record<string, string>> => {
         const result: Record<string, string> = {},
             plimit = pLimit(limit);

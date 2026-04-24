@@ -14,7 +14,7 @@ class CheckGlobalUsage extends BaseApi {
      * @param size - 分组页面个数，默认为 500
      * @returns - 键为页面名，值为链入结果
      */
-    check = async (titles: string[], size: number = 500, limit: number = 5) => {
+    check = async (titles: string[], size = 500, limit = 5) => {
         const result: Record<string, boolean> = {},
             plimit = pLimit(limit);
 

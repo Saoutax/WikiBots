@@ -17,7 +17,7 @@ class QueryCategory extends BaseApi {
      */
     query = async (
         categories: string | string[],
-        recursive: boolean = false,
+        recursive = false,
         type: ('page' | 'subcat' | 'file')[] = ['page', 'subcat', 'file'],
         namespace: number[] = [],
     ) => {
