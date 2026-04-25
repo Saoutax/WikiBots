@@ -46,9 +46,8 @@ jobs:
               run: npx tsx src/bot/vjp/cleanSandbox.ts
 
     invisibleCharacter:
-        # if: |
-        #     github.event.schedule == '10 16 * * *' ||
-        #     github.event.inputs.task == 'invisibleCharacter'
+        if: |
+            github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
