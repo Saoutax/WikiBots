@@ -32,7 +32,6 @@ env:
 jobs:
     deleteRedirect:
         if: |
-            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'deleteRedirect'
         runs-on: ubuntu-latest
         steps:
@@ -97,7 +96,6 @@ jobs:
 
     deleteUnused:
         if: |
-            github.event.schedule == '00 21 * * 5' ||
             github.event.inputs.task == 'deleteUnused'
         runs-on: ubuntu-latest
         steps:
