@@ -61,6 +61,10 @@ const config = {
         api: 'https://www.qiuwenbaike.cn/api.php',
         useragent: `${env.API_USER_AGENT} (Github Actions; Saoutax-bot; Qiuwen/1.1)`,
         accounts: {
+            bot: {
+                name: 'Saoutax-bot@Saoutax-bot',
+                password: env.QW_BOT,
+            },
             main: {
                 name: 'SaoMikoto@SaoMikoto',
                 password: env.QW_MAIN,
