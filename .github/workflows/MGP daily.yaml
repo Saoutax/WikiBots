@@ -2,7 +2,7 @@ name: 'MGP daily'
 
 on:
     schedule:
-        - cron: '10 16 * * *' # 00:10 CST Everyday
+        - cron: '20 1,7,13,17 * * *' # 01:20 09:20 15:20 21:20 CST Everyday
         - cron: '10 16 * * 5' # 00:10 CST Saturday
         - cron: '00 20 * * *' # 04:00 CST Everyday
         - cron: '00 19 * * 3' # 03:00 CST Thursday
@@ -32,7 +32,7 @@ env:
 jobs:
     deleteRedirect:
         if: |
-            github.event.schedule == '10 16 * * *' ||
+            github.event.schedule == '20 1,7,13,17 * * *' ||
             github.event.inputs.task == 'deleteRedirect'
         runs-on: ubuntu-latest
         steps:
