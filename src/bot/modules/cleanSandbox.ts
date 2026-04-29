@@ -44,8 +44,8 @@ class CleanSandbox extends BaseApi {
                             tags: 'Bot',
                             watchlist: 'nochange',
                         })
-                        .then(data => {
-                            console.log(data);
+                        .then(() => {
+                            console.log('Success.');
                         });
                 } else {
                     console.log(`${title} 在 ${minutes.toFixed(1)} 分钟前存在编辑，跳过。`);
