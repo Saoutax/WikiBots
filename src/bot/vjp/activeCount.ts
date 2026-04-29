@@ -10,7 +10,7 @@ dayjs.extend(timezone);
 dayjs.extend(customParseFormat);
 dayjs.tz.setDefault('Asia/Shanghai');
 
-const now = dayjs.utc(),
+const now = dayjs.tz(),
     start = now.toISOString(),
     end = now.subtract(30, 'day').toISOString();
 

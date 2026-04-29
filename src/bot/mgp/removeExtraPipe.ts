@@ -11,7 +11,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Shanghai');
 
-const now = dayjs.utc(),
+const now = dayjs.tz(),
     rcstart = now.toISOString(),
     rcend = await getTimeData('removeExtraPipe');
 

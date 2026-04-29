@@ -9,7 +9,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Shanghai');
 
-async function getLastDayEditCount() {
+const getLastDayEditCount = async () => {
     let cont;
     let count = 0;
 
@@ -41,7 +41,7 @@ async function getLastDayEditCount() {
     } while (cont);
 
     return count;
-}
+};
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
@@ -63,7 +63,7 @@ async function getLastDayEditCount() {
 
     const editCount = await getLastDayEditCount(),
         title = 'Template:站点数据.json',
-        statistics = await bot.getJson(title);
+        statistics = await bot.getJson<{ dataset: { source: string[] } }>(title);
 
     statistics.dataset.source.push([
         dayjs().tz().subtract(1, 'day').format('YYYY-MM-DD'),
@@ -72,7 +72,7 @@ async function getLastDayEditCount() {
         editCount,
         articles,
         edits,
-    ]);
+    ] as unknown as string);
 
     const text = JSON.stringify(statistics, null, 4);
 

@@ -17,7 +17,7 @@ interface Config {
     excludeFile: string[];
 }
 
-const now = dayjs.utc(),
+const now = dayjs.tz(),
     rcstart = now.toISOString(),
     rcend = await getTimeData('markImg');
 

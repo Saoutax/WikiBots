@@ -15,7 +15,7 @@ const owner = 'Saoutax',
  * @param path 文件路径
  * @returns 内容及其 SHA
  */
-const readFile = async (path: string) => {
+const readGHFile = async (path: string) => {
     try {
         const { data } = await octokit.rest.repos.getContent({ owner, repo, path });
 
@@ -39,7 +39,7 @@ const readFile = async (path: string) => {
  * @param message 提交信息
  * @param sha - 文件已存在时需提供，新建文件可省略
  */
-const writeFile = async (path: string, content: string, message: string, sha?: string) => {
+const writeGHFile = async (path: string, content: string, message: string, sha?: string) => {
     try {
         await octokit.rest.repos.createOrUpdateFileContents({
             owner,
@@ -56,4 +56,4 @@ const writeFile = async (path: string, content: string, message: string, sha?: s
     }
 };
 
-export { readFile, writeFile };
+export { readGHFile, writeGHFile };

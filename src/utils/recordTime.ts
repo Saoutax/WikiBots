@@ -1,5 +1,5 @@
 import { load, dump } from 'js-yaml';
-import { readFile, writeFile } from './readAndWrite';
+import { readGHFile, writeGHFile } from './readAndWrite';
 
 /**
  * 获取时间戳记录
@@ -8,7 +8,7 @@ import { readFile, writeFile } from './readAndWrite';
  * @returns 时间戳
  */
 const getTimeData = async (name: string) => {
-    const { content } = await readFile('data/time.yaml'),
+    const { content } = await readGHFile('data/time.yaml'),
         record = load(content) as Record<string, string>;
     if (record[name]) {
         return record[name];
@@ -24,10 +24,10 @@ const getTimeData = async (name: string) => {
  * @param time 时间戳
  */
 const updateTimeData = async (name: string, time: string) => {
-    const { content, sha } = await readFile('data/time.yaml'),
+    const { content, sha } = await readGHFile('data/time.yaml'),
         record = load(content) as Record<string, string>;
     record[name] = time;
-    await writeFile(
+    await writeGHFile(
         'data/time.yaml',
         dump(record),
         `chore: auto record last run time of ${name}`,
