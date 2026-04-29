@@ -41,8 +41,11 @@ class BatchQuery extends BaseApi {
                         rvprop: 'content',
                         titles: group,
                     });
-                    (pages as Pages).forEach(({ title, revisions: [{ content }] }) => {
-                        result[title] = content;
+                    (pages as Pages).forEach(({ title, revisions = [] }) => {
+                        const content = revisions?.[0]?.content;
+                        if (content) {
+                            result[title] = content;
+                        }
                     });
                     await new Promise(resolve => {
                         setTimeout(resolve, timeout);
