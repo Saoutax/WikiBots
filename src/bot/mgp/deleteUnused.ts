@@ -25,7 +25,9 @@ interface Config {
     const { isFalse } = booleanFilter(await cmbot.checkGlobalUsage(files)),
         needDel = isFalse.filter(item => !unlink.includes(item));
 
-    await cmbot.flagDelete(needDel, '无使用或不再使用的文件', lgusername).then(console.log);
+    await cmbot.flagDelete(needDel, '无使用或不再使用的文件', lgusername);
+
+    console.log(needDel.length > 0 ? 'All unused deleted.' : 'No file need to delete.');
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();

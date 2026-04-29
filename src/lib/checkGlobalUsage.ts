@@ -36,7 +36,11 @@ class CheckGlobalUsage extends BaseApi {
                             gucontinue,
                         })) as MwApiResponse;
                         (pages as Pages).forEach(({ title, globalusage }) => {
-                            result[title] = globalusage?.length > 0;
+                            if (globalusage?.length) {
+                                result[title] = true;
+                            } else if (!(title in result)) {
+                                result[title] = false;
+                            }
                         });
                         gucontinue = data?.continue?.gucontinue;
                     } while (gucontinue);
