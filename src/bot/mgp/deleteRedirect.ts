@@ -101,7 +101,7 @@ const processRecent = async (lgusername: string) => {
         await writeGHFile(
             filepath,
             JSON.stringify(record, null, 4),
-            'chore: update inUsedRedirect record',
+            'chore: auto update inUsedRedirect record',
             sha,
         );
     }
