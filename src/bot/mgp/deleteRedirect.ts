@@ -68,7 +68,8 @@ const recordInUsed = async (inUsed: string[]) => {
 const processRecent = async (lgusername: string) => {
     const filepath = 'data/inUsedRedirect.json',
         { content, sha } = await readGHFile(filepath),
-        record = JSON.parse(content) as Record<string, string[]>;
+        record = JSON.parse(content) as Record<string, string[]>,
+        original = JSON.stringify(record);
 
     for (const [timestamp, files] of Object.entries(record)) {
         if (files.length === 0) {
@@ -96,12 +97,14 @@ const processRecent = async (lgusername: string) => {
         }
     }
 
-    await writeGHFile(
-        filepath,
-        JSON.stringify(record, null, 4),
-        'chore: update inUsedRedirect record',
-        sha,
-    );
+    if (JSON.stringify(record) !== original) {
+        await writeGHFile(
+            filepath,
+            JSON.stringify(record, null, 4),
+            'chore: update inUsedRedirect record',
+            sha,
+        );
+    }
 };
 
 (async () => {
