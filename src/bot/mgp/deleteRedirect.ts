@@ -13,6 +13,8 @@ const now = dayjs().tz(),
     lestart = now.toISOString(),
     leend = await getTimeData('deleteRedirect');
 
+const cmbot = new BotInstance(cmapi);
+
 const getRecentMoves = async (): Promise<string[]> => {
     try {
         const { data } = await cmapi.post({
@@ -63,13 +65,50 @@ const recordInUsed = async (inUsed: string[]) => {
     );
 };
 
+const processRecent = async (lgusername: string) => {
+    const filepath = 'data/inUsedRedirect.json',
+        { content, sha } = await readGHFile(filepath),
+        record = JSON.parse(content) as Record<string, string[]>;
+
+    for (const [timestamp, files] of Object.entries(record)) {
+        if (files.length === 0) {
+            delete record[timestamp];
+            continue;
+        }
+
+        const usage = await cmbot.checkGlobalUsage(files);
+        const { isFalse: notInUsed, isTrue: inUsed } = booleanFilter(usage);
+
+        if (notInUsed.length > 0) {
+            await cmbot.flagDelete(
+                notInUsed,
+                '移动残留重定向',
+                lgusername,
+                '自动挂删文件移动残留重定向',
+            );
+            console.log(`挂删记录中的 ${notInUsed.length} 个新无使用重定向`);
+        }
+
+        if (inUsed.length > 0) {
+            record[timestamp] = inUsed;
+        } else {
+            delete record[timestamp];
+        }
+    }
+
+    await writeGHFile(
+        filepath,
+        JSON.stringify(record, null, 4),
+        'chore: update inUsedRedirect record',
+        sha,
+    );
+};
+
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(zhapi).login({ site: 'zh', account: 'bot' });
     const { lgusername } = await new Login(cmapi).login({ site: 'cm', account: 'bot' });
-
-    const cmbot = new BotInstance(cmapi);
 
     const movedFiles = await getRecentMoves();
 
@@ -96,6 +135,9 @@ const recordInUsed = async (inUsed: string[]) => {
     } else {
         console.log('没有需要挂删的重定向');
     }
+
+    console.log('执行记录挂删。');
+    await processRecent(lgusername);
 
     await updateTimeData('deleteRedirect', lestart);
 
