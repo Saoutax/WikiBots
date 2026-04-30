@@ -30,8 +30,8 @@ importers:
         specifier: ^5.0.5
         version: 5.0.5
       opencc-js:
-        specifier: ^1.0.5
-        version: 1.0.5
+        specifier: ^1.3.0
+        version: 1.3.0
       p-limit:
         specifier: ^7.3.0
         version: 7.3.0
@@ -1166,8 +1166,8 @@ packages:
     resolution: {integrity: sha512-4+/OFSqOjoyULo7eN7EA97DE0Xydj/PW5aIckxqQIoFjFwqXKuFCvXUJObyJfBF9Khu4RL/jlDRI9FPaMGfPnw==}
     engines: {node: '>= 20'}
 
-  opencc-js@1.0.5:
-    resolution: {integrity: sha512-LD+1SoNnZdlRwtYTjnQdFrSVCAaYpuDqL5CkmOaHOkKoKh7mFxUicLTRVNLU5C+Jmi1vXQ3QL4jWdgSaa4sKjg==}
+  opencc-js@1.3.0:
+    resolution: {integrity: sha512-8sI0BQ3NECLM8GNWxWT/oZFDXpE853ZDc13MbLxtUL4sTJyr8DmoQSzPbvj7A5ZppwLn85wMdEaLGCycXjBmrQ==}
 
   oxfmt@0.47.0:
     resolution: {integrity: sha512-OFbkbzxKCpooQEnRmpTDnuwTX8KHXzZTQ4Df/hz85fpS67Pl+lxPEFvUtin56HIIS0B1k4X8oIzTXRZPufA2CA==}
@@ -2312,7 +2312,7 @@ snapshots:
       '@octokit/types': 16.0.0
       '@octokit/webhooks': 14.2.0
 
-  opencc-js@1.0.5: {}
+  opencc-js@1.3.0: {}
 
   oxfmt@0.47.0:
     dependencies:
