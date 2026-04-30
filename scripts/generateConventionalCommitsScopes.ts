@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
-import { promises as fs } from 'node:fs';
-import path from 'node:path';
+import { readFile, readdir } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
 import process from 'node:process';
 import { Octokit } from 'octokit';
 
@@ -11,11 +11,11 @@ const octokit = new Octokit({
 const REPO_OWNER = 'Saoutax';
 const REPO_NAME = 'WikiBots';
 
-/** Path relative to the repository root — used for both local read and remote commit. */
+/** Path relative to the repository root - used for both local read and remote commit. */
 const SETTINGS_REPO_PATH = '.vscode/settings.json';
 
 /** Absolute path for local filesystem access. */
-const SETTINGS_LOCAL_PATH = path.resolve(process.cwd(), SETTINGS_REPO_PATH);
+const SETTINGS_LOCAL_PATH = resolve(process.cwd(), SETTINGS_REPO_PATH);
 
 // Directories under src/ that keep lowercase prefix as-is
 const LOWERCASE_SRC_DIRS = new Set(['lib', 'utils', 'api']);
@@ -65,15 +65,15 @@ const isSourceFile = (filename: string) => {
 };
 
 const getScopes = async () => {
-    const SRC = path.resolve(process.cwd(), 'src');
+    const SRC = resolve(process.cwd(), 'src');
     const scopes: string[] = [];
 
     async function walk(dir: string, segments: string[]): Promise<void> {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
+        const entries = await readdir(dir, { withFileTypes: true });
 
         for (const entry of entries) {
             if (entry.isDirectory()) {
-                await walk(path.join(dir, entry.name), [...segments, entry.name]);
+                await walk(join(dir, entry.name), [...segments, entry.name]);
                 continue;
             }
 
@@ -111,7 +111,7 @@ interface LocalData {
  * Reads .vscode/settings.json from the local filesystem.
  */
 const readLocalSettings = async (): Promise<LocalData> => {
-    const raw = await fs.readFile(SETTINGS_LOCAL_PATH, 'utf-8');
+    const raw = await readFile(SETTINGS_LOCAL_PATH, 'utf-8');
 
     return {
         settings: JSON.parse(raw) as RepoSettings,
