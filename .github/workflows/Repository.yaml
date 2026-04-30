@@ -4,6 +4,13 @@ on:
     schedule:
         - cron: '00 18 * * *' # 02:00 CST Everyday
     workflow_dispatch:
+        inputs:
+            task:
+                description: 'Choose task'
+                type: choice
+                required: true
+                options:
+                    - removeOutdateRecord
 
 env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -11,7 +18,8 @@ env:
 jobs:
     removeOutdateRecord:
         if: |
-            github.event.schedule == '00 18 * * *'
+            github.event.schedule == '00 18 * * *' ||
+            github.event.inputs.task == 'removeOutdateRecord'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
