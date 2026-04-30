@@ -66,34 +66,21 @@ const matchFiles = async (titles: string[]) => {
         ...excludeTitle,
     ];
 
-    for (const title of titles) {
-        if (
-            exclude.includes(title) ||
-            excludePrefix.some((prefix: string) => title.startsWith(prefix))
-        ) {
-            continue;
-        }
+    const filteredTitles = titles.filter(
+        title =>
+            !exclude.includes(title) && !excludePrefix.some(prefix => title.startsWith(prefix)),
+    );
 
-        const { data } = await zhapi.post({
-            action: 'query',
-            prop: 'revisions',
-            titles: title,
-            rvprop: 'content',
-            formatversion: 2,
-        });
+    const pages = await zhbot.batchQuery(filteredTitles);
 
-        const page = data?.query?.pages?.[0];
-        if (!page || !page.revisions?.[0]?.content) {
-            continue;
-        }
+    const filepathRegex = /\{\{filepath:([^|}]+)/g;
+    const urlRegex = /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
+    const extTest =
+        /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
 
-        const content = page.revisions[0].content;
-
-        const filepathRegex = /\{\{filepath:([^|}]+)/g,
-            urlRegex =
-                /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g,
-            extTest =
-                /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
+    for (const [title, content] of Object.entries(pages)) {
+        filepathRegex.lastIndex = 0;
+        urlRegex.lastIndex = 0;
 
         let match;
 
