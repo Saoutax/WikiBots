@@ -5,9 +5,14 @@
         "correctness": "error"
     },
     "rules": {
-        "curly": "error"
+        "curly": "error",
+        "typescript/no-floating-promises": ["error", { "ignoreIIFE": true }],
+        "typescript/no-base-to-string": ["error", { "ignoredTypeNames": ["Token"] }]
     },
     "env": {
         "builtin": true
+    },
+    "options": {
+        "typeAware": true
     }
 }

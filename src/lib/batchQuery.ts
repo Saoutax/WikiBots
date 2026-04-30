@@ -41,7 +41,7 @@ class BatchQuery extends BaseApi {
                         rvprop: 'content',
                         titles: group,
                     });
-                    (pages as Pages).forEach(({ title, revisions = [] }) => {
+                    (pages as Pages).forEach(({ title, revisions }) => {
                         const content = revisions?.[0]?.content;
                         if (content) {
                             result[title] = content;
