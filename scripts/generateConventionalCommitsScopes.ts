@@ -108,13 +108,22 @@ interface LocalData {
 }
 
 /**
+ * Strips JSONC features (comments, trailing commas) to produce valid JSON.
+ */
+const stripJsonc = (raw: string) => {
+    return raw
+        .replace(/\\"|"(?:\\"|[^"])*"|(\/\/[^\n]*|\/\*[\s\S]*?\*\/)/g, (m, c) => (c ? '' : m))
+        .replace(/,(\s*[}\]])/g, '$1');
+};
+
+/**
  * Reads .vscode/settings.json from the local filesystem.
  */
 const readLocalSettings = async (): Promise<LocalData> => {
     const raw = await readFile(SETTINGS_LOCAL_PATH, 'utf-8');
 
     return {
-        settings: JSON.parse(raw) as RepoSettings,
+        settings: JSON.parse(stripJsonc(raw)) as RepoSettings,
     };
 };
 
