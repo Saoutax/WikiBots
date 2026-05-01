@@ -74,7 +74,8 @@ const matchFiles = async (titles: string[]) => {
     const pages = await zhbot.batchQuery(filteredTitles);
 
     const filepathRegex = /\{\{filepath:([^|}]+)/g;
-    const urlRegex = /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)/g;
+    const urlRegex =
+        /(?:img|commons)\.moegirl\.org\.cn\/(?:common|thumb)\/.*?\/.*?\/([^/]+\.\w+)|^https:\/\/storage\.moegirl\.org\.cn\/moegirl\/commons\/(?:.*\/)?([^/?!#]+)/g;
     const extTest =
         /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
 
@@ -95,7 +96,7 @@ const matchFiles = async (titles: string[]) => {
         }
 
         while ((match = urlRegex.exec(content))) {
-            let file = match[1]!;
+            let file = (match[1] || match[2])!;
             try {
                 file = decodeURIComponent(file).trim();
             } catch {
