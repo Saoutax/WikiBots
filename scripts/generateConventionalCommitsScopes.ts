@@ -2,6 +2,7 @@ import { Buffer } from 'buffer';
 import { readFile, readdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import process from 'node:process';
+import { parseTree, findNodeAtLocation, getNodeValue, modify, applyEdits } from 'jsonc-parser';
 import { Octokit } from 'octokit';
 
 const octokit = new Octokit({
@@ -98,39 +99,27 @@ const getScopes = async () => {
     return scopes.sort();
 };
 
-interface RepoSettings {
-    [key: string]: unknown;
-    'conventionalCommits.scopes'?: string[];
-}
-
-interface LocalData {
-    settings: RepoSettings;
+interface ScopesContext {
+    raw: string;
+    oldScopes: string[];
 }
 
 /**
- * Strips JSONC features (comments, trailing commas) to produce valid JSON.
+ * Reads .vscode/settings.json and extracts current scopes without losing comments.
  */
-const stripJsonc = (raw: string) => {
-    return raw
-        .replace(/\\"|"(?:\\"|[^"])*"|(\/\/[^\n]*|\/\*[\s\S]*?\*\/)/g, (m, c) => (c ? '' : m))
-        .replace(/,(\s*[}\]])/g, '$1');
-};
-
-/**
- * Reads .vscode/settings.json from the local filesystem.
- */
-const readLocalSettings = async (): Promise<LocalData> => {
+const readLocalScopes = async (): Promise<ScopesContext> => {
     const raw = await readFile(SETTINGS_LOCAL_PATH, 'utf-8');
+    const tree = parseTree(raw);
+    const node = findNodeAtLocation(tree!, ['conventionalCommits.scopes']);
+    const oldScopes = node ? (getNodeValue(node) as string[]) : [];
 
-    return {
-        settings: JSON.parse(stripJsonc(raw)) as RepoSettings,
-    };
+    return { raw, oldScopes };
 };
 
 /**
- * Fetches the current SHA of the remote file, then commits updated settings.
+ * Modifies the scopes array in-place (preserving comments) and commits to the repo.
  */
-const commitSettings = async (settings: RepoSettings) => {
+const commitScopes = async (raw: string, newScopes: string[]) => {
     const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
         owner: REPO_OWNER,
         repo: REPO_NAME,
@@ -142,7 +131,11 @@ const commitSettings = async (settings: RepoSettings) => {
         throw new Error(`Unexpected response type for ${SETTINGS_REPO_PATH}`);
     }
 
-    const content = Buffer.from(JSON.stringify(settings, null, 4), 'utf-8').toString('base64');
+    const edits = modify(raw, ['conventionalCommits.scopes'], newScopes, {
+        formattingOptions: { insertSpaces: true, tabSize: 4, eol: '\n' },
+    });
+    const newContent = applyEdits(raw, edits);
+    const content = Buffer.from(newContent, 'utf-8').toString('base64');
 
     await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
         owner: REPO_OWNER,
@@ -166,19 +159,15 @@ const scopesChanged = (oldScopes: string[], newScopes: string[]) => {
 };
 
 (async () => {
-    const { settings } = await readLocalSettings();
+    const { raw, oldScopes } = await readLocalScopes();
     const scopes = await getScopes();
-
-    const oldScopes = settings['conventionalCommits.scopes'] as string[];
 
     if (!scopesChanged(oldScopes, scopes)) {
         console.log('No changes in scopes, skipping commit.');
         return;
     }
 
-    settings['conventionalCommits.scopes'] = scopes;
-
-    await commitSettings(settings);
+    await commitScopes(raw, scopes);
 
     console.log('Updated conventionalCommits.scopes and committed.');
 })();
