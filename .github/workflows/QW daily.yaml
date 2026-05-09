@@ -1,8 +1,8 @@
 name: 'QW daily'
 
 on:
-    schedule:
-        - cron: '15 */3 * * *' # Every 3 hours (08:15 11:15 14:15 17:20 ... CST)
+    # schedule:
+    #     - cron: '15 */3 * * *' # Every 3 hours (08:15 11:15 14:15 17:20 ... CST)
     workflow_dispatch:
         inputs:
             task:
@@ -19,7 +19,6 @@ env:
 jobs:
     internalLink:
         if: |
-            github.event.schedule == '15 */3 * * *' ||
             github.event.inputs.task == 'internalLink'
         runs-on: ubuntu-latest
         steps:
