@@ -3,10 +3,6 @@ import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 
-interface Page {
-    title: string;
-}
-
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
@@ -33,7 +29,7 @@ interface Page {
 
         eicontinue = data?.continue?.eicontinue;
 
-        embeddedin.forEach((page: Page) => {
+        embeddedin.forEach((page: { title: string }) => {
             group.push(page.title);
         });
 
