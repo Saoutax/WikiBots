@@ -82,3 +82,17 @@ Workflows run bot scripts on schedules (CST). Each maps workflow inputs directly
 - `import type` for type-only imports
 - Path alias `@/*` → `./src/*`
 - All commits follow conventional commits with auto-generated scopes
+
+### Commit conventions
+
+Format: `<type>(<scope>): <description>`
+
+Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `style`, `perf`, `ci`, `revert`
+
+Scope format: `<SITE>/<script>` for bot scripts, `<area>/<module>` for shared code. See `.vscode/settings.json` for the full scope list. Omit scope for cross-cutting changes.
+
+Examples:
+- `feat(QW/internalLink): add internalLink bot and QW daily workflow`
+- `chore(QW/internalLink): disable schedule for QW daily workflow`
+- `fix(MGP/disambigLinks): handle empty namespace parameter`
+- `chore: auto record last run time of removeExtraPipe`
