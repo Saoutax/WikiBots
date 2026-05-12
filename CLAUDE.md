@@ -92,6 +92,7 @@ Types: `feat`, `fix`, `chore`, `refactor`, `test`, `docs`, `style`, `perf`, `ci`
 Scope format: `<SITE>/<script>` for bot scripts, `<area>/<module>` for shared code. See `.vscode/settings.json` for the full scope list. Omit scope for cross-cutting changes.
 
 Examples:
+
 - `feat(QW/internalLink): add internalLink bot and QW daily workflow`
 - `chore(QW/internalLink): disable schedule for QW daily workflow`
 - `fix(MGP/disambigLinks): handle empty namespace parameter`
