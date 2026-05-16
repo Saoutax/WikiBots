@@ -48,7 +48,7 @@ class InvisibleCharacter extends BaseApi {
             const content = await bot.batchQuery([...pages]),
                 regex =
                     // oxlint-disable-next-line no-misleading-character-class
-                    /[\u180E\u2005-\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFE00-\uFE0F\uFEFF\u{E0100}-\u{E01EF}]+/u,
+                    /[\u180E\u2005-\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFE00-\uFE0F\uFEFF\u{E0100}-\u{E01EF}]+/gu,
                 result: Record<string, string> = {};
             for (const [title, text] of Object.entries(content)) {
                 const newContent = text.replace(regex, '');
