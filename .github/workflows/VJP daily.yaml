@@ -25,6 +25,7 @@ on:
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
     VJP_BOT: ${{ secrets.VJP_BOT }}
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
     cleanSandbox:
