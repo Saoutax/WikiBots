@@ -1,5 +1,5 @@
 import pLimit from 'p-limit';
-import { BaseApi, splitAndJoin } from '@/utils';
+import { BaseApi, splitAndJoin, delay } from '@/utils';
 
 type Pages = {
     title: string;
@@ -47,9 +47,7 @@ class BatchQuery extends BaseApi {
                             result[title] = content;
                         }
                     });
-                    await new Promise(resolve => {
-                        setTimeout(resolve, timeout);
-                    });
+                    await delay(timeout);
                 }),
             ),
         );

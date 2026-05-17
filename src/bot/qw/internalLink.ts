@@ -2,6 +2,7 @@ import type { MwApiResponse } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
+import { delay } from '@/utils';
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
@@ -64,6 +65,7 @@ import { BotInstance } from '@/lib';
                 bot: true,
             });
             console.log(`Done: ${title}`);
+            await delay();
         }
 
         console.log('Start next group.');
