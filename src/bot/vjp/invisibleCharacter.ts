@@ -7,8 +7,8 @@ import { InvisibleCharacter } from '../modules';
     await new Login(api).login({ site: 'vjp', account: 'bot' });
 
     await new InvisibleCharacter(api).main(
+        'invisibleCharacterVJP',
         'User:SaoMikoto/Bot/config/invisibleCharacter.json',
-        'invisibleCharacterVjp',
     );
 
     console.log(`End time: ${new Date().toISOString()}`);

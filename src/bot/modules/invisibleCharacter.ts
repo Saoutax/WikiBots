@@ -15,14 +15,18 @@ interface PageMap {
 }
 
 class InvisibleCharacter extends BaseApi {
-    main = async (config: string, name: string) => {
+    main = async (name: string, config?: string) => {
         const now = dayjs().tz(),
             rcstart = now.toISOString(),
             rcend = await getTimeData(name);
 
         const bot = new BotInstance(this.api);
 
-        const { pageids } = await bot.getJson<{ pageids: number[] }>(config);
+        const pageids: number[] = [];
+        if (config) {
+            const result = await bot.getJson<{ pageids: number[] }>(config);
+            pageids.push(...(result?.pageids ?? []));
+        }
 
         const {
             data: {
@@ -39,7 +43,7 @@ class InvisibleCharacter extends BaseApi {
 
         const pages = new Set<string>();
         (recentchanges as PageMap[]).forEach(({ title, pageid }) => {
-            if (!pageids.includes(pageid)) {
+            if (pageids.length === 0 || !pageids.includes(pageid)) {
                 pages.add(title);
             }
         });
