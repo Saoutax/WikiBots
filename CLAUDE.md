@@ -43,14 +43,14 @@ src/
     readAndWrite.ts     — Read/write files in the GitHub repo via Octokit
     recordTime.ts       — Persist/read task timestamps to data/time.yaml via GitHub API
   bot/          — Per-wiki bot scripts (each file is a standalone IIFE)
-    mgp/        — MoegirlPedia (萌娘百科: zh + commons)
+    mgp/        — MoegirlPedia
     vjp/        — Vocawiki
     uew/        — United Earth Wiki
     elaina/     — ElainaWiki
     modules/    — Shared bot modules (e.g., CleanSandbox)
     tmp/        — Ad-hoc/test scripts
 data/
-  time.yaml           — Timestamp records for incremental tasks (read/written via GitHub API)
+  time.yaml           — Timestamps for incremental task processing
   inUsedRedirect.json — Persistent tracking of in-use redirects
 scripts/              — Repository maintenance scripts (scope generation, cleanup)
 ```
@@ -59,21 +59,12 @@ scripts/              — Repository maintenance scripts (scope generation, clea
 
 - Each bot script under `src/bot/` is a **standalone top-level IIFE** that can be run directly with `npx tsx`
 - Bot scripts format their own edits using wikiparser-node for AST-based wiki text manipulation
-- Time-limited tasks (markImg, removeExtraPipe, deleteRedirect) use `getTimeData`/`updateTimeData` with timestamps stored in `data/time.yaml` for incremental processing
+- Time-limited tasks use `getTimeData`/`updateTimeData` with timestamps stored in `data/time.yaml` for incremental processing
 - `BotInstance` is the primary convenience wrapper — construct with an API instance, then call `.batchQuery()`, `.checkRedirect()`, `.checkGlobalUsage()`, `.flagDelete()`, `.getJson()`, `.getEmbedded()`, `.getLinked()`, `.queryCategory()`
-- All task scheduling is via GitHub Actions (see `.github/workflows/`), not local cron
 
 ### CI/CD (GitHub Actions workflows)
 
-Workflows run bot scripts on schedules (CST). Each maps workflow inputs directly to `src/bot/<site>/<script>.ts`:
-
-- `MGP daily` — zh + commons tasks (deleteRedirect 4×/day, markImg daily, highRiskCount weekly, etc.)
-- `VJP daily` — Vocawiki tasks (activeCount, editCount, archiveThread, doubleRedirects, etc.)
-- `UEW daily` / `Elaina daily` — sandbox cleaning
-- `Manually` — linkModifier and monthly (manual trigger only)
-- `Repository` — removeOutdateRecord (data cleanup)
-- `Code Analysis` — oxlint + CodeQL on push/PR
-- `Generate Scopes` — auto-updates conventional commit scopes in .vscode/settings.json
+All task scheduling is via GitHub Actions. See `.github/workflows/` for details.
 
 ### Coding conventions
 
