@@ -34,6 +34,7 @@
         "utils/baseApi",
         "utils/booleanFilter",
         "utils/chunkArray",
+        "utils/delay",
         "utils/formatNamespace",
         "utils/parseThread",
         "utils/readAndWrite",
