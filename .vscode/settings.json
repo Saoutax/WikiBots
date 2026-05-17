@@ -12,6 +12,7 @@
         "MGP/removeExtraPipe",
         "QW/internalLink",
         "UEW/cleanSandbox",
+        "UEW/countdown",
         "UEW/invisibleCharacter",
         "VJP/activeCount",
         "VJP/archiveThread",
