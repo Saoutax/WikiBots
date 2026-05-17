@@ -19,6 +19,7 @@
         "VJP/cleanSandbox",
         "VJP/doubleRedirects",
         "VJP/editCount",
+        "VJP/fixRedirects",
         "VJP/invisibleCharacter",
         "VJP/mostTranscludedPages",
         "VJP/siteStatistics",
