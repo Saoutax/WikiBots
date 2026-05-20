@@ -1,14 +1,6 @@
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat.js';
-import timezone from 'dayjs/plugin/timezone.js';
-import utc from 'dayjs/plugin/utc.js';
+import { dayjs } from '@/utils';
 import type { MwApiResponse } from 'wiki-saikou';
 import { vjpapi as api, Login } from '@/api';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(customParseFormat);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 const now = dayjs.tz(),
     start = now.toISOString(),

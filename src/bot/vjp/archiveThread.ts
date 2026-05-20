@@ -1,17 +1,9 @@
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { dayjs } from '@/utils';
 import _ from 'lodash';
 import type { MwApiParams } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
 import { parseThread } from '@/utils';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(customParseFormat);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 async function getParsedThread() {
     const {

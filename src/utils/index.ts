@@ -7,3 +7,4 @@ export { parseThread } from './parseThread';
 export { readGHFile, writeGHFile } from './readAndWrite';
 export { getTimeData, updateTimeData } from './recordTime';
 export { delay } from './delay';
+export { dayjs } from './time';

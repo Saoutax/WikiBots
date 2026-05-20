@@ -1,11 +1,5 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { dayjs } from '@/utils';
 import { readGHFile, writeGHFile } from '@/utils';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 (async () => {
     const filepath = 'data/inUsedRedirect.json',

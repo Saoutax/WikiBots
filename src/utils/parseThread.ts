@@ -1,9 +1,5 @@
-import dayjs, { type Dayjs } from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import utc from 'dayjs/plugin/utc';
-
-dayjs.extend(customParseFormat);
-dayjs.extend(utc);
+import { dayjs } from '@/utils';
+import type { Dayjs } from 'dayjs';
 
 interface Thread {
     preface: string;

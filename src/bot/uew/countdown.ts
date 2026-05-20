@@ -1,11 +1,5 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { dayjs } from '@/utils';
 import { uewapi as api, Login } from '@/api';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 const target = dayjs.tz('2027-02-06', 'Asia/Shanghai'),
     today = dayjs.tz().startOf('day'),

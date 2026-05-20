@@ -1,15 +1,9 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { dayjs } from '@/utils';
 import type { MwApiResponse } from 'wiki-saikou';
 import Parser, { type LinkToken } from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { getTimeData, updateTimeData } from '@/utils';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 const now = dayjs.tz(),
     rcstart = now.toISOString(),

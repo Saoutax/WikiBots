@@ -1,13 +1,7 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { dayjs } from '@/utils';
 import { BotInstance } from '@/lib';
 import { BaseApi } from '@/utils';
 import { getTimeData, updateTimeData } from '@/utils';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 interface PageMap {
     title: string;
@@ -50,14 +44,19 @@ class InvisibleCharacter extends BaseApi {
 
         if (pages.size > 0) {
             const content = await bot.batchQuery([...pages]),
-                regex =
-                    // oxlint-disable-next-line no-misleading-character-class
-                    /[\u180E\u2005-\u200F\u2028-\u202F\u205F\u2060-\u206E\u3164\uFE00-\uFE0F\uFEFF\u{E0100}-\u{E01EF}]+/gu,
+                bmpInvisible = /[\u180E\u200B-\u200F\u202A-\u202E\u2060-\u206E\u3164\uFEFF]+/gu,
+                variationSelectors = /[\uFE00-\uFE0F]+/gu,
+                astralInvisible = /[\u{E0100}-\u{E01EF}]+/gu,
+                hasInvisible = (text: string) =>
+                    bmpInvisible.test(text) ||
+                    variationSelectors.test(text) ||
+                    astralInvisible.test(text),
+                removeInvisible = (text: string) =>
+                    text.replace(bmpInvisible, '').replace(variationSelectors, '').replace(astralInvisible, ''),
                 result: Record<string, string> = {};
             for (const [title, text] of Object.entries(content)) {
-                const newContent = text.replace(regex, '');
-                if (newContent !== text) {
-                    result[title] = newContent;
+                if (hasInvisible(text)) {
+                    result[title] = removeInvisible(text);
                 }
             }
 

@@ -1,13 +1,7 @@
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
+import { dayjs } from '@/utils';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { booleanFilter, getTimeData, updateTimeData, readGHFile, writeGHFile } from '@/utils';
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Asia/Shanghai');
 
 const now = dayjs().tz(),
     lestart = now.toISOString(),
