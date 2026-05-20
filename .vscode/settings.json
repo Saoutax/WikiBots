@@ -42,7 +42,8 @@
         "utils/parseThread",
         "utils/readAndWrite",
         "utils/recordTime",
-        "utils/splitAndJoin"
+        "utils/splitAndJoin",
+        "utils/time"
     ],
     "[typescript]": {
         "editor.defaultFormatter": "oxc.oxc-vscode",
