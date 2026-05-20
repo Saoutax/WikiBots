@@ -1,5 +1,5 @@
-import { dayjs } from '@/utils';
 import type { Dayjs } from 'dayjs';
+import { dayjs } from '@/utils';
 
 interface Thread {
     preface: string;

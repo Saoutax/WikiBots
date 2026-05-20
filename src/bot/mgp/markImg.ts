@@ -1,7 +1,7 @@
-import { dayjs } from '@/utils';
 import type { MwApiResponse } from 'wiki-saikou';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
+import { dayjs } from '@/utils';
 import { getTimeData, updateTimeData } from '@/utils';
 
 interface Config {

@@ -1,5 +1,5 @@
-import { dayjs } from '@/utils';
 import { BotInstance } from '@/lib';
+import { dayjs } from '@/utils';
 import { BaseApi } from '@/utils';
 import { getTimeData, updateTimeData } from '@/utils';
 
@@ -52,7 +52,10 @@ class InvisibleCharacter extends BaseApi {
                     variationSelectors.test(text) ||
                     astralInvisible.test(text),
                 removeInvisible = (text: string) =>
-                    text.replace(bmpInvisible, '').replace(variationSelectors, '').replace(astralInvisible, ''),
+                    text
+                        .replace(bmpInvisible, '')
+                        .replace(variationSelectors, '')
+                        .replace(astralInvisible, ''),
                 result: Record<string, string> = {};
             for (const [title, text] of Object.entries(content)) {
                 if (hasInvisible(text)) {

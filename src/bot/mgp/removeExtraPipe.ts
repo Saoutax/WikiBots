@@ -1,8 +1,8 @@
-import { dayjs } from '@/utils';
 import type { MwApiResponse } from 'wiki-saikou';
 import Parser, { type LinkToken } from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
+import { dayjs } from '@/utils';
 import { getTimeData, updateTimeData } from '@/utils';
 
 const now = dayjs.tz(),

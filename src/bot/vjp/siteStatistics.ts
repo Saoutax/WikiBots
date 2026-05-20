@@ -1,7 +1,7 @@
-import { dayjs } from '@/utils';
 import type { MwApiResponse } from 'wiki-saikou';
 import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
+import { dayjs } from '@/utils';
 
 const getLastDayEditCount = async () => {
     let cont;
