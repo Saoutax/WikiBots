@@ -2,8 +2,9 @@ name: 'UEW daily'
 
 on:
     schedule:
-        - cron: '30 16 * * *' # 00:30 CST
-        - cron: '30 20 * * *' # 04:30 CST
+        - cron: '30 16 * * *' # 00:30 CST Everyday
+        - cron: '30 16 * * 2' # 00:30 CST Tuesday
+        - cron: '30 20 * * *' # 04:30 CST Everyday
     workflow_dispatch:
         inputs:
             task:
@@ -43,7 +44,7 @@ jobs:
 
     invisibleCharacter:
         if: |
-            github.event.schedule == '30 16 * * *' ||
+            github.event.schedule == '30 16 * * 2' ||
             github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
@@ -62,7 +63,7 @@ jobs:
 
     countdown:
         if: |
-            github.event.schedule == '30 20 * * *' ||
+            github.event.schedule == '30 16 * * *' ||
             github.event.inputs.task == 'countdown'
         runs-on: ubuntu-latest
         steps:

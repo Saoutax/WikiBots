@@ -4,6 +4,7 @@ on:
     schedule:
         - cron: '10 16 * * *' # 00:10 CST Everyday
         - cron: '10 17 * * *' # 01:10 CST Everyday
+        - cron: '10 17 * * 1' # 01:10 CST Monday
         - cron: '30 20 * * *' # 04:30 CST Everyday
         - cron: '30 19 * * 2' # 03:30 CST Wednesday
     workflow_dispatch:
@@ -50,7 +51,7 @@ jobs:
 
     invisibleCharacter:
         if: |
-            github.event.schedule == '10 17 * * *' ||
+            github.event.schedule == '10 17 * * 1' ||
             github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
