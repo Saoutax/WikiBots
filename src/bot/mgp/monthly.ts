@@ -8,12 +8,12 @@ interface Config {
     summary: string;
 }
 
+const bot = new BotInstance(api);
+
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'zh', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     const { sectiontitle, pretext, summary } = await bot.getJson<Config>(
         'User:SaoMikoto/Bot/config/monthly.json',

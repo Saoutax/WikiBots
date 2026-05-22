@@ -1,6 +1,8 @@
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 
+const bot = new BotInstance(api);
+
 const fixFormat = (obj: Record<string, string>) => {
     const result: Record<string, string> = {};
     for (const [pageName, content] of Object.entries(obj)) {
@@ -21,8 +23,6 @@ const fixFormat = (obj: Record<string, string>) => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'zh', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     const navTemplates = await bot.getEmbedded('Template:Navbox', [10]),
         navModules = await bot.getLinked('Module:Nav', [10]),

@@ -10,12 +10,12 @@ interface Config {
     extendsummary: string;
 }
 
+const bot = new BotInstance(api);
+
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'zh', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     const { from, to, excludepages, excludecategory, extendsummary } = await bot.getJson<Config>(
         'User:SaoMikoto/Bot/config/linkModifier.json',

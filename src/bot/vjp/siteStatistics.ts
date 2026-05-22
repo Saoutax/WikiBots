@@ -3,6 +3,8 @@ import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { dayjs } from '@/utils';
 
+const bot = new BotInstance(api);
+
 const getLastDayEditCount = async () => {
     let cont;
     let count = 0;
@@ -41,8 +43,6 @@ const getLastDayEditCount = async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'vjp', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     const {
         data: {

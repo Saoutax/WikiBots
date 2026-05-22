@@ -4,12 +4,12 @@ import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { delay } from '@/utils';
 
+const bot = new BotInstance(api);
+
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'qw', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     let eicontinue;
     do {

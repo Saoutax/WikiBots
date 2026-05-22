@@ -3,6 +3,8 @@ import { toRomaji } from 'wanakana';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 
+const bot = new BotInstance(api);
+
 const processObject = (arr: string[], obj: Record<string, string[]>) => {
     const setArr = new Set(arr),
         result: Record<string, string[]> = {};
@@ -88,8 +90,6 @@ const generateReport = (obj: Record<string, Record<string, string[]>>) => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'zh', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     const disambig = await bot.queryCategory('Category:消歧义页', false, ['page']);
 

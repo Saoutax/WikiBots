@@ -8,6 +8,8 @@ const now = dayjs.tz(),
     rcstart = now.toISOString(),
     rcend = await getTimeData('removeExtraPipe');
 
+const bot = new BotInstance(api);
+
 const getPages = async () => {
     const titles = new Set<string>();
     let cont;
@@ -38,8 +40,6 @@ const getPages = async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(api).login({ site: 'zh', account: 'bot' });
-
-    const bot = new BotInstance(api);
 
     const pages = await getPages(),
         pageContent = await bot.batchQuery(pages);
