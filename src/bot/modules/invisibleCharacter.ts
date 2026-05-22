@@ -1,7 +1,5 @@
 import { BotInstance } from '@/lib';
-import { dayjs } from '@/utils';
-import { BaseApi } from '@/utils';
-import { getTimeData, updateTimeData } from '@/utils';
+import { BaseApi, getTimeData, updateTimeData, dayjs } from '@/utils';
 
 interface PageMap {
     title: string;

@@ -1,5 +1,4 @@
-import { dayjs } from '@/utils';
-import { readGHFile, writeGHFile } from '@/utils';
+import { readGHFile, writeGHFile, dayjs } from '@/utils';
 
 (async () => {
     const filepath = 'data/inUsedRedirect.json',

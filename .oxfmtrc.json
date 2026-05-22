@@ -16,7 +16,9 @@
     "sortImports": {
         "newlinesBetween": false
     },
-    "sortPackageJson": true,
+    "sortPackageJson": {
+        "sortScripts": true
+    },
     "arrowParens": "avoid",
     "endOfLine": "lf"
 }

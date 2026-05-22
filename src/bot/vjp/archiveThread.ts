@@ -2,8 +2,7 @@ import _ from 'lodash';
 import type { MwApiParams } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
-import { dayjs } from '@/utils';
-import { parseThread } from '@/utils';
+import { parseThread, dayjs } from '@/utils';
 
 async function getParsedThread() {
     const {

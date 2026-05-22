@@ -1,8 +1,7 @@
 import type { MwApiResponse } from 'wiki-saikou';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
-import { dayjs } from '@/utils';
-import { getTimeData, updateTimeData } from '@/utils';
+import { getTimeData, updateTimeData, dayjs } from '@/utils';
 
 interface Config {
     excludeCategory: string[];

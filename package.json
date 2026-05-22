@@ -13,10 +13,10 @@
     },
     "type": "module",
     "scripts": {
-        "test": "tsx src/bot/tmp/test.ts",
+        "fmt": "oxfmt",
         "lint": "oxlint",
         "lint:fix": "oxlint --fix",
-        "fmt": "oxfmt"
+        "test": "tsx src/bot/tmp/test.ts"
     },
     "dependencies": {
         "buffer": "^6.0.3",
