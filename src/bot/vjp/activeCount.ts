@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import { vjpapi as api, Login } from '@/api';
 import { dayjs } from '@/utils';
 
@@ -11,9 +10,9 @@ const timestampCST = (ts: string) =>
 
 const getRecentChanges = async () => {
     const users = new Map();
-    let cont;
+    let rccontinue: string | undefined;
     do {
-        const { data } = (await api.post({
+        const { data } = await api.post({
             list: 'recentchanges',
             rcprop: 'user|timestamp|comment',
             rcshow: '!bot',
@@ -21,8 +20,8 @@ const getRecentChanges = async () => {
             rclimit: 'max',
             rcstart: start,
             rcend: end,
-            rccontinue: cont,
-        })) as MwApiResponse;
+            rccontinue,
+        });
         const list = data?.query?.recentchanges;
         if (!list?.length) {
             break;
@@ -43,8 +42,8 @@ const getRecentChanges = async () => {
             users.set(user, userData);
         }
 
-        cont = data.continue?.rccontinue;
-    } while (cont);
+        rccontinue = data.continue?.rccontinue;
+    } while (rccontinue);
     return users;
 };
 

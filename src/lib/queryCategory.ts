@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import { BaseApi, formatNamespace } from '@/utils';
 
 type CategoryMembers = {
@@ -48,22 +47,23 @@ class QueryCategory extends BaseApi {
         }
         visited.add(category);
 
-        let cmcontinue;
+        let cmcontinue: string | undefined;
         do {
             const {
                 data,
                 data: {
                     query: { categorymembers },
                 },
-            } = (await this.api.post({
+            } = await this.api.post({
                 action: 'query',
                 list: 'categorymembers',
                 cmtitle: category,
                 cmprop: 'title',
                 cmnamespace,
                 cmtype,
+                cmcontinue,
                 cmlimit: 'max',
-            })) as MwApiResponse;
+            });
             for (const member of categorymembers as CategoryMembers) {
                 if (member.ns === 14 && recursive) {
                     await this.queryCategory(

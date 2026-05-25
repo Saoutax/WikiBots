@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import { BaseApi, formatNamespace } from '@/utils';
 
 interface Page {
@@ -20,14 +19,15 @@ class GetEmbedded extends BaseApi {
     ) => {
         const result: string[] = [],
             einamespace = formatNamespace(namespace);
-        let eicontinue;
+
+        let eicontinue: string | undefined;
         do {
             const {
                 data,
                 data: {
                     query: { embeddedin = [] },
                 },
-            } = (await this.api.post({
+            } = await this.api.post({
                 action: 'query',
                 list: 'embeddedin',
                 eititle: title,
@@ -35,7 +35,7 @@ class GetEmbedded extends BaseApi {
                 eifilterredir,
                 eilimit: 'max',
                 eicontinue,
-            })) as MwApiResponse;
+            });
             embeddedin.forEach((page: Page) => {
                 result.push(page.title);
             });

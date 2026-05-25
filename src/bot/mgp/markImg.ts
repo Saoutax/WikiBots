@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import { zhapi, cmapi, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { getTimeData, updateTimeData, dayjs } from '@/utils';
@@ -18,10 +17,10 @@ const zhbot = new BotInstance(zhapi);
 
 const getPages = async () => {
     const pages = new Set<string>();
-    let cont;
+    let rccontinue: string | undefined;
 
     do {
-        const { data } = (await zhapi.post({
+        const { data } = await zhapi.post({
             list: 'recentchanges',
             rcprop: 'title|timestamp',
             rctype: 'edit|new',
@@ -30,8 +29,8 @@ const getPages = async () => {
             rcstart,
             rcend,
             rclimit: 'max',
-            rccontinue: cont,
-        })) as MwApiResponse;
+            rccontinue,
+        });
 
         const list = data?.query?.recentchanges;
         if (!list?.length) {
@@ -42,8 +41,8 @@ const getPages = async () => {
             pages.add(rc.title);
         }
 
-        cont = data?.continue?.rccontinue;
-    } while (cont);
+        rccontinue = data?.continue?.rccontinue;
+    } while (rccontinue);
 
     return Array.from(pages);
 };

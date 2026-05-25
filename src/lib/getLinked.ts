@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import { BaseApi, formatNamespace, splitAndJoin } from '@/utils';
 
 interface Page {
@@ -27,14 +26,14 @@ class GetLinked extends BaseApi {
             lhnamespace = formatNamespace(namespace);
         await Promise.all(
             splitAndJoin(Array.isArray(titles) ? titles : [titles], size).map(async group => {
-                let lhcontinue;
+                let lhcontinue: string | undefined;
                 do {
                     const {
                         data,
                         data: {
                             query: { pages = [] },
                         },
-                    } = (await this.api.post({
+                    } = await this.api.post({
                         action: 'query',
                         prop: 'linkshere',
                         titles: group,
@@ -43,7 +42,7 @@ class GetLinked extends BaseApi {
                         lhshow: redirect ? undefined : '!redirect',
                         lhlimit: 'max',
                         lhcontinue,
-                    })) as MwApiResponse;
+                    });
                     for (const page of pages as Page[]) {
                         result[page.title] ??= [];
                         if (!page.linkshere?.length) {

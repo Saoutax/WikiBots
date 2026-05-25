@@ -1,5 +1,4 @@
 import pLimit from 'p-limit';
-import type { MwApiResponse } from 'wiki-saikou';
 import { BaseApi, splitAndJoin } from '@/utils';
 
 type Pages = {
@@ -21,20 +20,20 @@ class CheckGlobalUsage extends BaseApi {
         await Promise.all(
             splitAndJoin(titles, size).map(group =>
                 plimit(async () => {
-                    let gucontinue;
+                    let gucontinue: string | undefined;
                     do {
                         const {
                             data,
                             data: {
                                 query: { pages },
                             },
-                        } = (await this.api.post({
+                        } = await this.api.post({
                             action: 'query',
                             prop: 'globalusage',
                             titles: group,
                             gulimit: 'max',
                             gucontinue,
-                        })) as MwApiResponse;
+                        });
                         (pages as Pages).forEach(({ title, globalusage }) => {
                             if (globalusage?.length) {
                                 result[title] = true;

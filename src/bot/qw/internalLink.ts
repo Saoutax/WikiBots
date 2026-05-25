@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
@@ -11,7 +10,7 @@ const bot = new BotInstance(api);
 
     await new Login(api).login({ site: 'qw', account: 'bot' });
 
-    let eicontinue;
+    let eicontinue: string | undefined;
     do {
         const group: string[] = [];
         const {
@@ -19,14 +18,14 @@ const bot = new BotInstance(api);
             data: {
                 query: { embeddedin = [] },
             },
-        } = (await api.post({
+        } = await api.post({
             action: 'query',
             list: 'embeddedin',
             eititle: 'Template:Internal_link_helper/en',
             einamespace: '0',
             eilimit: '500',
             eicontinue,
-        })) as MwApiResponse;
+        });
 
         eicontinue = data?.continue?.eicontinue;
 

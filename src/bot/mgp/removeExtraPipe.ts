@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import Parser, { type LinkToken } from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
@@ -12,9 +11,9 @@ const bot = new BotInstance(api);
 
 const getPages = async () => {
     const titles = new Set<string>();
-    let cont;
+    let rccontinue: string | undefined;
     do {
-        const { data } = (await api.post({
+        const { data } = await api.post({
             format: 'json',
             list: 'recentchanges',
             formatversion: '2',
@@ -22,8 +21,8 @@ const getPages = async () => {
             rcend,
             rcnamespace: '0|10', // (main), Template
             rclimit: 'max',
-            rccontinue: cont,
-        })) as MwApiResponse;
+            rccontinue,
+        });
         const list = data?.query?.recentchanges;
         if (!list?.length) {
             break;
@@ -31,8 +30,8 @@ const getPages = async () => {
         for (const pages of list) {
             titles.add(pages.title);
         }
-        cont = data.continue?.rccontinue;
-    } while (cont);
+        rccontinue = data.continue?.rccontinue;
+    } while (rccontinue);
     return [...titles];
 };
 

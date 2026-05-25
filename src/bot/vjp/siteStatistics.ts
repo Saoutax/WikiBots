@@ -1,4 +1,3 @@
-import type { MwApiResponse } from 'wiki-saikou';
 import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { dayjs } from '@/utils';
@@ -6,35 +5,35 @@ import { dayjs } from '@/utils';
 const bot = new BotInstance(api);
 
 const getLastDayEditCount = async () => {
-    let cont;
     let count = 0;
 
     const end = dayjs().tz().toISOString(),
         start = dayjs().tz().subtract(1, 'day').toISOString();
 
+    let rccontinue: string | undefined;
     do {
         const {
             data,
             data: {
                 query: { recentchanges: list },
             },
-        } = (await api.get({
+        } = await api.get({
             list: 'recentchanges',
             rcprop: 'timestamp',
             rctype: 'edit|new',
             rclimit: 'max',
             rcstart: end,
             rcend: start,
-            rccontinue: cont,
-        })) as MwApiResponse;
+            rccontinue,
+        });
 
         if (!list?.length) {
             break;
         }
 
         count += list.length;
-        cont = data.continue?.rccontinue;
-    } while (cont);
+        rccontinue = data.continue?.rccontinue;
+    } while (rccontinue);
 
     return count;
 };
