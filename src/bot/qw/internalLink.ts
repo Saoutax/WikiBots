@@ -40,7 +40,7 @@ const bot = new BotInstance(api);
         for (const [title, content] of Object.entries(pageContent)) {
             const root = Parser.parse(content),
                 templates = root.querySelectorAll<TranscludeToken>(
-                    `template[name="Template:Le"], template[name="Template:Internal_link_helper/en"], template[name="Template:Link-en"], template[name="Template:En-link"], template[name="Template:Ilh/en"], template[name="Template:LE"]`,
+                    'template:is(#Template:Le, #Template:Internal_link_helper/en, #Template:Link-en, #Template:En-link, #Template:Ilh/en, #Template:LE)',
                 );
 
             for (const template of templates) {
