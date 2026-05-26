@@ -29,7 +29,10 @@ jobs:
             github.event.inputs.task == 'cleanSandbox'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/uew/cleanSandbox.ts
 
@@ -39,7 +42,10 @@ jobs:
             github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -51,7 +57,10 @@ jobs:
             github.event.inputs.task == 'countdown'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script

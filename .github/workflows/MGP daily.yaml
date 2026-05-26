@@ -37,7 +37,10 @@ jobs:
             github.event.inputs.task == 'deleteRedirect'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -49,7 +52,10 @@ jobs:
             github.event.inputs.task == 'markImg'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -61,7 +67,10 @@ jobs:
             github.event.inputs.task == 'highRiskCount'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -73,7 +82,10 @@ jobs:
             github.event.inputs.task == 'deleteUnused'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -85,7 +97,10 @@ jobs:
             github.event.inputs.task == 'disambigLinks'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -97,7 +112,10 @@ jobs:
             github.event.inputs.task == 'correctNavFormat'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script
@@ -109,7 +127,10 @@ jobs:
             github.event.inputs.task == 'removeExtraPipe'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
               with:
                   node-version: '20.x'
             - name: Run Script

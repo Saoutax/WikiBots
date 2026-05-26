@@ -22,6 +22,9 @@ jobs:
             github.event.inputs.task == 'removeOutdateRecord'
         runs-on: ubuntu-latest
         steps:
-            - uses: ./.github/actions/setup-bot
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx scripts/removeOutdateRecord.ts
