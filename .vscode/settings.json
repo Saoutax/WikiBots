@@ -22,6 +22,7 @@
         "VJP/fixRedirects",
         "VJP/invisibleCharacter",
         "VJP/mostTranscludedPages",
+        "VJP/nullEdit",
         "VJP/siteStatistics",
         "api/config",
         "lib/batchQuery",
