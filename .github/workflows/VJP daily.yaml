@@ -5,6 +5,7 @@ on:
         - cron: '10 16 * * *' # 00:10 CST Everyday
         - cron: '10 17 * * *' # 01:10 CST Everyday
         - cron: '10 17 * * 1' # 01:10 CST Monday
+        - cron: '10 18 * * *' # 02:10 CST Everyday
         - cron: '30 20 * * *' # 04:30 CST Everyday
         - cron: '30 19 * * 2' # 03:30 CST Wednesday
     workflow_dispatch:
@@ -23,6 +24,7 @@ on:
                     - siteStatistics
                     - doubleRedirects
                     - fixRedirects
+                    - nullEdit
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -200,3 +202,22 @@ jobs:
               run: pnpm install --frozen-lockfile
             - name: Run Script
               run: npx tsx src/bot/vjp/fixRedirects.ts
+
+    nullEdit:
+        if: |
+            github.event.schedule == '10 18 * * *' ||
+            github.event.inputs.task == 'nullEdit'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+            - name: Set Node Version
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+                  cache: pnpm
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Run Script
+              run: npx tsx src/bot/vjp/nullEdit.ts
