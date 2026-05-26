@@ -14,7 +14,7 @@ const variantConverter = (input: string) => {
     const toTW = OpenCC.Converter({ from: 'cn', to: 'tw' }),
         toHK = OpenCC.Converter({ from: 'cn', to: 'hk' });
 
-    return [...new Set([simplified, toTW(simplified), toHK(simplified)])];
+    return [...new Set([simplified, toTW(simplified), toHK(simplified), input])];
 };
 
 export { variantConverter };
