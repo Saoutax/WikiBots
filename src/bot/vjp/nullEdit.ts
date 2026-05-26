@@ -14,7 +14,7 @@ const bot = new BotInstance(api);
     await new Login(api).login({ site: 'vjp', account: 'bot' });
 
     const { categories, pages } = await bot.getJson<Config>(
-        'User:SaoMikoto/bot/config/nullEdit.json',
+        'User:SaoMikoto/Bot/config/nullEdit.json',
     );
 
     const needEdit = [
