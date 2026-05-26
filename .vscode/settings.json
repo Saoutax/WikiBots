@@ -43,7 +43,8 @@
         "utils/readAndWrite",
         "utils/recordTime",
         "utils/splitAndJoin",
-        "utils/time"
+        "utils/time",
+        "utils/variantConverter"
     ],
     "[typescript]": {
         "editor.defaultFormatter": "oxc.oxc-vscode",
