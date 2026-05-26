@@ -14,6 +14,7 @@ on:
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ZH_BOT: ${{ secrets.ZH_BOT }}
 
 jobs:
     linkModifier:
@@ -21,19 +22,8 @@ jobs:
             github.event.inputs.task == 'linkModifier'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
               run: npx tsx src/bot/mgp/linkModifier.ts
 
     monthly:
@@ -41,17 +31,6 @@ jobs:
             github.event.inputs.task == 'monthly'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
               run: npx tsx src/bot/mgp/monthly.ts

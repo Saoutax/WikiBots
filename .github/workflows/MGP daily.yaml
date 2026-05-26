@@ -27,6 +27,8 @@ on:
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    ZH_BOT: ${{ secrets.ZH_BOT }}
+    CM_BOT: ${{ secrets.CM_BOT }}
 
 jobs:
     deleteRedirect:
@@ -35,20 +37,10 @@ jobs:
             github.event.inputs.task == 'deleteRedirect'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
-                  CM_BOT: ${{ secrets.CM_BOT }}
               run: npx tsx src/bot/mgp/deleteRedirect.ts
 
     markImg:
@@ -57,20 +49,10 @@ jobs:
             github.event.inputs.task == 'markImg'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
-                  CM_BOT: ${{ secrets.CM_BOT }}
               run: npx tsx src/bot/mgp/markImg.ts
 
     highRiskCount:
@@ -79,19 +61,10 @@ jobs:
             github.event.inputs.task == 'highRiskCount'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
               run: npx tsx src/bot/mgp/highRiskCount.ts
 
     deleteUnused:
@@ -100,20 +73,10 @@ jobs:
             github.event.inputs.task == 'deleteUnused'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
-                  CM_BOT: ${{ secrets.CM_BOT }}
               run: npx tsx src/bot/mgp/deleteUnused.ts
 
     disambigLinks:
@@ -122,19 +85,10 @@ jobs:
             github.event.inputs.task == 'disambigLinks'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
               run: npx tsx src/bot/mgp/disambigLinks.ts
 
     correctNavFormat:
@@ -143,19 +97,10 @@ jobs:
             github.event.inputs.task == 'correctNavFormat'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
               run: npx tsx src/bot/mgp/correctNavFormat.ts
 
     removeExtraPipe:
@@ -164,17 +109,8 @@ jobs:
             github.event.inputs.task == 'removeExtraPipe'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
+            - uses: ./.github/actions/setup-bot
               with:
-                  node-version: 20.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+                  node-version: '20.x'
             - name: Run Script
-              env:
-                  ZH_BOT: ${{ secrets.ZH_BOT }}
               run: npx tsx src/bot/mgp/removeExtraPipe.ts

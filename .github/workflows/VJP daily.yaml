@@ -38,16 +38,7 @@ jobs:
             github.event.inputs.task == 'cleanSandbox'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/cleanSandbox.ts
 
@@ -57,16 +48,7 @@ jobs:
             github.event.inputs.task == 'invisibleCharacter'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/invisibleCharacter.ts
 
@@ -76,16 +58,7 @@ jobs:
             github.event.inputs.task == 'activeCount'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/activeCount.ts
 
@@ -95,16 +68,7 @@ jobs:
             github.event.inputs.task == 'mostTranscludedPages'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/mostTranscludedPages.ts
 
@@ -114,16 +78,7 @@ jobs:
             github.event.inputs.task == 'editCount'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/editCount.ts
 
@@ -133,16 +88,7 @@ jobs:
             github.event.inputs.task == 'archiveThread'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/archiveThread.ts
 
@@ -152,16 +98,7 @@ jobs:
             github.event.inputs.task == 'siteStatistics'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/siteStatistics.ts
 
@@ -171,16 +108,7 @@ jobs:
             github.event.inputs.task == 'doubleRedirects'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/doubleRedirects.ts
 
@@ -190,16 +118,7 @@ jobs:
             github.event.inputs.task == 'fixRedirects'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/fixRedirects.ts
 
@@ -209,15 +128,6 @@ jobs:
             github.event.inputs.task == 'nullEdit'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/vjp/nullEdit.ts

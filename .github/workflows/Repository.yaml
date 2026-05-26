@@ -22,15 +22,6 @@ jobs:
             github.event.inputs.task == 'removeOutdateRecord'
         runs-on: ubuntu-latest
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 22.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx scripts/removeOutdateRecord.ts

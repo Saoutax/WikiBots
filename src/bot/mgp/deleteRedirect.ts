@@ -36,23 +36,6 @@ const getRecentMoves = async (): Promise<string[]> => {
 };
 
 const recordInUsed = async (inUsed: string[]) => {
-    const today = now.format('YYYY年MM月DD日 HH时');
-    const text = inUsed.map(item => `* [[cm:${item}|${item}]]`).join('\n');
-
-    await zhapi.postWithToken(
-        'csrf',
-        {
-            action: 'edit',
-            title: 'User:SaoMikoto/Bot/log/deleteRedirect',
-            appendtext: `\n\n== ${today} ==\n${text}`,
-            summary: '记录仍有使用的重定向',
-            minor: true,
-            bot: true,
-            tags: 'Bot',
-        },
-        { retry: 10 },
-    );
-
     const filepath = 'data/inUsedRedirect.json',
         { content, sha } = await readGHFile(filepath),
         record = JSON.parse(content) as Record<string, string[]>;
