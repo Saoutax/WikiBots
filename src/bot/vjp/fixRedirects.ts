@@ -1,7 +1,7 @@
 import Parser, { type CategoryToken } from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
-import { splitAndJoin } from '@/utils';
+import { splitAndJoin, variantConverter } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -35,7 +35,9 @@ interface Redirects {
 
             for (const [title, content] of Object.entries(pageContent)) {
                 const root = Parser.parse(content),
-                    targets = root.querySelectorAll<CategoryToken>(`category[name="${from}"]`);
+                    targets = root.querySelectorAll<CategoryToken>(
+                        `category:is([name="${variantConverter(from).join('"], [name="')}"])`,
+                    );
                 targets.forEach(oldCat => oldCat.setTarget(to));
                 const newContent = root.toString();
                 if (content !== newContent) {
