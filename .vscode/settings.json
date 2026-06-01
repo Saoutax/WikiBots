@@ -11,6 +11,7 @@
         "MGP/monthly",
         "MGP/removeExtraPipe",
         "QW/internalLink",
+        "QW/internalLink-exist",
         "UEW/archiveThread",
         "UEW/cleanSandbox",
         "UEW/countdown",
