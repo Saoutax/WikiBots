@@ -1,8 +1,8 @@
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
+import { names } from '@/config/Internal_link_helper.json';
 import { BotInstance } from '@/lib';
 import { delay } from '@/utils';
-import { names } from './Internal_link_helper.json';
 
 const bot = new BotInstance(api);
 
