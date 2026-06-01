@@ -11,6 +11,7 @@ on:
                 required: true
                 options:
                     - internalLink
+                    - internalLink-exist
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -28,3 +29,15 @@ jobs:
               uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/qw/internalLink.ts
+
+    internalLink-exist:
+        if: |
+            github.event.inputs.task == 'internalLink-exist'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/internalLink-exist.ts
