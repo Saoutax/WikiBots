@@ -1,12 +1,12 @@
 import { BaseApi } from '@/utils';
 
-class GetJSON extends BaseApi {
+class GetContent extends BaseApi {
     /**
      * 获取页面JSON内容
      * @param title 页面标题
      * @returns 返回解析后的JSON
      */
-    get = async <T = object>(title: string): Promise<T> => {
+    get = async (title: string): Promise<string> => {
         const {
             data: {
                 query: {
@@ -24,8 +24,8 @@ class GetJSON extends BaseApi {
             titles: title,
         });
 
-        return JSON.parse(content);
+        return content;
     };
 }
 
-export { GetJSON };
+export { GetContent };

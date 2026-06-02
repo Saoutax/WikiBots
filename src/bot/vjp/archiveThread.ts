@@ -2,28 +2,15 @@ import _ from 'lodash';
 import type { MwApiParams } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
+import { BotInstance } from '@/lib';
 import { parseThread, dayjs } from '@/utils';
 
-async function getParsedThread() {
-    const {
-        data: {
-            query: {
-                pages: [
-                    {
-                        revisions: [{ content }],
-                    },
-                ],
-            },
-        },
-    } = await api.get({
-        action: 'query',
-        prop: 'revisions',
-        rvprop: 'content',
-        titles: 'Vocawiki:讨论版',
-    });
+const bot = new BotInstance(api);
 
+const getParsedThread = async () => {
+    const content = await bot.getContent('Vocawiki:讨论版');
     return parseThread(content);
-}
+};
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);

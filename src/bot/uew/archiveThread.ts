@@ -1,5 +1,8 @@
 import { uewapi as api, Login } from '@/api';
+import { BotInstance } from '@/lib';
 import { dayjs, parseThread } from '@/utils';
+
+const bot = new BotInstance(api);
 
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
@@ -7,22 +10,7 @@ import { dayjs, parseThread } from '@/utils';
     await new Login(api).login({ site: 'uew', account: 'bot' });
 
     if (dayjs.tz().date() === 1) {
-        const {
-            data: {
-                query: {
-                    pages: [
-                        {
-                            revisions: [{ content }],
-                        },
-                    ],
-                },
-            },
-        } = await api.post({
-            action: 'query',
-            prop: 'revisions',
-            rvprop: 'content',
-            titles: '地球联合百科讨论:会议大厅',
-        });
+        const content = await bot.getContent('地球联合百科讨论:会议大厅');
 
         const currentThread = parseThread(content);
 

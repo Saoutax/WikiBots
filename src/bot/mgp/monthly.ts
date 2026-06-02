@@ -19,22 +19,7 @@ const bot = new BotInstance(api);
         'User:SaoMikoto/Bot/config/monthly.json',
     );
 
-    const {
-        data: {
-            query: {
-                pages: [
-                    {
-                        revisions: [{ content }],
-                    },
-                ],
-            },
-        },
-    } = await api.post({
-        action: 'query',
-        prop: 'revisions',
-        rvprop: 'content',
-        titles: '萌娘百科:萌娘百科月报/订阅',
-    });
+    const content = await bot.getContent('萌娘百科:萌娘百科月报/订阅');
 
     const root = Parser.parse(content),
         links = root.querySelectorAll<LinkToken>('list + link');
