@@ -8,86 +8,66 @@ const env = (key: string) => {
     return value;
 };
 
+/**
+ * Lazy credential wrapper — password env var is only validated when actually
+ * accessed, not at module load time. This lets each CI task only set the env
+ * vars for the single site it runs.
+ */
+const cred = (name: string, key: string) => ({
+    name,
+    get password() {
+        return env(key);
+    },
+});
+
 const config = {
     useragent: `${env('API_USER_AGENT')} (Github Actions; Saoutax-bot) `,
     zh: {
         api: 'https://mzh.moegirl.org.cn/api.php',
         accounts: {
-            bot: {
-                name: '机娘亚衣琴@saoutaxbot',
-                password: env('ZH_BOT'),
-            },
-            main: {
-                name: 'SaoMikoto@SaoMikoto',
-                password: env('ZH_MAIN'),
-            },
+            bot: cred('机娘亚衣琴@saoutaxbot', 'ZH_BOT'),
+            main: cred('SaoMikoto@SaoMikoto', 'ZH_MAIN'),
         },
     },
     cm: {
         api: 'https://commons.moegirl.org.cn/api.php',
         accounts: {
-            bot: {
-                name: '机娘亚衣琴@saoutaxbot',
-                password: env('CM_BOT'),
-            },
-            main: {
-                name: 'SaoMikoto@saomikoto',
-                password: env('CM_MAIN'),
-            },
+            bot: cred('机娘亚衣琴@saoutaxbot', 'CM_BOT'),
+            main: cred('SaoMikoto@saomikoto', 'CM_MAIN'),
         },
     },
     vjp: {
         api: 'https://voca.wiki/api.php',
         accounts: {
-            bot: {
-                name: 'MisakaNetwork@MisakaNetwork',
-                password: env('VJP_BOT'),
-            },
-            main: {
-                name: 'SaoMikoto@saomikoto',
-                password: env('VJP_MAIN'),
-            },
+            bot: cred('MisakaNetwork@MisakaNetwork', 'VJP_BOT'),
+            main: cred('SaoMikoto@saomikoto', 'VJP_MAIN'),
         },
     },
     uew: {
         api: 'https://unitedearth.wiki/api.php',
         accounts: {
-            bot: {
-                name: 'Saoutax-bot@saoutaxbot',
-                password: env('UEW_BOT'),
-            },
-            main: {
-                name: 'SaoMikoto@SaoMikoto',
-                password: env('UEW_MAIN'),
-            },
+            bot: cred('Saoutax-bot@saoutaxbot', 'UEW_BOT'),
+            main: cred('SaoMikoto@SaoMikoto', 'UEW_MAIN'),
         },
-        cf: env('UEW_CF'),
+        get cf() {
+            return env('UEW_CF');
+        },
     },
     qw: {
         api: 'https://www.qiuwenbaike.cn/api.php',
         accounts: {
-            bot: {
-                name: 'Saoutax-bot@Saoutax-bot',
-                password: env('QW_BOT'),
-            },
-            main: {
-                name: 'SaoMikoto@SaoMikoto',
-                password: env('QW_MAIN'),
-            },
+            bot: cred('Saoutax-bot@Saoutax-bot', 'QW_BOT'),
+            main: cred('SaoMikoto@SaoMikoto', 'QW_MAIN'),
         },
-        useragent: `${env('API_USER_AGENT')} (Github Actions; Saoutax-bot; Qiuwen/1.1)`,
+        get useragent() {
+            return `${env('API_USER_AGENT')} (Github Actions; Saoutax-bot; Qiuwen/1.1)`;
+        },
     },
     elaina: {
         api: 'https://elaina.miraheze.org/w/api.php',
         accounts: {
-            bot: {
-                name: 'MisakaNetwork@MisakaNetwork',
-                password: env('MH_BOT'),
-            },
-            main: {
-                name: 'Saoutax@Saoutax',
-                password: env('MH_MAIN'),
-            },
+            bot: cred('MisakaNetwork@MisakaNetwork', 'MH_BOT'),
+            main: cred('Saoutax@Saoutax', 'MH_MAIN'),
         },
     },
 };
