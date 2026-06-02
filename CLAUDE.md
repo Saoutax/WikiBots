@@ -20,9 +20,8 @@ Multi-site MediaWiki bot framework (TypeScript, ESM) running via GitHub Actions.
 ```
 src/
   api/          — MediaWiki API client instances + site config
-    config.ts   — 6 wiki site credentials loaded from .env
-    index.ts    — MediaWikiApi instances (zhapi, cmapi, vjpapi, uewapi, qwapi, elainaapi) + Login helper
-    types.d.ts  — Config & SiteAccount types
+    config.ts   — 6 wiki site credentials loaded from .env; `env(key)` validates required vars at init
+    index.ts    — MediaWikiApi instances (zhapi, cmapi, vjpapi, uewapi, qwapi, elainaapi) + Login helper & SiteAccount type
   lib/          — Shared bot operations (wraps MediaWiki API calls)
     index.ts    — BotInstance class: aggregates all libs into one object
     batchQuery.ts       — Fetch page contents in batches with concurrency
@@ -69,7 +68,8 @@ All task scheduling is via GitHub Actions. See `.github/workflows/` for details.
 ### Coding conventions
 
 - Strict TypeScript with `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`
-- oxlint (NOT ESLint) for linting; oxfmt for formatting (100 col width, single quotes, trailing commas)
+- **oxlint** (NOT ESLint) for linting; **oxfmt** for formatting (100 col width, single quotes, trailing commas, arrow parens omitted)
+- Lint rules affecting code style: `curly` (single-line `if`/`for`/`while` **must** use braces), `no-floating-promises` (unhandled promise rejections are errors), `import/no-duplicates` (no duplicate imports)
 - `import type` for type-only imports
 - Path alias `@/*` → `./src/*`
 - All commits follow conventional commits with auto-generated scopes
