@@ -2,9 +2,9 @@ import { BaseApi } from '@/utils';
 
 class GetContent extends BaseApi {
     /**
-     * 获取页面JSON内容
+     * 获取页面内容
      * @param title 页面标题
-     * @returns 返回解析后的JSON
+     * @returns 返回页面内容
      */
     get = async (title: string): Promise<string> => {
         const {
