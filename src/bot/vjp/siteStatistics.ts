@@ -7,8 +7,8 @@ const bot = new BotInstance(api);
 const getLastDayEditCount = async () => {
     let count = 0;
 
-    const end = dayjs().tz().toISOString(),
-        start = dayjs().tz().subtract(1, 'day').toISOString();
+    const end = dayjs().tz().startOf('day').toISOString(),
+        start = dayjs().tz().subtract(1, 'day').startOf('day').toISOString();
 
     let rccontinue: string | undefined;
     do {
