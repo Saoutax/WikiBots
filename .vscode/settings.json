@@ -50,13 +50,5 @@
         "utils/time",
         "utils/variantConverter"
     ],
-    "[typescript]": {
-        "editor.defaultFormatter": "oxc.oxc-vscode",
-    },
-    "[json]": {
-        "editor.defaultFormatter": "oxc.oxc-vscode",
-    },
-    "[jsonc]": {
-        "editor.defaultFormatter": "oxc.oxc-vscode",
-    },
+    "editor.defaultFormatter": "oxc.oxc-vscode",
 }

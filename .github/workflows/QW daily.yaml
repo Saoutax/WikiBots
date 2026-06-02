@@ -12,6 +12,12 @@ on:
                 options:
                     - internalLink
                     - internalLink-exist
+                    - nullEdit
+            category:
+                description: '分类'
+                type: string
+                required: false
+                default: '有蓝链却未移除内部链接助手模板的页面'
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -41,3 +47,17 @@ jobs:
               uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/qw/internalLink-exist.ts
+
+    nullEdit:
+        if: |
+            github.event.inputs.task == 'nullEdit'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              env:
+                  CATEGORY: ${{ github.event.inputs.category }}
+              run: npx tsx src/bot/qw/nullEdit.ts
