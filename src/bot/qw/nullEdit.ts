@@ -9,7 +9,11 @@ const bot = new BotInstance(api);
 
     await new Login(api).login({ site: 'qw', account: 'bot' });
 
-    const pages = await bot.queryCategory(`Category:${process.env.CATEGORY}`, false, ['page']);
+    const pages = await bot.queryCategory(`Category:${process.env.CATEGORY}`, false, [
+        'page',
+        'file',
+        'subcat',
+    ]);
 
     await Promise.all(
         pages.map(async title => {
