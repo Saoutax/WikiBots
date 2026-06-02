@@ -1,6 +1,11 @@
 import { MediaWikiApi } from 'wiki-saikou';
 import config from './config';
 
+interface SiteAccount {
+    site: 'zh' | 'cm' | 'uew' | 'vjp' | 'qw' | 'elaina';
+    account: 'main' | 'bot';
+}
+
 const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,
     fexiosConfigs: {
@@ -27,7 +32,7 @@ const uewapi = new MediaWikiApi({
     fexiosConfigs: {
         headers: {
             'user-agent': config.useragent,
-            'saoutax-bot': config.uew.cf!,
+            'saoutax-bot': config.uew.cf,
         },
     },
 });
@@ -35,7 +40,7 @@ const uewapi = new MediaWikiApi({
 const qwapi = new MediaWikiApi({
     baseURL: config.qw.api,
     fexiosConfigs: {
-        headers: { 'user-agent': config.qw.useragent! },
+        headers: { 'user-agent': config.qw.useragent },
     },
 });
 
