@@ -22,9 +22,9 @@
         "buffer": "^6.0.3",
         "dayjs": "^1.11.21",
         "dotenv": "^17.4.2",
+        "es-toolkit": "^1.47.0",
         "js-yaml": "^4.2.0",
         "jsonc-parser": "^3.3.1",
-        "lodash": "^4.18.1",
         "mwn": "^3.0.2",
         "octokit": "^5.0.5",
         "opencc-js": "^1.3.1",
@@ -38,7 +38,6 @@
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@types/lodash": "^4.17.24",
         "@types/node": "^25.9.1",
         "husky": "^9.1.7",
         "oxfmt": "^0.53.0",

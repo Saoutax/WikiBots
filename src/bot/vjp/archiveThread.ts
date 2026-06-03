@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { cloneDeep } from 'es-toolkit/object';
 import type { MwApiParams } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
@@ -23,7 +23,7 @@ const getParsedThread = async () => {
         currentYear = dayjs().tz().format('YYYY年');
 
     let archive = '';
-    const discussion = _.cloneDeep(discussionThread);
+    const discussion = cloneDeep(discussionThread);
     Object.entries(discussionThread)
         .filter(([key]) => !isNaN(Number(key)))
         .sort(([a], [b]) => Number(a) - Number(b))
