@@ -55,7 +55,7 @@ importers:
         version: 7.6.0
       wikiparser-node:
         specifier: ^1.43.0
-        version: 1.43.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint@17.12.0(typescript@6.0.3))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
+        version: 1.43.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))(stylelint@17.12.0(typescript@6.0.3))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
     devDependencies:
       '@types/js-yaml':
         specifier: ^4.0.9
@@ -103,9 +103,11 @@ packages:
     resolution: {integrity: sha512-s4rgoY0eW4jL1sodTl/b95cNVMUzm2VuP7mC6rCiq76sVeOp4MMaWl4iKAxGjmCauVAnVAwMMGL6B1DiK5ljYA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
 
-  '@bhsd/stylelint-util@1.0.3':
-    resolution: {integrity: sha512-WCwgoWpjZLo9H6U4L9LuP/Q5n/bQlkPC3Ix8DuoJKmMYzxl7uYJ/uBQRvzgXgWvzM9nqQ4arxWlEoHyI4L4TpQ==}
+  '@bhsd/stylelint-util@1.1.0':
+    resolution: {integrity: sha512-ZIvUYsWS6gU1tK2FxbUS/t73gGiCPjnnmOKKmi9jPgHb7B7OkDXk1l5ThTHv01q1c3xMbqEn89o+222WzFJBKg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+    peerDependencies:
+      stylelint-config-recommended: '*'
 
   '@cacheable/memory@2.0.9':
     resolution: {integrity: sha512-HdMx6DoGywB30vacDbBsITbIX4pgFqj1zsrV58jZBUw3klzkNoXhj7qOqAgledhxG7YZI5rBSJg7Zp8/VG0DuA==}
@@ -775,8 +777,8 @@ packages:
   asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
 
-  axios@1.16.1:
-    resolution: {integrity: sha512-caYkukvroVPO8KrzuJEb50Hm07KwfBZPEC3VeFHTsqWHvKTsy54hjJz9BS/cdaypROE2rH6xvm9mHX4fgWkr3A==}
+  axios@1.17.0:
+    resolution: {integrity: sha512-J8SwNxprqqpbfenehxWYXE7CW+wM1BB4w3+N+g+/Wx40xM4rsLrfPmHHxSWIxJLYDgSY/HqlFPIYb2/S3rxafw==}
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
@@ -1512,11 +1514,9 @@ snapshots:
 
   '@bhsd/nodejs@1.0.1': {}
 
-  '@bhsd/stylelint-util@1.0.3(stylelint@17.12.0(typescript@6.0.3))':
+  '@bhsd/stylelint-util@1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))':
     dependencies:
       stylelint-config-recommended: 18.0.0(stylelint@17.12.0(typescript@6.0.3))
-    transitivePeerDependencies:
-      - stylelint
 
   '@cacheable/memory@2.0.9':
     dependencies:
@@ -1987,7 +1987,7 @@ snapshots:
 
   asynckit@0.4.0: {}
 
-  axios@1.16.1:
+  axios@1.17.0:
     dependencies:
       follow-redirects: 1.16.0
       form-data: 4.0.5
@@ -2364,7 +2364,7 @@ snapshots:
     dependencies:
       '@types/node': 14.18.63
       '@types/tough-cookie': 4.0.5
-      axios: 1.16.1
+      axios: 1.17.0
       chalk: 4.1.2
       form-data: 4.0.5
       oauth-1.0a: 2.2.6
@@ -2708,12 +2708,12 @@ snapshots:
     dependencies:
       fexios: 6.2.2
 
-  wikiparser-node@1.43.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint@17.12.0(typescript@6.0.3))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
+  wikiparser-node@1.43.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))(stylelint@17.12.0(typescript@6.0.3))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
     dependencies:
       '@bhsd/cm-util': 2.1.0(monaco-editor@0.53.0)
       '@bhsd/common': 2.2.1
       '@bhsd/nodejs': 1.0.1
-      '@bhsd/stylelint-util': 1.0.3(stylelint@17.12.0(typescript@6.0.3))
+      '@bhsd/stylelint-util': 1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))
       binary-search: 1.3.6
       entities: 8.0.0
       vscode-languageserver-types: 3.17.5
@@ -2728,6 +2728,7 @@ snapshots:
       vscode-json-languageservice: 5.7.2
     transitivePeerDependencies:
       - monaco-editor
+      - stylelint-config-recommended
 
   write-file-atomic@7.0.1:
     dependencies:
