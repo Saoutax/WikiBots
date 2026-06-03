@@ -54,8 +54,8 @@ importers:
         specifier: ^7.6.0
         version: 7.6.0
       wikiparser-node:
-        specifier: ^1.41.0
-        version: 1.41.0(typescript@6.0.3)
+        specifier: ^1.43.0
+        version: 1.43.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))(stylelint@17.12.0(typescript@6.0.3))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
     devDependencies:
       '@types/js-yaml':
         specifier: ^4.0.9
@@ -89,9 +89,11 @@ packages:
     resolution: {integrity: sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==}
     engines: {node: '>=6.9.0'}
 
-  '@bhsd/cm-util@2.0.1':
-    resolution: {integrity: sha512-esGvV1NkCt3LhDIyjZ7kDaiuuXFpHDwOuCongfJ7DZbxIt9diDzM8YQVaYSMQxcE6SwM4FgRb7uhJcJwPkAUnw==}
+  '@bhsd/cm-util@2.1.0':
+    resolution: {integrity: sha512-Xq/HW+BHg4c0qOskh1pjzw9ZfaJi6uLJhFSBoCaMlUic2DgaG5RPEQyDZi0ufSqhf8hxNgQup277MfZvxLm9xQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+    peerDependencies:
+      monaco-editor: '>=0.11.0'
 
   '@bhsd/common@2.2.1':
     resolution: {integrity: sha512-sRR1wV9EBZaZMxgfqnGGHpyh6NfUPQ4Smp5dCdrSrOo+gci5FtDRAGcYSkzPQ1B76fShrpSxFqzhgezwy9Xclw==}
@@ -101,9 +103,11 @@ packages:
     resolution: {integrity: sha512-s4rgoY0eW4jL1sodTl/b95cNVMUzm2VuP7mC6rCiq76sVeOp4MMaWl4iKAxGjmCauVAnVAwMMGL6B1DiK5ljYA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
 
-  '@bhsd/stylelint-util@1.0.3':
-    resolution: {integrity: sha512-WCwgoWpjZLo9H6U4L9LuP/Q5n/bQlkPC3Ix8DuoJKmMYzxl7uYJ/uBQRvzgXgWvzM9nqQ4arxWlEoHyI4L4TpQ==}
+  '@bhsd/stylelint-util@1.1.0':
+    resolution: {integrity: sha512-ZIvUYsWS6gU1tK2FxbUS/t73gGiCPjnnmOKKmi9jPgHb7B7OkDXk1l5ThTHv01q1c3xMbqEn89o+222WzFJBKg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+    peerDependencies:
+      stylelint-config-recommended: '*'
 
   '@cacheable/memory@2.0.9':
     resolution: {integrity: sha512-HdMx6DoGywB30vacDbBsITbIX4pgFqj1zsrV58jZBUw3klzkNoXhj7qOqAgledhxG7YZI5rBSJg7Zp8/VG0DuA==}
@@ -1100,6 +1104,10 @@ packages:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
+  js-yaml@4.2.0:
+    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
+    hasBin: true
+
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
@@ -1450,10 +1458,39 @@ packages:
   wiki-saikou@7.6.0:
     resolution: {integrity: sha512-KErr1fgLYuP6JuD6pPrg3huo5WW4q30Tw4a2YOIwAJzVm6MUf/UnEerU73F3+HgvXZwZ8161zuQo1DvKjqTJjg==}
 
-  wikiparser-node@1.41.0:
-    resolution: {integrity: sha512-RwOEyQ0ebPxR/mTHS8qDeTCKnWDGu6QjEzWnt0h1a28Xwohgtw6Fhn2RUGs24VMB9ip19Jt7TjUtOPygbUNsDA==}
+  wikiparser-node@1.43.0:
+    resolution: {integrity: sha512-rBjGjgo5DbYFPpvqFfC0KrrOvgPUn0H9GbxV2sAzLpSIHftSxTlT/sRcnwtjTqejLxYy5ejnSAhGgYhzjJLbYQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
+    peerDependencies:
+      color-name: '>=2.0.0'
+      mathoid-texvcjs: '>=0.4.0'
+      mediawiki-expr: '*'
+      prism-wiki: '>=1.0.0'
+      prismjs: ^1.0.0
+      stylelint: '>=16.0.0'
+      vscode-css-languageservice: '>=3.0.0'
+      vscode-html-languageservice: '>=3.1.0'
+      vscode-json-languageservice: '>=3.2.0'
+    peerDependenciesMeta:
+      color-name:
+        optional: true
+      mathoid-texvcjs:
+        optional: true
+      mediawiki-expr:
+        optional: true
+      prism-wiki:
+        optional: true
+      prismjs:
+        optional: true
+      stylelint:
+        optional: true
+      vscode-css-languageservice:
+        optional: true
+      vscode-html-languageservice:
+        optional: true
+      vscode-json-languageservice:
+        optional: true
 
   write-file-atomic@7.0.1:
     resolution: {integrity: sha512-OTIk8iR8/aCRWBqvxrzxR0hgxWpnYBblY1S5hDWBQfk/VFmJwzmJgQFN3WsoUKHISv2eAwe+PpbUzyL1CKTLXg==}
@@ -1473,7 +1510,7 @@ snapshots:
 
   '@babel/helper-validator-identifier@7.29.7': {}
 
-  '@bhsd/cm-util@2.0.1':
+  '@bhsd/cm-util@2.1.0(monaco-editor@0.53.0)':
     dependencies:
       monaco-editor: 0.53.0
 
@@ -1481,11 +1518,9 @@ snapshots:
 
   '@bhsd/nodejs@1.0.1': {}
 
-  '@bhsd/stylelint-util@1.0.3(stylelint@17.12.0(typescript@6.0.3))':
+  '@bhsd/stylelint-util@1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))':
     dependencies:
       stylelint-config-recommended: 18.0.0(stylelint@17.12.0(typescript@6.0.3))
-    transitivePeerDependencies:
-      - stylelint
 
   '@cacheable/memory@2.0.9':
     dependencies:
@@ -2027,7 +2062,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 6.0.3
@@ -2059,8 +2094,7 @@ snapshots:
 
   emoji-regex@8.0.0: {}
 
-  entities@8.0.0:
-    optional: true
+  entities@8.0.0: {}
 
   env-paths@2.2.1: {}
 
@@ -2275,6 +2309,10 @@ snapshots:
   js-tokens@4.0.0: {}
 
   js-yaml@4.1.1:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@4.2.0:
     dependencies:
       argparse: 2.0.1
 
@@ -2678,17 +2716,17 @@ snapshots:
     dependencies:
       fexios: 6.2.2
 
-  wikiparser-node@1.41.0(typescript@6.0.3):
+  wikiparser-node@1.43.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))(stylelint@17.12.0(typescript@6.0.3))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
     dependencies:
-      '@bhsd/cm-util': 2.0.1
+      '@bhsd/cm-util': 2.1.0(monaco-editor@0.53.0)
       '@bhsd/common': 2.2.1
       '@bhsd/nodejs': 1.0.1
-      '@bhsd/stylelint-util': 1.0.3(stylelint@17.12.0(typescript@6.0.3))
+      '@bhsd/stylelint-util': 1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@6.0.3)))
       binary-search: 1.3.6
+      entities: 8.0.0
       vscode-languageserver-types: 3.17.5
     optionalDependencies:
       color-name: 2.0.2
-      entities: 8.0.0
       mathoid-texvcjs: 0.6.0
       prism-wiki: 2.1.1
       prismjs: 1.30.0
@@ -2697,8 +2735,8 @@ snapshots:
       vscode-html-languageservice: 5.6.2
       vscode-json-languageservice: 5.7.2
     transitivePeerDependencies:
-      - supports-color
-      - typescript
+      - monaco-editor
+      - stylelint-config-recommended
 
   write-file-atomic@7.0.1:
     dependencies:
