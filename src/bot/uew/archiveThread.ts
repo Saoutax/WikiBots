@@ -1,6 +1,6 @@
 import { uewapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
-import { dayjs, parseThread } from '@/utils';
+import { dayjs, parseThread, parsedToString } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -13,28 +13,24 @@ const bot = new BotInstance(api);
         const content = await bot.getContent('地球联合百科讨论:会议大厅');
 
         const currentThread = parseThread(content);
+        const { sections } = currentThread;
 
         let archive = '';
-        Object.entries(currentThread)
-            .filter(([key]) => !isNaN(Number(key)))
-            .sort(([a], [b]) => Number(a) - Number(b))
-            .forEach(([key, value]) => {
-                const today = dayjs.tz().startOf('day'),
-                    lastComment = dayjs(value.timestamp);
-                if (today.diff(lastComment, 'day') >= 5) {
-                    archive += `${value.thread}\n`;
-                    delete currentThread[Number(key)];
-                    console.log(`Need archive: ${value.title}`);
-                }
-            });
+        const remainingSections = sections.filter(section => {
+            const today = dayjs.tz().startOf('day'),
+                lastComment = dayjs(section.timestamp);
+            if (today.diff(lastComment, 'day') >= 5) {
+                archive += `${section.thread}\n`;
+                console.log(`Need archive: ${section.title}`);
+                return false;
+            }
+            return true;
+        });
 
-        const newDiscussion =
-            currentThread.preface +
-            Object.keys(currentThread)
-                .filter(k => k !== 'preface')
-                .sort((a, b) => Number(a) - Number(b))
-                .map(k => currentThread[Number(k)]?.thread)
-                .join('');
+        const newDiscussion = parsedToString({
+            preface: currentThread.preface,
+            sections: remainingSections,
+        });
 
         const archiveTitle = `地球联合百科讨论:会议大厅/存档/${dayjs().tz().subtract(1, 'month').format('YYYY年MM月')}`;
         await Promise.all(

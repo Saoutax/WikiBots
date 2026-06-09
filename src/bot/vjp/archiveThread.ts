@@ -3,7 +3,7 @@ import type { MwApiParams } from 'wiki-saikou';
 import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
-import { parseThread, dayjs } from '@/utils';
+import { parseThread, parsedToString, dayjs } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -24,50 +24,40 @@ const getParsedThread = async () => {
 
     let archive = '';
     const discussion = cloneDeep(discussionThread);
-    Object.entries(discussionThread)
-        .filter(([key]) => !isNaN(Number(key)))
-        .sort(([a], [b]) => Number(a) - Number(b))
-        .forEach(([key, value]) => {
-            const numKey = Number(key);
-            const parsedThread = Parser.parse(value.thread);
-            const saved = parsedThread.querySelector('template#Template:Saved');
-            if (saved && dayjs().tz().day() === 1) {
-                delete discussion[Number(key)];
-                console.log(`周一移除已存档讨论串：${value.title}`);
+    discussion.sections = discussion.sections.filter(section => {
+        const parsedSection = Parser.parse(section.thread);
+        const saved = parsedSection.querySelector('template#Template:Saved');
+        if (saved && dayjs().tz().day() === 1) {
+            console.log(`周一移除已存档讨论串：${section.title}`);
+            return false;
+        }
+        const mar = parsedSection.querySelector<TranscludeToken>(
+            'template#Template:MarkAsResolved',
+        );
+        if (mar) {
+            const longerType = ['s', 'suspended', 'n', 'noreply'],
+                defaultOffset = longerType.includes(mar.getValue().status!) ? 10 : 3,
+                offset = Number(mar.getValue()['archive-offset'] || defaultOffset);
+            const archiveTime = dayjs(mar.getValue().time, 'YYYYMMDD')
+                .tz()
+                .add(offset, 'day')
+                .format('YYYYMMDD');
+            if (currentTime >= archiveTime) {
+                archive += section.thread;
+                section.thread = `== ${section.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${section.title}}}\n\n`;
+                console.log(`存档讨论串：${section.title}`);
             }
-            const mar = parsedThread.querySelector<TranscludeToken>(
-                'template#Template:MarkAsResolved',
-            );
-            if (mar) {
-                const longerType = ['s', 'suspended', 'n', 'noreply'],
-                    defaultOffset = longerType.includes(mar.getValue().status!) ? 10 : 3,
-                    offset = Number(mar.getValue()['archive-offset'] || defaultOffset);
-                const archiveTime = dayjs(mar.getValue().time, 'YYYYMMDD')
-                    .tz()
-                    .add(offset, 'day')
-                    .format('YYYYMMDD');
-                if (currentTime >= archiveTime) {
-                    discussion[numKey]!.content =
-                        `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${value.title}}}\n\n`;
-                    archive += discussionThread[numKey]!.content;
-                    console.log(`存档讨论串：${value.title}`);
-                }
-            }
-            if (!mar && Math.abs(dayjs(currentTime).diff(dayjs(value.timestamp), 'day')) >= 10) {
-                discussion[numKey]!.content =
-                    `== ${value.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${value.title}}}\n\n`;
-                archive += discussionThread[numKey]!.content;
-                console.log(`存档讨论串：${value.title}`);
-            }
-        });
+            return true;
+        }
+        if (!mar && Math.abs(dayjs(currentTime).diff(dayjs(section.timestamp), 'day')) >= 10) {
+            archive += section.thread;
+            section.thread = `== ${section.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${section.title}}}\n\n`;
+            console.log(`存档讨论串：${section.title}`);
+        }
+        return true;
+    });
 
-    const newDiscussion =
-        discussion.preface +
-        Object.keys(discussion)
-            .filter(k => k !== 'preface')
-            .sort((a, b) => Number(a) - Number(b))
-            .map(k => discussion[Number(k)]!.content)
-            .join('');
+    const newDiscussion = parsedToString(discussion);
 
     const PAGE_MAP = {
         [`Vocawiki:讨论版/存档/${currentYear}`]: {

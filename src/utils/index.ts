@@ -3,7 +3,7 @@ export { booleanFilter } from './booleanFilter';
 export { chunkArray } from './chunkArray';
 export { splitAndJoin } from './splitAndJoin';
 export { formatNamespace } from './formatNamespace';
-export { parseThread } from './parseThread';
+export { parseThread, parsedToString } from './parseThread';
 export { readGHFile, writeGHFile } from './readAndWrite';
 export { getTimeData, updateTimeData } from './recordTime';
 export { delay } from './delay';
