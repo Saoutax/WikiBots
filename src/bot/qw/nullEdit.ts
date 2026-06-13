@@ -1,6 +1,7 @@
 import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import 'dotenv/config';
+import { delay } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -15,19 +16,18 @@ const bot = new BotInstance(api);
         'subcat',
     ]);
 
-    await Promise.all(
-        pages.map(async title => {
-            await api.postWithToken('csrf', {
-                action: 'edit',
-                title,
-                appendtext: '',
-                summary: '机器人：零编辑',
-                minor: true,
-                bot: true,
-            });
-            console.log(`NULLEDIT: ${title}`);
-        }),
-    );
+    for (const title of pages) {
+        await api.postWithToken('csrf', {
+            action: 'edit',
+            title,
+            appendtext: '',
+            summary: '机器人：零编辑',
+            minor: true,
+            bot: true,
+        });
+        console.log(`NULLEDIT: ${title}`);
+        await delay();
+    }
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();
