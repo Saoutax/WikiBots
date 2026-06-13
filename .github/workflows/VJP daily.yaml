@@ -99,6 +99,7 @@ jobs:
 
     archiveThread:
         if: |
+            github.event.schedule == '10 16 * * *' ||
             github.event.inputs.task == 'archiveThread'
         runs-on: ubuntu-latest
         steps:
