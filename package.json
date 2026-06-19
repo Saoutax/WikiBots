@@ -38,7 +38,7 @@
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@types/node": "^25.9.3",
+        "@types/node": "^26.0.0",
         "husky": "^9.1.7",
         "oxfmt": "^0.55.0",
         "oxlint": "^1.70.0",
