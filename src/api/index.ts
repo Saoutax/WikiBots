@@ -46,6 +46,13 @@ const elainaapi = new MediaWikiApi({
     },
 });
 
+const sapapi = new MediaWikiApi({
+    baseURL: config.sap.api,
+    fexiosConfigs: {
+        headers: { 'user-agent': config.useragent },
+    },
+});
+
 class Login {
     constructor(private api: MediaWikiApi) {}
 
@@ -70,6 +77,9 @@ class Login {
             case 'elaina':
                 sitename = 'ElainaWiki';
                 break;
+            case 'sap':
+                sitename = 'SAPedia';
+                break;
         }
 
         const siteConfig = config[site];
@@ -92,4 +102,4 @@ class Login {
     }
 }
 
-export { cmapi, zhapi, vjpapi, uewapi, qwapi, elainaapi, Login };
+export { cmapi, zhapi, vjpapi, uewapi, qwapi, elainaapi, sapapi, Login };

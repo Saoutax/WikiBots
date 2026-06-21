@@ -84,6 +84,27 @@ const config = {
             },
         },
     },
+    sap: {
+        api: 'https://saoaw.com/api.php',
+        accounts: {
+            main: {
+                name: 'Saoutax@Saoutax',
+                password: env.SAP_MAIN,
+            },
+            bot: {
+                name: 'Saoutax-bot@Saoutax-bot',
+                password: env.SAP_BOT,
+            },
+            abot: {
+                name: 'Saoutax-abot@Saoutax-abot',
+                password: env.SAP_ABOT,
+            },
+            ibot: {
+                name: 'Saoutax-ibot@Saoutax-ibot',
+                password: env.SAP_IBOT,
+            },
+        },
+    },
 };
 
 export default config as Config;
