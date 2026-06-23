@@ -27,14 +27,16 @@ interface ParsedThread {
 const parseThread = (text: string): ParsedThread => {
     const root = Parser.parse(text);
     const headings = root.querySelectorAll<HeadingToken>('heading');
+    const topLevel = Math.min(...headings.map(h => h.level));
+    const filteredHeadings = headings.filter(h => h.level === topLevel);
 
     const result: ParsedThread = { preface: text, sections: [] };
 
-    if (headings.length) {
-        result.preface = text.slice(0, headings[0]!.getAbsoluteIndex());
+    if (filteredHeadings.length) {
+        result.preface = text.slice(0, filteredHeadings[0]!.getAbsoluteIndex());
     }
 
-    headings.forEach(heading => {
+    filteredHeadings.forEach(heading => {
         const sectionRange = heading.section()!;
 
         const headingStart = heading.getAbsoluteIndex();
