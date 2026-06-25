@@ -1,8 +1,9 @@
 name: 'QW daily'
 
 on:
-    # schedule:
-    #     - cron: '15 */3 * * *' # Every 3 hours (08:15 11:15 14:15 17:20 ... CST)
+    schedule:
+        # - cron: '15 */3 * * *' # Every 3 hours (08:15 11:15 14:15 17:20 ... CST)
+        - cron: '10 16 * * 5' # 00:10 CST Saturday
     workflow_dispatch:
         inputs:
             task:
@@ -13,6 +14,7 @@ on:
                     - internalLink
                     - internalLink-exist
                     - nullEdit
+                    - archiveTea
             category:
                 description: '分类'
                 type: string
@@ -61,3 +63,18 @@ jobs:
               env:
                   CATEGORY: ${{ github.event.inputs.category }}
               run: npx tsx src/bot/qw/nullEdit.ts
+
+    archiveTea:
+        if: |
+            github.event.schedule == '10 16 * * 5' ||
+            github.event.inputs.task == 'archiveTea'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              env:
+                  CATEGORY: ${{ github.event.inputs.category }}
+              run: npx tsx src/bot/qw/archiveTea.ts
