@@ -46,6 +46,7 @@
         "utils/booleanFilter",
         "utils/delay",
         "utils/formatNamespace",
+        "utils/getLatestTimestamp",
         "utils/parseThread",
         "utils/readAndWrite",
         "utils/recordTime",
