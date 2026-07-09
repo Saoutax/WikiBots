@@ -2,6 +2,7 @@ export { BaseApi } from './baseApi';
 export { booleanFilter } from './booleanFilter';
 export { splitAndJoin } from './splitAndJoin';
 export { formatNamespace } from './formatNamespace';
+export { getLatestTimestamp } from './getLatestTimestamp';
 export { parseThread, parsedToString } from './parseThread';
 export { readGHFile, writeGHFile } from './readAndWrite';
 export { getTimeData, updateTimeData } from './recordTime';

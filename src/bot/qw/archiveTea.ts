@@ -34,7 +34,7 @@ const main = async (targets: string[]) => {
                 day = Number.isFinite(Number(mar.getValue('days')))
                     ? Number(mar.getValue('days'))
                     : 3;
-            if (time && Math.abs(dayjs(currentTime).diff(time, 'day')) > day) {
+            if (time && dayjs(currentTime).diff(time, 'day') >= day) {
                 archive += thread;
                 removeIndices.push(i);
             }

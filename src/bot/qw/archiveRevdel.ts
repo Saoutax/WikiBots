@@ -2,7 +2,7 @@ import Parser, { type TranscludeToken } from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import data from '@/config/status_data.json';
 import { BotInstance } from '@/lib';
-import { dayjs } from '@/utils';
+import { dayjs, getLatestTimestamp } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -62,11 +62,17 @@ const parseRevdelRequests = (text: string): RevdelRequests => {
         ]),
     ];
 
+    const currentTime = dayjs().tz();
+
     const remaining = parsed.requests.filter(request => {
         const root = Parser.parse(request),
             template = root.querySelector<TranscludeToken>('template#Template:Revdel')!,
             status = template.getValue('status');
-        if (status && allowList.includes(status)) {
+        if (
+            status &&
+            allowList.includes(status) &&
+            dayjs(currentTime).diff(getLatestTimestamp(request), 'day') >= 3
+        ) {
             archiveArr.push(request);
             return false;
         }
@@ -77,7 +83,7 @@ const parseRevdelRequests = (text: string): RevdelRequests => {
         const discussion = `${parsed.preface}\n` + remaining.join('');
         const archive = archiveArr.join('');
 
-        const archiveTitle = `${target}/存档/${dayjs().tz().format('YYYY年')}`;
+        const archiveTitle = `${target}/存档/${currentTime.format('YYYY年')}`;
         const append = await bot.checkExist(archiveTitle);
         const params = {
             action: 'edit',

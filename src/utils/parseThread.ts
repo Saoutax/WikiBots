@@ -1,6 +1,6 @@
 import type { Dayjs } from 'dayjs';
 import Parser, { type HeadingToken } from 'wikiparser-node';
-import { dayjs } from '@/utils';
+import { getLatestTimestamp } from './getLatestTimestamp';
 
 interface ParsedThread {
     preface: string;
@@ -8,7 +8,7 @@ interface ParsedThread {
         title: string;
         content: string;
         thread: string;
-        timestamp: Dayjs;
+        timestamp: Dayjs | undefined;
     }[];
 }
 
@@ -46,17 +46,11 @@ const parseThread = (text: string): ParsedThread => {
         const content = text.slice(headingEnd, sectionEnd);
         const thread = text.slice(headingStart, sectionEnd);
 
-        const timestampRegex =
-            /([1-9]\d{3}年(?:0?[1-9]|1[012])月(?:0?[1-9]|[12]\d|3[01])日 *(?:[(（](?:[金木水火土日月]|(?:星期)?[一二三四五六日])[)）])? *(?:[01]\d|2[0-3]):(?:[0-5]\d)(?::[0-5]\d)? *[(（](?:[CJ]ST|UTC(?:[+-](?:[1-9]|1[012]))?)[)）])/gmu;
-        const timestamps = [...content.matchAll(timestampRegex)].map(m =>
-            dayjs.utc(m[1]!, 'YYYY年M月D日 HH:mm').valueOf(),
-        );
-
         result.sections.push({
             title: heading.innerText,
             content,
             thread,
-            timestamp: dayjs.utc(Math.max(...timestamps)),
+            timestamp: getLatestTimestamp(content),
         });
     });
 

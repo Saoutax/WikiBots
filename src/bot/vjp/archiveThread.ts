@@ -49,7 +49,7 @@ const getParsedThread = async () => {
             }
             return true;
         }
-        if (!mar && Math.abs(dayjs(currentTime).diff(dayjs(section.timestamp), 'day')) >= 10) {
+        if (!mar && dayjs(currentTime).diff(dayjs(section.timestamp), 'day') >= 10) {
             archive += section.thread;
             section.thread = `== ${section.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${section.title}}}\n\n`;
             console.log(`存档讨论串：${section.title}`);
