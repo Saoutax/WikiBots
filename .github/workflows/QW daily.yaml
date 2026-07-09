@@ -14,8 +14,8 @@ on:
                     - internalLink
                     - internalLink-exist
                     - nullEdit
-                    - archiveTea
-                    - archiveRevdel
+                    - archiveTEA
+                    - archiveRFRD
             category:
                 description: '分类'
                 type: string
@@ -65,10 +65,10 @@ jobs:
                   CATEGORY: ${{ github.event.inputs.category }}
               run: npx tsx src/bot/qw/nullEdit.ts
 
-    archiveTea:
+    archiveTEA:
         if: |
             github.event.schedule == '10 16 * * *' ||
-            github.event.inputs.task == 'archiveTea'
+            github.event.inputs.task == 'archiveTEA'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -76,12 +76,12 @@ jobs:
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
-              run: npx tsx src/bot/qw/archiveTea.ts
+              run: npx tsx src/bot/qw/archiveTEA.ts
 
-    archiveRevdel:
+    archiveRFRD:
         # if: |
         #     github.event.schedule == '10 16 * * *' ||
-        #     github.event.inputs.task == 'archiveRevdel'
+        #     github.event.inputs.task == 'archiveRFRD'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -89,4 +89,4 @@ jobs:
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
-              run: npx tsx src/bot/qw/archiveRevdel.ts
+              run: npx tsx src/bot/qw/archiveRFRD.ts
