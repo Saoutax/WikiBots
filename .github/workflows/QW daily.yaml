@@ -79,9 +79,9 @@ jobs:
               run: npx tsx src/bot/qw/archiveTea.ts
 
     archiveRevdel:
-        if: |
-            github.event.schedule == '10 16 * * *' ||
-            github.event.inputs.task == 'archiveRevdel'
+        # if: |
+        #     github.event.schedule == '10 16 * * *' ||
+        #     github.event.inputs.task == 'archiveRevdel'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
