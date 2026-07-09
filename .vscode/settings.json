@@ -10,6 +10,7 @@
         "MGP/markImg",
         "MGP/monthly",
         "MGP/removeExtraPipe",
+        "QW/archiveRFES",
         "QW/archiveRFRD",
         "QW/archiveTEA",
         "QW/internalLink",
