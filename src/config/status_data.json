@@ -1,0 +1,65 @@
+{
+    "done": {
+        "status": ["done", "完成", "批准", "准許", "准许", "允許", "允许", "+"],
+        "color": "#00AF89",
+        "text": "完成",
+        "keep": false
+    },
+    "nd": {
+        "status": [
+            "拒絕",
+            "拒绝",
+            "驳回",
+            "駁回",
+            "未完成",
+            "不准許",
+            "不准许",
+            "不允許",
+            "不允许",
+            "-",
+            "not done",
+            "nd"
+        ],
+        "color": "#D11D13",
+        "text": "未完成",
+        "keep": false
+    },
+    "oh": {
+        "status": ["on hold", "擱置", "搁置", "等待", "等待中", "oh", "hold", "*", "?"],
+        "color": "#FFCC00",
+        "text": "等待中",
+        "keep": true
+    },
+    "wd": {
+        "status": ["撤回", "w", "wd", "withdrawn"],
+        "color": "#000088",
+        "text": "撤回",
+        "keep": false
+    },
+    "ad": {
+        "status": [
+            "already done",
+            "ad",
+            "此前已完成",
+            "此前已批准",
+            "此前已准許",
+            "此前已准许",
+            "此前已允許",
+            "此前已允许"
+        ],
+        "color": "#000000",
+        "text": "此前已完成",
+        "keep": false
+    },
+    "rd": {
+        "status": ["rd", "redundant", "重複", "重复", "重複請求", "重复请求"],
+        "color": "#FF9999",
+        "text": "重复请求",
+        "keep": false
+    },
+    "unknown": {
+        "status": [],
+        "color": "#AAAAAA",
+        "keep": true
+    }
+}

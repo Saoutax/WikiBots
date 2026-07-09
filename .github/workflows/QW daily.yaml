@@ -15,6 +15,7 @@ on:
                     - internalLink-exist
                     - nullEdit
                     - archiveTea
+                    - archiveRevdel
             category:
                 description: '分类'
                 type: string
@@ -75,6 +76,17 @@ jobs:
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
-              env:
-                  CATEGORY: ${{ github.event.inputs.category }}
               run: npx tsx src/bot/qw/archiveTea.ts
+
+    archiveRevdel:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveRevdel'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveRevdel.ts

@@ -6,21 +6,6 @@ import { parseThread, parsedToString, dayjs } from '@/utils';
 
 const bot = new BotInstance(api);
 
-const checkExist = async (title: string) => {
-    const {
-        data: {
-            query: { pages },
-        },
-    } = await api.post({
-        action: 'query',
-        format: 'json',
-        prop: 'info',
-        titles: title,
-        formatversion: '2',
-    });
-    return pages[0]?.missing ? false : true;
-};
-
 const main = async (targets: string[]) => {
     const currentTime = dayjs().tz(),
         currentMonth = dayjs().tz().format('YYYY年MM月');
@@ -64,7 +49,7 @@ const main = async (targets: string[]) => {
         }
 
         const archiveTitle = makeArchiveTitle(target);
-        const append = await checkExist(archiveTitle);
+        const append = await bot.checkExist(archiveTitle);
         const params = {
             action: 'edit',
             summary: '机器人：存档讨论',
