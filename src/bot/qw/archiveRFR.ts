@@ -33,68 +33,73 @@ const parseRFRRequests = (wikitext: string): RFRResult => {
 };
 
 const main = async (targets: string[]) => {
-    targets.forEach(async target => {
-        const parsed = parseRFRRequests(await bot.getContent(target));
-        const archiveArr: string[] = [];
+    const allowList = [
+        ...new Set([
+            ...data.done.status,
+            ...data.nd.status,
+            ...data.wd.status,
+            ...data.ad.status,
+            ...data.rd.status,
+        ]),
+    ];
+    const currentTime = dayjs().tz();
 
-        const allowList = [
-            ...new Set([
-                ...data.done.status,
-                ...data.nd.status,
-                ...data.wd.status,
-                ...data.ad.status,
-                ...data.rd.status,
-            ]),
-        ];
+    await Promise.allSettled(
+        targets.map(async target => {
+            try {
+                const parsed = parseRFRRequests(await bot.getContent(target));
+                const archiveArr: string[] = [];
 
-        const currentTime = dayjs().tz();
+                const remaining = parsed.sections.filter(section => {
+                    const root = Parser.parse(section),
+                        template = root.querySelector<TranscludeToken>('template#Template:Status')!,
+                        status = template.getValue('1');
+                    if (
+                        status &&
+                        allowList.includes(status) &&
+                        dayjs(currentTime).diff(getLatestTimestamp(section), 'day') >= 3
+                    ) {
+                        archiveArr.push(section);
+                        return false;
+                    }
+                    return true;
+                });
 
-        const remaining = parsed.sections.filter(section => {
-            const root = Parser.parse(section),
-                template = root.querySelector<TranscludeToken>('template#Template:Status')!,
-                status = template.getValue('1');
-            if (
-                status &&
-                allowList.includes(status) &&
-                dayjs(currentTime).diff(getLatestTimestamp(section), 'day') >= 3
-            ) {
-                archiveArr.push(section);
-                return false;
+                if (archiveArr.length > 0) {
+                    const discussion = `${parsed.preface}\n` + remaining.join('');
+                    const archive = archiveArr.join('');
+
+                    const archiveTitle = `${target}/存档/${currentTime.format('YYYY年')}`;
+                    const append = await bot.checkExist(archiveTitle);
+                    const params = {
+                        action: 'edit',
+                        summary: '机器人：存档讨论',
+                        minor: true,
+                        bot: true,
+                    };
+                    await Promise.all([
+                        api.postWithToken('csrf', {
+                            ...params,
+                            title: target,
+                            text: discussion,
+                        }),
+                        api.postWithToken('csrf', {
+                            ...params,
+                            title: archiveTitle,
+                            ...(append
+                                ? { appendtext: `\n\n${archive}` }
+                                : { text: `{{talkarchive}}\n\n${archive}` }),
+                        }),
+                    ]);
+                    console.log(`Successfully archived ${archiveArr.length} threads in ${target}`);
+                } else {
+                    console.log(`No threads need to be archived in ${target}`);
+                }
+            } catch (e) {
+                console.log(`Failed to archive ${target}: ${String(e)}`);
             }
-            return true;
-        });
-
-        if (archiveArr.length > 0) {
-            const discussion = `${parsed.preface}\n` + remaining.join('');
-            const archive = archiveArr.join('');
-
-            const archiveTitle = `${target}/存档/${currentTime.format('YYYY年')}`;
-            const append = await bot.checkExist(archiveTitle);
-            const params = {
-                action: 'edit',
-                summary: '机器人：存档讨论',
-                minor: true,
-                bot: true,
-            };
-            await Promise.all([
-                api.postWithToken('csrf', {
-                    ...params,
-                    title: target,
-                    text: discussion,
-                }),
-                api.postWithToken('csrf', {
-                    ...params,
-                    title: archiveTitle,
-                    ...(append
-                        ? { appendtext: `\n\n${archive}` }
-                        : { text: `{{talkarchive}}\n\n${archive}` }),
-                }),
-            ]);
-            console.log(`Successfully archived ${archiveArr.length} threads in ${target}`);
-        } else {
-            console.log(`No threads need to be archived in ${target}`);
-        }
-    });
+        }),
+    );
 };
 
 (async () => {
