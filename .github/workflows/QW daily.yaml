@@ -16,6 +16,8 @@ on:
                     - nullEdit
                     - archiveTEA
                     - archiveRFRD
+                    - archiveRFES
+                    - archiveRFR
             category:
                 description: '分类'
                 type: string
@@ -79,9 +81,9 @@ jobs:
               run: npx tsx src/bot/qw/archiveTEA.ts
 
     archiveRFRD:
-        # if: |
-        #     github.event.schedule == '10 16 * * *' ||
-        #     github.event.inputs.task == 'archiveRFRD'
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveRFRD'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -90,3 +92,29 @@ jobs:
               uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/qw/archiveRFRD.ts
+
+    archiveRFES:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveRFES'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveRFES.ts
+
+    archiveRFR:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveRFR'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveRFR.ts
