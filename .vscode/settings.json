@@ -32,6 +32,7 @@
         "VJP/nullEdit",
         "VJP/siteStatistics",
         "api/config",
+        "api/types",
         "lib/batchQuery",
         "lib/checkExist",
         "lib/checkGlobalUsage",
