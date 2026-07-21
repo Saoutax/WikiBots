@@ -25,3 +25,5 @@ interface SiteAccount {
     site: 'zh' | 'cm' | 'uew' | 'vjp' | 'qw' | 'elaina' | 'sap';
     account: 'main' | 'bot' | 'ibot' | 'abot';
 }
+
+export type { Config, SiteAccount };

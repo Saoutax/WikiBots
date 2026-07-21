@@ -1,5 +1,6 @@
 import { MediaWikiApi } from 'wiki-saikou';
 import config from './config';
+import type { SiteAccount } from './types';
 
 const zhapi = new MediaWikiApi({
     baseURL: config.zh.api,

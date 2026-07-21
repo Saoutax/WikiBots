@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import type { Config } from './types';
 
 const env = process.env;
 
