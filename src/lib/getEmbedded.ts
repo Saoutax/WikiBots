@@ -1,9 +1,5 @@
 import { BaseApi, formatNamespace } from '@/utils';
 
-interface Page {
-    title: string;
-}
-
 class GetEmbedded extends BaseApi {
     /**
      * 查询嵌入页面
@@ -27,7 +23,7 @@ class GetEmbedded extends BaseApi {
                 data: {
                     query: { embeddedin = [] },
                 },
-            } = await this.api.post({
+            } = await this.api.post<{ query: { embeddedin?: { title: string }[] } }>({
                 action: 'query',
                 list: 'embeddedin',
                 eititle: title,
@@ -36,7 +32,7 @@ class GetEmbedded extends BaseApi {
                 eilimit: 'max',
                 eicontinue,
             });
-            embeddedin.forEach((page: Page) => {
+            embeddedin.forEach(page => {
                 result.push(page.title);
             });
             eicontinue = data?.continue?.eicontinue;

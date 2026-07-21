@@ -5,7 +5,7 @@ import { splitAndJoin, variantConverter } from '@/utils';
 
 const bot = new BotInstance(api);
 
-interface Redirects {
+interface MWRedirects {
     from: string;
     to: string;
 }
@@ -20,15 +20,15 @@ interface Redirects {
     for (const titles of splitAndJoin(original)) {
         const {
             data: {
-                query: { redirects },
+                query: { redirects = [] },
             },
-        } = await api.post({
+        } = await api.post<{ query: { redirects?: MWRedirects[] } }>({
             action: 'query',
             titles,
             redirects: true,
         });
 
-        for (const { from, to } of (redirects ?? []) as Redirects[]) {
+        for (const { from, to } of redirects) {
             const pages = await bot.queryCategory(from, false, ['file', 'page', 'subcat']),
                 pageContent = await bot.batchQuery(pages);
             const result: Record<string, string> = {};

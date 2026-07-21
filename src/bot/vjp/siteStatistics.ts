@@ -49,14 +49,18 @@ const getLastDayEditCount = async () => {
                 statistics: { articles, edits, users, activeusers },
             },
         },
-    } = await api.get({
+    } = await api.get<{
+        query: {
+            statistics: { articles: number; edits: number; users: number; activeusers: number };
+        };
+    }>({
         meta: 'siteinfo',
         siprop: 'statistics',
     });
 
     const editCount = await getLastDayEditCount(),
         title = 'Template:站点数据.json',
-        statistics = await bot.getJson<{ dataset: { source: string[] } }>(title);
+        statistics = await bot.getJson<{ dataset: { source: (string | number)[][] } }>(title);
 
     statistics.dataset.source.push([
         dayjs().tz().subtract(1, 'day').format('YYYY-MM-DD'),
@@ -65,7 +69,7 @@ const getLastDayEditCount = async () => {
         editCount,
         articles,
         edits,
-    ] as unknown as string);
+    ]);
 
     const text = JSON.stringify(statistics, null, 4);
 

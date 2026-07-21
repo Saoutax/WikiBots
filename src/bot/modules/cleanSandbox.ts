@@ -23,14 +23,14 @@ class CleanSandbox extends BaseApi {
             data: {
                 query: { pages },
             },
-        } = await this.api.post({
+        } = await this.api.post<{ query: { pages: Pages[] } }>({
             prop: 'revisions|info',
             titles: Object.keys(pageMap),
             rvprop: 'timestamp|content',
             inprop: 'touched',
         });
         await Promise.all(
-            (pages as Pages[]).map(async ({ title, revisions: [{ timestamp }], touched }) => {
+            pages.map(async ({ title, revisions: [{ timestamp }], touched }) => {
                 const minutes = (Date.now() - new Date(touched || timestamp).getTime()) / 60000;
                 if (minutes > 180) {
                     await this.api

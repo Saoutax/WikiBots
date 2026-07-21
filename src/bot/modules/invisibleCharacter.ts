@@ -24,7 +24,7 @@ class InvisibleCharacter extends BaseApi {
             data: {
                 query: { recentchanges },
             },
-        } = await this.api.post({
+        } = await this.api.post<{ query: { recentchanges: PageMap[] } }>({
             action: 'query',
             list: 'recentchanges',
             rcstart,
@@ -34,7 +34,7 @@ class InvisibleCharacter extends BaseApi {
         });
 
         const pages = new Set<string>();
-        (recentchanges as PageMap[]).forEach(({ title, pageid }) => {
+        recentchanges.forEach(({ title, pageid }) => {
             if (pageids.length === 0 || !pageids.includes(pageid)) {
                 pages.add(title);
             }

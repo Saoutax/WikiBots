@@ -1,6 +1,6 @@
 import { BaseApi, formatNamespace, splitAndJoin } from '@/utils';
 
-interface Page {
+interface MWPage {
     title: string;
     linkshere: {
         title: string;
@@ -33,7 +33,7 @@ class GetLinked extends BaseApi {
                         data: {
                             query: { pages = [] },
                         },
-                    } = await this.api.post({
+                    } = await this.api.post<{ query: { pages?: MWPage[] } }>({
                         action: 'query',
                         prop: 'linkshere',
                         titles: group,
@@ -43,7 +43,7 @@ class GetLinked extends BaseApi {
                         lhlimit: 'max',
                         lhcontinue,
                     });
-                    for (const page of pages as Page[]) {
+                    for (const page of pages) {
                         result[page.title] ??= [];
                         if (!page.linkshere?.length) {
                             continue;

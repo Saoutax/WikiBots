@@ -1,14 +1,14 @@
 import pLimit from 'p-limit';
 import { BaseApi, splitAndJoin, delay } from '@/utils';
 
-type Pages = {
+interface MWPage {
     title: string;
     revisions: [
         {
             content: string;
         },
     ];
-}[];
+}
 
 class BatchQuery extends BaseApi {
     /**
@@ -35,13 +35,13 @@ class BatchQuery extends BaseApi {
                         data: {
                             query: { pages },
                         },
-                    } = await this.api.post({
+                    } = await this.api.post<{ query: { pages: MWPage[] } }>({
                         action: 'query',
                         prop: 'revisions',
                         rvprop: 'content',
                         titles: group,
                     });
-                    (pages as Pages).forEach(({ title, revisions }) => {
+                    pages.forEach(({ title, revisions }) => {
                         const content = revisions?.[0]?.content;
                         if (content) {
                             result[title] = content;

@@ -1,10 +1,10 @@
 import pLimit from 'p-limit';
 import { BaseApi, splitAndJoin } from '@/utils';
 
-type Pages = {
+interface MWPage {
     title: string;
     globalusage: [];
-}[];
+}
 
 class CheckGlobalUsage extends BaseApi {
     /**
@@ -27,14 +27,14 @@ class CheckGlobalUsage extends BaseApi {
                             data: {
                                 query: { pages },
                             },
-                        } = await this.api.post({
+                        } = await this.api.post<{ query: { pages: MWPage[] } }>({
                             action: 'query',
                             prop: 'globalusage',
                             titles: group,
                             gulimit: 'max',
                             gucontinue,
                         });
-                        (pages as Pages).forEach(({ title, globalusage }) => {
+                        pages.forEach(({ title, globalusage }) => {
                             if (globalusage?.length) {
                                 result[title] = true;
                             } else if (!(title in result)) {

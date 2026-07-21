@@ -1,7 +1,5 @@
 import { vjpapi as api, Login } from '@/api';
 
-type allusers = [{ userid: number; name: string; editcount: number }];
-
 (async () => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
@@ -11,7 +9,9 @@ type allusers = [{ userid: number; name: string; editcount: number }];
         data: {
             query: { allusers },
         },
-    } = await api.postWithToken('csrf', {
+    } = await api.postWithToken<{
+        query: { allusers: [{ userid: number; name: string; editcount: number }] };
+    }>('csrf', {
         list: 'allusers',
         auexcludegroup: 'bot',
         auprop: 'editcount',
@@ -19,7 +19,7 @@ type allusers = [{ userid: number; name: string; editcount: number }];
         auwitheditsonly: 1,
     });
 
-    const count = (allusers as allusers).map(user => [user.name, user.editcount]);
+    const count = allusers.map(user => [user.name, user.editcount]);
 
     let text = '* 本页面是由[[U:MisakaNetwork|机器人]]生成的全站累计编辑统计。\n';
     text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n';

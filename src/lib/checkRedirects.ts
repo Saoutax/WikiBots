@@ -1,6 +1,9 @@
 import { BaseApi, splitAndJoin } from '@/utils';
 
-type Info = { title: string; redirect?: boolean };
+interface MWPage {
+    title: string;
+    redirect?: boolean;
+}
 
 class CheckRedirect extends BaseApi {
     /**
@@ -18,13 +21,13 @@ class CheckRedirect extends BaseApi {
                     data: {
                         query: { pages },
                     },
-                } = await this.api.post({
+                } = await this.api.post<{ query: { pages: MWPage[] } }>({
                     action: 'query',
                     prop: 'info',
                     titles: group,
                     formatversion: '2',
                 });
-                pages.forEach((page: Info) => {
+                pages.forEach(page => {
                     result[page.title] = Object.hasOwn(page, 'redirect');
                 });
             }),

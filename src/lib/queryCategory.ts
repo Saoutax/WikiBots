@@ -1,9 +1,9 @@
 import { BaseApi, formatNamespace } from '@/utils';
 
-type CategoryMembers = {
+interface MWCategory {
     ns: number;
     title: string;
-}[];
+}
 
 class QueryCategory extends BaseApi {
     /**
@@ -54,7 +54,7 @@ class QueryCategory extends BaseApi {
                 data: {
                     query: { categorymembers },
                 },
-            } = await this.api.post({
+            } = await this.api.post<{ query: { categorymembers: MWCategory[] } }>({
                 action: 'query',
                 list: 'categorymembers',
                 cmtitle: category,
@@ -64,7 +64,7 @@ class QueryCategory extends BaseApi {
                 cmcontinue,
                 cmlimit: 'max',
             });
-            for (const member of categorymembers as CategoryMembers) {
+            for (const member of categorymembers) {
                 if (member.ns === 14 && recursive) {
                     await this.queryCategory(
                         member.title,
