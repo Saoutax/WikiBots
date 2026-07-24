@@ -31,7 +31,7 @@
         "p-limit": "^7.3.0",
         "pinyin-pro": "^3.28.1",
         "tsx": "^4.23.1",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.6.0",
         "wikiparser-node": "^1.45.0"
