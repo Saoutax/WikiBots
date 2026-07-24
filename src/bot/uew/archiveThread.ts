@@ -32,33 +32,37 @@ const bot = new BotInstance(api);
             sections: remainingSections,
         });
 
-        const archiveTitle = `地球联合百科讨论:会议大厅/存档/${dayjs().tz().subtract(1, 'month').format('YYYY年MM月')}`;
-        await Promise.all(
-            Object.entries({
-                '地球联合百科讨论:会议大厅': newDiscussion,
-                [archiveTitle]: archive,
-            }).map(async ([title, text]) => {
-                await api.postWithToken('csrf', {
-                    action: 'edit',
-                    title,
-                    text,
-                    summary: '存档过期讨论串',
-                    tags: 'Bot',
-                    bot: true,
-                });
-                console.log(`Done: ${title}`);
-            }),
-        );
+        if (archive !== '') {
+            const archiveTitle = `地球联合百科讨论:会议大厅/存档/${dayjs().tz().subtract(1, 'month').format('YYYY年MM月')}`;
+            await Promise.all(
+                Object.entries({
+                    '地球联合百科讨论:会议大厅': newDiscussion,
+                    [archiveTitle]: archive,
+                }).map(async ([title, text]) => {
+                    await api.postWithToken('csrf', {
+                        action: 'edit',
+                        title,
+                        text,
+                        summary: '存档过期讨论串',
+                        tags: 'Bot',
+                        bot: true,
+                    });
+                    console.log(`Done: ${title}`);
+                }),
+            );
 
-        await api.postWithToken('csrf', {
-            action: 'protect',
-            title: archiveTitle,
-            protections: 'edit=sysop|move=sysop',
-            reason: '会议大厅存档',
-            tags: 'Bot',
-            bot: true,
-        });
-        console.log('Protect success.');
+            await api.postWithToken('csrf', {
+                action: 'protect',
+                title: archiveTitle,
+                protections: 'edit=sysop|move=sysop',
+                reason: '会议大厅存档',
+                tags: 'Bot',
+                bot: true,
+            });
+            console.log('Protect success.');
+        } else {
+            console.log('No thread need archive.');
+        }
     } else {
         console.log('Not archive day, skipped.');
     }
