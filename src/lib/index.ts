@@ -11,16 +11,16 @@ import { GetLinked } from './getLinked';
 import { QueryCategory } from './queryCategory';
 
 class BotInstance {
-    batchQuery: BatchQuery['query'];
-    checkExist: CheckExist['check'];
-    checkGlobalUsage: CheckGlobalUsage['check'];
-    checkRedirect: CheckRedirect['check'];
-    flagDelete: FlagDelete['del'];
-    getContent: GetContent['get'];
-    getEmbedded: GetEmbedded['get'];
-    getJson: GetJSON['get'];
-    getLinked: GetLinked['get'];
-    queryCategory: QueryCategory['query'];
+    batchQuery;
+    checkExist;
+    checkGlobalUsage;
+    checkRedirect;
+    flagDelete;
+    getContent;
+    getEmbedded;
+    getJson;
+    getLinked;
+    queryCategory;
 
     constructor(api: MediaWikiApi) {
         this.batchQuery = new BatchQuery(api).query;

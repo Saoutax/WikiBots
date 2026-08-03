@@ -48,7 +48,7 @@ const recordInUsed = async (inUsed: string[]) => {
     );
 };
 
-const processRecent = async (lgusername: string) => {
+const processRecent = async () => {
     const filepath = 'data/inUsedRedirect.json',
         { content, sha } = await readGHFile(filepath),
         record = JSON.parse(content) as Record<string, string[]>,
@@ -64,13 +64,18 @@ const processRecent = async (lgusername: string) => {
         const { isFalse: notInUsed, isTrue: inUsed } = booleanFilter(usage);
 
         if (notInUsed.length > 0) {
-            await cmbot.flagDelete(
-                notInUsed,
-                '移动残留重定向',
-                lgusername,
-                '自动挂删文件移动残留重定向',
+            await Promise.all(
+                notInUsed.map(async title => {
+                    await cmapi.postWithToken('csrf', {
+                        action: 'delete',
+                        title,
+                        reason: '自动删除文件移动残留重定向',
+                        tags: 'Bot',
+                        bot: true,
+                    });
+                }),
             );
-            console.log(`挂删记录中的 ${notInUsed.length} 个新无使用重定向`);
+            console.log(`删除记录中的 ${notInUsed.length} 个新无使用重定向`);
         }
 
         if (inUsed.length > 0) {
@@ -94,7 +99,7 @@ const processRecent = async (lgusername: string) => {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(zhapi).login({ site: 'zh', account: 'bot' });
-    const { lgusername } = await new Login(cmapi).login({ site: 'cm', account: 'bot' });
+    await new Login(cmapi).login({ site: 'cm', account: 'bot' });
 
     const movedFiles = await getRecentMoves();
 
@@ -109,21 +114,23 @@ const processRecent = async (lgusername: string) => {
         await recordInUsed(isTrue);
     }
 
-    const success = await cmbot.flagDelete(
-        isFalse,
-        '移动残留重定向',
-        lgusername,
-        '自动挂删文件移动残留重定向',
-    );
-
-    if (success.length > 0) {
-        console.log(`成功挂删 ${success.length} 个重定向：\n${success.join('\n')}`);
+    if (isFalse.length > 0) {
+        await Promise.all(
+            isFalse.map(async title => {
+                await cmapi.postWithToken('csrf', {
+                    action: 'delete',
+                    title,
+                    reason: '自动删除文件移动残留重定向',
+                    tags: 'Bot',
+                    bot: true,
+                });
+            }),
+        );
     } else {
-        console.log('没有需要挂删的重定向');
+        console.log('没有需要删除的重定向');
     }
 
-    console.log('执行记录挂删。');
-    await processRecent(lgusername);
+    await processRecent();
 
     await updateTimeData('deleteRedirect', lestart);
 
