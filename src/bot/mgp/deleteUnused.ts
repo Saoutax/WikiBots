@@ -10,7 +10,7 @@ interface Config {
     console.log(`Start time: ${new Date().toISOString()}`);
 
     await new Login(zhapi).login({ site: 'zh', account: 'bot' });
-    const { lgusername } = await new Login(cmapi).login({ site: 'cm', account: 'bot' });
+    await new Login(cmapi).login({ site: 'cm', account: 'bot' });
 
     const zhbot = new BotInstance(zhapi),
         cmbot = new BotInstance(cmapi);
@@ -25,7 +25,17 @@ interface Config {
     const { isFalse } = booleanFilter(await cmbot.checkGlobalUsage(files)),
         needDel = isFalse.filter(item => !unlink.includes(item));
 
-    await cmbot.flagDelete(needDel, '无使用或不再使用的文件', lgusername);
+    await Promise.all(
+        needDel.map(async title => {
+            await cmapi.postWithToken('csrf', {
+                action: 'delete',
+                title,
+                reason: '无使用或不再使用的文件',
+                tags: 'Bot',
+                bot: true,
+            });
+        }),
+    );
 
     console.log(needDel.length > 0 ? 'All unused deleted.' : 'No file need to delete.');
 
