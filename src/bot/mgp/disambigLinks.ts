@@ -100,18 +100,20 @@ const generateReport = (obj: Record<string, Record<string, string[]>>) => {
 
     const report = generateReport(grouping(deDuplicate));
 
-    for (const [title, text] of Object.entries(report)) {
-        await api.postWithToken('csrf', {
-            action: 'edit',
-            title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
-            text,
-            summary: '更新数据报告',
-            minor: true,
-            tags: 'Bot',
-            bot: true,
-        });
-        console.log(`Done: ${title}`);
-    }
+    await Promise.all(
+        Object.entries(report).map(async ([title, text]) => {
+            await api.postWithToken('csrf', {
+                action: 'edit',
+                title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
+                text,
+                summary: '更新数据报告',
+                minor: true,
+                tags: 'Bot',
+                bot: true,
+            });
+            console.log(`Done: ${title}`);
+        }),
+    );
 
     console.log(`End time: ${new Date().toISOString()}`);
 })();
