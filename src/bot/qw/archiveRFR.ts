@@ -66,7 +66,7 @@ const main = async (targets: string[]) => {
                 });
 
                 if (archiveArr.length > 0) {
-                    const discussion = `${parsed.preface}\n` + remaining.join('');
+                    const discussion = parsed.preface.replace(/\n*$/, '\n\n') + remaining.join('');
                     const archive = archiveArr.join('');
 
                     const archiveTitle = `${target}/存档/${currentTime.format('YYYY年')}`;
