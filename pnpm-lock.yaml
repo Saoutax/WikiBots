@@ -54,8 +54,8 @@ importers:
         specifier: ^7.6.0
         version: 7.6.0
       wikiparser-node:
-        specifier: ^1.46.1
-        version: 1.46.1(ajv@8.20.0)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@7.0.2)))(stylelint@17.12.0(typescript@7.0.2))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
+        specifier: ^1.46.2
+        version: 1.46.2(ajv@8.20.0)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@7.0.2)))(stylelint@17.12.0(typescript@7.0.2))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
     devDependencies:
       '@types/js-yaml':
         specifier: ^4.0.9
@@ -1389,8 +1389,8 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.5.22:
-    resolution: {integrity: sha512-KBDEIpLrvpv16pp3K0Fw+UCoZfopFjjgeB+0tA/aaThfEE74kKDLrgg603YvOWJyg3+WYtyq3xYsQWsIyZlPqQ==}
+  postcss@8.5.23:
+    resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
     engines: {node: ^10 || ^12 || >=14}
 
   prism-wiki@2.1.1:
@@ -1586,8 +1586,8 @@ packages:
   wiki-saikou@7.6.0:
     resolution: {integrity: sha512-KErr1fgLYuP6JuD6pPrg3huo5WW4q30Tw4a2YOIwAJzVm6MUf/UnEerU73F3+HgvXZwZ8161zuQo1DvKjqTJjg==}
 
-  wikiparser-node@1.46.1:
-    resolution: {integrity: sha512-keYVvKIPboxauW8pQkHMPpLQ/ZaWzDO5sl8V5jgofgDvBERDJ8skxMdRhtDU9znte3ROw7DUD259lVQMCuCEng==}
+  wikiparser-node@1.46.2:
+    resolution: {integrity: sha512-P0kaT2GlxmyVh490ro7dqKiw34hXz3LmND3CiANBGIyFkd1NI2wi+nuXKHNqqHUiF5ZArRuSoVTufd2gclNbPQ==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
@@ -2671,9 +2671,9 @@ snapshots:
 
   pinyin-pro@3.28.1: {}
 
-  postcss-safe-parser@7.0.1(postcss@8.5.22):
+  postcss-safe-parser@7.0.1(postcss@8.5.23):
     dependencies:
-      postcss: 8.5.22
+      postcss: 8.5.23
 
   postcss-selector-parser@7.1.4:
     dependencies:
@@ -2682,7 +2682,7 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.5.22:
+  postcss@8.5.23:
     dependencies:
       nanoid: 3.3.16
       picocolors: 1.1.1
@@ -2787,8 +2787,8 @@ snapshots:
       micromatch: 4.0.8
       normalize-path: 3.0.0
       picocolors: 1.1.1
-      postcss: 8.5.22
-      postcss-safe-parser: 7.0.1(postcss@8.5.22)
+      postcss: 8.5.23
+      postcss-safe-parser: 7.0.1(postcss@8.5.23)
       postcss-selector-parser: 7.1.4
       postcss-value-parser: 4.2.0
       string-width: 8.2.2
@@ -2930,7 +2930,7 @@ snapshots:
     dependencies:
       fexios: 6.2.2
 
-  wikiparser-node@1.46.1(ajv@8.20.0)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@7.0.2)))(stylelint@17.12.0(typescript@7.0.2))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
+  wikiparser-node@1.46.2(ajv@8.20.0)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0(typescript@7.0.2)))(stylelint@17.12.0(typescript@7.0.2))(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
     dependencies:
       '@bhsd/cm-util': 2.4.0(monaco-editor@0.53.0)
       '@bhsd/common': 4.0.1(culori@4.0.2)
