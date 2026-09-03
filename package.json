@@ -29,7 +29,7 @@
         "octokit": "^5.0.5",
         "opencc-js": "^1.4.1",
         "p-limit": "^7.3.1",
-        "pinyin-pro": "^3.28.1",
+        "pinyin-pro": "^3.28.2",
         "tsx": "^4.23.1",
         "typescript": "^7.0.2",
         "wanakana": "^5.3.1",
