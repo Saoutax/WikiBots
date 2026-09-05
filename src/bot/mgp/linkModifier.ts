@@ -38,7 +38,11 @@ const bot = new BotInstance(api);
             links = parsed.querySelectorAll<LinkToken>(`link[name="${from}"]`);
         for (const link of links) {
             const show = link.innerText === from;
+            const fragment = link.fragment;
             link.setTarget(to);
+            if (fragment !== undefined) {
+                link.fragment = fragment;
+            }
             if (show) {
                 link.innerText = from;
             }
