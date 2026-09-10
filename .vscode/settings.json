@@ -58,4 +58,5 @@
         "utils/variantConverter"
     ],
     "editor.defaultFormatter": "oxc.oxc-vscode",
+    "editor.formatOnSave": true,
 }
