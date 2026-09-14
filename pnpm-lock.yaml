@@ -39,8 +39,8 @@ importers:
         specifier: ^7.3.2
         version: 7.3.2
       pinyin-pro:
-        specifier: ^3.28.2
-        version: 3.28.2
+        specifier: ^3.29.4
+        version: 3.29.4
       tsx:
         specifier: ^4.23.13
         version: 4.23.13
@@ -139,8 +139,8 @@ packages:
     peerDependencies:
       '@csstools/css-tokenizer': ^4.0.0
 
-  '@csstools/css-syntax-patches-for-csstree@1.1.12':
-    resolution: {integrity: sha512-3vLQK+dXxhBMR2Wx99PTCifE+vHtW2ndZWyla8yK813ev6oGhyn8Lja8jCyGAWTJ+LEYZK7EVtJxrDj8ztevJw==}
+  '@csstools/css-syntax-patches-for-csstree@1.1.13':
+    resolution: {integrity: sha512-i9ZylF5QNhmNfPA9l0vHAWK4kPrbIp6g9lKgaiIFsIBz2F/WNB7OLrzlNNcCOm+h42bkaSD2v1PG+IBPHhc3ZA==}
     peerDependencies:
       css-tree: ^3.2.1
     peerDependenciesMeta:
@@ -1185,8 +1185,8 @@ packages:
   ieee754@1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
 
-  ignore@7.0.8:
-    resolution: {integrity: sha512-YYNsSlXBjMk92SKnkwvB5LOVSa6OznlFUGcsvrFgNJbJCd0M1XKeFVRc8ZByeCqz32FivYNHJVooLmdqrmvp/Q==}
+  ignore@7.0.9:
+    resolution: {integrity: sha512-brTTsvFRt5C1gGHtPst/281UjPD5t9fBqbgoMPlVWy11ZLTPfu7HxK4ZYqO9H7o/yC9rSTCI85EaQ4OoY12qYw==}
     engines: {node: '>= 4'}
 
   import-fresh@3.3.1:
@@ -1305,8 +1305,8 @@ packages:
     resolution: {integrity: sha512-RpVDaMstrbdjn18xwUKB3tpk8XyrdG9bLQF3x/9ygpt57z35o/xCbVoGJPuhZf3gMs0ZL8Mekc5MIDkX1/Gx3g==}
     engines: {node: '>=14'}
 
-  nanoid@3.3.18:
-    resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
+  nanoid@3.3.19:
+    resolution: {integrity: sha512-Y2tUNy4ouw6tq5oDSKeQYGOyhkUBhNOcGV/02KC+6kd9eDGqdZd++mjMiIDilrBYvjEnCYvVtsuHCuP+okSfug==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -1373,8 +1373,8 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  pinyin-pro@3.28.2:
-    resolution: {integrity: sha512-jV38yxXHLfidirMC4hrXasLDozLCSq/4DfX88GnHcSEJ2+GpSedG6I9VOiEXJu6iQ5dbJC/RjmzyMuS5h/wH5A==}
+  pinyin-pro@3.29.4:
+    resolution: {integrity: sha512-SPXpDT2cHEy+d26V1RXYMlVzXN42hotFAak1fzyWPi4o2dKXb61UqD4pzxDJHwk6gbv8vQ6EfErd+hYX0Qhzug==}
 
   postcss-safe-parser@7.1.0:
     resolution: {integrity: sha512-1WzZxRLaAFwEh6Do+zyGpjWV3nGJNxxhuh7Ubu/q1ICImMgZJnLwhoaEpRbG4pJppp2Y1ncL9ffA2f+LhrefQg==}
@@ -1676,7 +1676,7 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 4.0.0
 
-  '@csstools/css-syntax-patches-for-csstree@1.1.12(css-tree@3.2.1)':
+  '@csstools/css-syntax-patches-for-csstree@1.1.13(css-tree@3.2.1)':
     optionalDependencies:
       css-tree: 3.2.1
 
@@ -2426,7 +2426,7 @@ snapshots:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       fast-glob: 3.3.3
-      ignore: 7.0.8
+      ignore: 7.0.9
       is-path-inside: 4.0.0
       micromatch: 4.0.8
       slash: 5.1.0
@@ -2471,7 +2471,7 @@ snapshots:
 
   ieee754@1.2.1: {}
 
-  ignore@7.0.8: {}
+  ignore@7.0.9: {}
 
   import-fresh@3.3.1:
     dependencies:
@@ -2573,7 +2573,7 @@ snapshots:
       - debug
       - supports-color
 
-  nanoid@3.3.18: {}
+  nanoid@3.3.19: {}
 
   normalize-path@3.0.0: {}
 
@@ -2670,7 +2670,7 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  pinyin-pro@3.28.2: {}
+  pinyin-pro@3.29.4: {}
 
   postcss-safe-parser@7.1.0(postcss@8.5.28):
     dependencies:
@@ -2685,7 +2685,7 @@ snapshots:
 
   postcss@8.5.28:
     dependencies:
-      nanoid: 3.3.18
+      nanoid: 3.3.19
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -2764,7 +2764,7 @@ snapshots:
     dependencies:
       '@csstools/css-calc': 3.3.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/css-parser-algorithms': 4.0.0(@csstools/css-tokenizer@4.0.0)
-      '@csstools/css-syntax-patches-for-csstree': 1.1.12(css-tree@3.2.1)
+      '@csstools/css-syntax-patches-for-csstree': 1.1.13(css-tree@3.2.1)
       '@csstools/css-tokenizer': 4.0.0
       '@csstools/media-query-list-parser': 5.0.0(@csstools/css-parser-algorithms@4.0.0(@csstools/css-tokenizer@4.0.0))(@csstools/css-tokenizer@4.0.0)
       '@csstools/selector-resolve-nested': 4.0.1(postcss-selector-parser@7.1.6)
@@ -2781,7 +2781,7 @@ snapshots:
       globby: 16.2.4
       globjoin: 0.1.4
       html-tags: 5.1.0
-      ignore: 7.0.8
+      ignore: 7.0.9
       import-meta-resolve: 4.2.0
       mathml-tag-names: 4.0.0
       meow: 14.1.0
