@@ -64,7 +64,7 @@ const bot = new BotInstance(api);
         summary: '更新当期月报',
         bot: true,
         minor: true,
-        tag: 'Bot',
+        tags: 'Bot',
     });
 
     console.log(`End time: ${new Date().toISOString()}`);
