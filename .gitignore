@@ -2,3 +2,4 @@ node_modules/
 .env
 src/bot/tmp
 .claude/
+.workbuddy/

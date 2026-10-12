@@ -13,7 +13,8 @@
         "resolveJsonModule": true,
 
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "wikiparser-node": ["./src/types/wikiparser-node"]
         },
 
         "noImplicitOverride": true,

@@ -1,4 +1,4 @@
-import Parser, { type LinkToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { getTimeData, updateTimeData, dayjs } from '@/utils';
@@ -46,7 +46,7 @@ const getPages = async () => {
     const modify: Record<string, string> = {};
     for (const [title, content] of Object.entries(pageContent)) {
         const parsed = Parser.parse(content),
-            links = parsed.querySelectorAll<LinkToken>('link');
+            links = parsed.querySelectorAll<Parser.LinkToken>('link');
         for (const link of links) {
             // 暂时忽略带有锚点#的情况
             if (link.length === 1 || link.fragment) {

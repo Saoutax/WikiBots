@@ -1,6 +1,6 @@
 import { cloneDeep } from 'es-toolkit/object';
 import type { MwApiParams } from 'wiki-saikou';
-import Parser, { type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { parseThread, parsedToString, dayjs } from '@/utils';
@@ -31,7 +31,7 @@ const getParsedThread = async () => {
             console.log(`周一移除已存档讨论串：${section.title}`);
             return false;
         }
-        const mar = parsedSection.querySelector<TranscludeToken>(
+        const mar = parsedSection.querySelector<Parser.TranscludeToken>(
             'template#Template:MarkAsResolved',
         );
         if (mar) {

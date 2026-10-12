@@ -1,4 +1,4 @@
-import Parser, { type LinkToken, type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 
@@ -23,7 +23,7 @@ const bot = new BotInstance(api);
     const content = await bot.getContent('萌娘百科:萌娘百科月报/订阅');
 
     const root = Parser.parse(content),
-        links = root.querySelectorAll<LinkToken>('list + link');
+        links = root.querySelectorAll<Parser.LinkToken>('list + link');
 
     const targets = [
         ...new Set(links.map(item => item.name).filter(name => name.startsWith('User_talk:'))),
@@ -54,7 +54,7 @@ const bot = new BotInstance(api);
     console.log('Start editing the current monthly.');
     const mptarget = '萌娘百科:萌娘百科月报';
     const mproot = Parser.parse(await bot.getContent(mptarget));
-    const template = mproot.querySelector<TranscludeToken>('template:has(+comment)');
+    const template = mproot.querySelector<Parser.TranscludeToken>('template:has(+comment)');
     template?.replaceTemplate(target);
 
     await api.postWithToken('csrf', {

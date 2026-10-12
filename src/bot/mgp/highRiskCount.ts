@@ -1,4 +1,4 @@
-import Parser, { type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 
@@ -40,7 +40,7 @@ const getNewCount = async (templates: string[]) => {
     await Promise.all(
         Object.entries(pageContent).map(async ([title, content]) => {
             const root = Parser.parse(content),
-                highRiskTemplate = root.querySelector<TranscludeToken>(
+                highRiskTemplate = root.querySelector<Parser.TranscludeToken>(
                     'template[name="Template:High-risk"]',
                 ),
                 count = highRiskTemplate?.getValue(1),

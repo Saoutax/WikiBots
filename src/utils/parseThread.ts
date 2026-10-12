@@ -1,5 +1,5 @@
 import type { Dayjs } from 'dayjs';
-import Parser, { type HeadingToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { getLatestTimestamp } from './getLatestTimestamp';
 
 interface ParsedThread {
@@ -26,7 +26,7 @@ interface ParsedThread {
  */
 const parseThread = (text: string): ParsedThread => {
     const root = Parser.parse(text);
-    const headings = root.querySelectorAll<HeadingToken>('heading');
+    const headings = root.querySelectorAll<Parser.HeadingToken>('heading');
     const topLevel = Math.min(...headings.map(h => h.level));
     const filteredHeadings = headings.filter(h => h.level === topLevel);
 

@@ -1,4 +1,4 @@
-import Parser, { type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import data from '@/config/status_data.json';
 import { BotInstance } from '@/lib';
@@ -66,7 +66,7 @@ const parseRevdelRequests = (text: string): RevdelRequests => {
 
     const remaining = parsed.requests.filter(request => {
         const root = Parser.parse(request),
-            template = root.querySelector<TranscludeToken>('template#Template:Revdel')!,
+            template = root.querySelector<Parser.TranscludeToken>('template#Template:Revdel')!,
             status = template.getValue('status');
         if (
             status &&

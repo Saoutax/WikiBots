@@ -1,4 +1,4 @@
-import Parser, { type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import data from '@/config/status_data.json';
 import { BotInstance } from '@/lib';
@@ -52,7 +52,9 @@ const main = async (targets: string[]) => {
 
                 const remaining = parsed.sections.filter(section => {
                     const root = Parser.parse(section),
-                        template = root.querySelector<TranscludeToken>('template#Template:Status')!,
+                        template = root.querySelector<Parser.TranscludeToken>(
+                            'template#Template:Status',
+                        )!,
                         status = template.getValue('1');
                     if (
                         status &&

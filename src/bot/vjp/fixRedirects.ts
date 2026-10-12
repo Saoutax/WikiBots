@@ -1,4 +1,4 @@
-import Parser, { type CategoryToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { vjpapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { splitAndJoin, variantConverter } from '@/utils';
@@ -35,7 +35,7 @@ interface MWRedirects {
 
             for (const [title, content] of Object.entries(pageContent)) {
                 const root = Parser.parse(content),
-                    targets = root.querySelectorAll<CategoryToken>(
+                    targets = root.querySelectorAll<Parser.CategoryToken>(
                         `category:is([name="${variantConverter(from).join('"], [name="')}"])`,
                     );
                 targets.forEach(oldCat => oldCat.setTarget(to));

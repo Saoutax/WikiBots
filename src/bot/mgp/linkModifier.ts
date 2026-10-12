@@ -1,4 +1,4 @@
-import Parser, { type LinkToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { zhapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 
@@ -35,7 +35,7 @@ const bot = new BotInstance(api);
     const result: Record<string, string> = {};
     for (const [page, content] of Object.entries(pageContent)) {
         const parsed = Parser.parse(content),
-            links = parsed.querySelectorAll<LinkToken>(`link[name="${from}"]`);
+            links = parsed.querySelectorAll<Parser.LinkToken>(`link[name="${from}"]`);
         for (const link of links) {
             const show = link.innerText === from;
             const fragment = link.fragment;

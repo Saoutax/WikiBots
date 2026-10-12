@@ -1,4 +1,4 @@
-import Parser, { type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { delay } from '@/utils';
@@ -38,7 +38,7 @@ const bot = new BotInstance(api);
         const result: Record<string, string> = {};
         for (const [title, content] of Object.entries(pageContent)) {
             const root = Parser.parse(content),
-                templates = root.querySelectorAll<TranscludeToken>(
+                templates = root.querySelectorAll<Parser.TranscludeToken>(
                     'template:is(#Template:Le, #Template:Internal_link_helper/en, #Template:Link-en, #Template:En-link, #Template:Ilh/en, #Template:LE)',
                 );
 

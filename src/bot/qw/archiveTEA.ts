@@ -1,5 +1,5 @@
 import { cloneDeep } from 'es-toolkit/object';
-import Parser, { type TranscludeToken } from 'wikiparser-node';
+import Parser from 'wikiparser-node';
 import { qwapi as api, Login } from '@/api';
 import { BotInstance } from '@/lib';
 import { parseThread, parsedToString, dayjs } from '@/utils';
@@ -24,7 +24,7 @@ const main = async (targets: string[]) => {
         const removeIndices: number[] = [];
 
         for (const [i, { thread, content }] of discussionThread.sections.entries()) {
-            const mar = Parser.parse(content).querySelector<TranscludeToken>(
+            const mar = Parser.parse(content).querySelector<Parser.TranscludeToken>(
                 'template:is(#Template:MarkAsResolved, #Template:正在公示, #Template:讨论结束)',
             );
             if (!mar) {
