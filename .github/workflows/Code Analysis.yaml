@@ -45,22 +45,18 @@ jobs:
               with:
                   category: '/language:${{matrix.language}}'
 
-    lint:
+    lint-and-typecheck:
         name: Lint test
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v6
-            - uses: pnpm/action-setup@v4
-            - name: Set Node Version
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 24.x
-                  cache: pnpm
-            - name: Install dependencies
-              run: pnpm install --frozen-lockfile
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
             - name: Run Lint test
               run: pnpm run lint
+            - name: Run Typecheck
+              run: pnpm run typecheck
 
     auto-assign:
         if: github.event_name == 'pull_request_target'

@@ -16,7 +16,8 @@
         "fmt": "oxfmt",
         "lint": "oxlint",
         "lint:fix": "oxlint --fix",
-        "test": "tsx src/bot/tmp/test.ts"
+        "test": "tsx src/bot/tmp/test.ts",
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "buffer": "^6.0.3",
