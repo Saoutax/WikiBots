@@ -49,23 +49,21 @@ class InvisibleCharacter extends BaseApi {
                     bmpInvisible.test(text) || astralInvisible.test(text),
                 removeInvisible = (text: string) =>
                     text.replace(bmpInvisible, '').replace(astralInvisible, ''),
-                result: Record<string, string> = {};
-            for (const [title, text] of Object.entries(content)) {
+                result: { title: string; text: string; revid: number }[] = [];
+            for (const [title, { content: text, revid }] of Object.entries(content)) {
                 if (hasInvisible(text)) {
-                    result[title] = removeInvisible(text);
+                    result.push({ title, text: removeInvisible(text), revid });
                 }
             }
 
             await Promise.all(
-                Object.entries(result).map(async ([title, text]) => {
-                    await this.api.postWithToken('csrf', {
-                        action: 'edit',
+                result.map(async ({ title, text, revid }) => {
+                    await bot.edit({
                         title,
                         text,
+                        baserevid: revid,
                         summary: '移除不可见字符',
                         tags: 'Bot',
-                        minor: true,
-                        bot: true,
                     });
                     console.log(`Done: ${title}`);
                 }),

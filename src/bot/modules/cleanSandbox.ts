@@ -1,3 +1,4 @@
+import { EditPage } from '@/lib/edit';
 import { BaseApi } from '@/utils';
 
 interface PageMap {
@@ -12,12 +13,15 @@ interface Pages {
     revisions: [
         {
             timestamp: string;
+            revid: number;
         },
     ];
     touched: string;
 }
 
 class CleanSandbox extends BaseApi {
+    #edit = new EditPage(this.api);
+
     main = async (pageMap: PageMap) => {
         const {
             data: {
@@ -26,27 +30,21 @@ class CleanSandbox extends BaseApi {
         } = await this.api.post<{ query: { pages: Pages[] } }>({
             prop: 'revisions|info',
             titles: Object.keys(pageMap),
-            rvprop: 'timestamp|content',
+            rvprop: 'timestamp|revid',
             inprop: 'touched',
         });
         await Promise.all(
-            pages.map(async ({ title, revisions: [{ timestamp }], touched }) => {
+            pages.map(async ({ title, revisions: [{ timestamp, revid }], touched }) => {
                 const minutes = (Date.now() - new Date(touched || timestamp).getTime()) / 60000;
                 if (minutes > 180) {
-                    await this.api
-                        .postWithToken('csrf', {
-                            action: 'edit',
-                            title,
-                            text: pageMap[title]!.content,
-                            summary: pageMap[title]!.summary,
-                            minor: true,
-                            bot: true,
-                            tags: 'Bot',
-                            watchlist: 'nochange',
-                        })
-                        .then(() => {
-                            console.log('Success.');
-                        });
+                    await this.#edit.edit({
+                        title,
+                        text: pageMap[title]!.content,
+                        baserevid: revid,
+                        summary: pageMap[title]!.summary,
+                        tags: 'Bot',
+                    });
+                    console.log('Success.');
                 } else {
                     console.log(`${title} 在 ${minutes.toFixed(1)} 分钟前存在编辑，跳过。`);
                 }
