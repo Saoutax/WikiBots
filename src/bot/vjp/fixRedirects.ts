@@ -1,6 +1,7 @@
 import Parser from 'wikiparser-node';
-import { vjpapi as api, Login } from '@/api';
+import { run, vjpapi as api } from '@/api';
 import { BotInstance } from '@/lib';
+import type { PageContent } from '@/lib';
 import { splitAndJoin, variantConverter } from '@/utils';
 
 const bot = new BotInstance(api);
@@ -11,54 +12,50 @@ interface MWRedirects {
 }
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run({ api, site: 'vjp' }, async () => {
+        const original = await bot.queryCategory('Category:尚未清空的已重定向分类', false, [
+            'subcat',
+        ]);
 
-    await new Login(api).login({ site: 'vjp', account: 'bot' });
+        for (const titles of splitAndJoin(original)) {
+            const {
+                data: {
+                    query: { redirects = [] },
+                },
+            } = await api.post<{ query: { redirects?: MWRedirects[] } }>({
+                action: 'query',
+                titles,
+                redirects: true,
+            });
 
-    const original = await bot.queryCategory('Category:尚未清空的已重定向分类', false, ['subcat']);
+            for (const { from, to } of redirects) {
+                const pages = await bot.queryCategory(from, false, ['file', 'page', 'subcat']),
+                    pageContent = await bot.batchQuery(pages);
+                const result: Record<string, PageContent> = {};
 
-    for (const titles of splitAndJoin(original)) {
-        const {
-            data: {
-                query: { redirects = [] },
-            },
-        } = await api.post<{ query: { redirects?: MWRedirects[] } }>({
-            action: 'query',
-            titles,
-            redirects: true,
-        });
+                for (const [title, { content, revid }] of Object.entries(pageContent)) {
+                    const root = Parser.parse(content),
+                        targets = root.querySelectorAll<Parser.CategoryToken>(
+                            `category:is([name="${variantConverter(from).join('"], [name="')}"])`,
+                        );
+                    targets.forEach(oldCat => oldCat.setTarget(to));
+                    const newContent = root.toString();
+                    if (content !== newContent) {
+                        result[title] = { content: newContent, revid };
+                    }
+                }
 
-        for (const { from, to } of redirects) {
-            const pages = await bot.queryCategory(from, false, ['file', 'page', 'subcat']),
-                pageContent = await bot.batchQuery(pages);
-            const result: Record<string, string> = {};
-
-            for (const [title, content] of Object.entries(pageContent)) {
-                const root = Parser.parse(content),
-                    targets = root.querySelectorAll<Parser.CategoryToken>(
-                        `category:is([name="${variantConverter(from).join('"], [name="')}"])`,
-                    );
-                targets.forEach(oldCat => oldCat.setTarget(to));
-                const newContent = root.toString();
-                if (content !== newContent) {
-                    result[title] = newContent;
+                for (const [title, { content: text, revid }] of Object.entries(result)) {
+                    await bot.edit({
+                        title,
+                        text,
+                        baserevid: revid,
+                        summary: `修复分类重定向：[[${from}]] → [[${to}]]`,
+                        tags: 'Bot',
+                    });
+                    console.log(`${title}: ${from} → ${to}`);
                 }
             }
-
-            for (const [title, text] of Object.entries(result)) {
-                await api.postWithToken('csrf', {
-                    action: 'edit',
-                    title,
-                    text,
-                    summary: `修复分类重定向：[[${from}]] → [[${to}]]`,
-                    tags: 'Bot',
-                    minor: true,
-                    bot: true,
-                });
-                console.log(`${title}: ${from} → ${to}`);
-            }
         }
-    }
-
-    console.log(`End time: ${new Date().toISOString()}`);
+    });
 })();

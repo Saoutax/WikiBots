@@ -1,15 +1,11 @@
-import { vjpapi as api, Login } from '@/api';
+import { run, vjpapi as api } from '@/api';
 import { InvisibleCharacter } from '../modules';
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
-
-    await new Login(api).login({ site: 'vjp', account: 'bot' });
-
-    await new InvisibleCharacter(api).main(
-        'invisibleCharacterVJP',
-        'User:SaoMikoto/Bot/config/invisibleCharacter.json',
-    );
-
-    console.log(`End time: ${new Date().toISOString()}`);
+    await run({ api, site: 'vjp' }, async () => {
+        await new InvisibleCharacter(api).main(
+            'invisibleCharacterVJP',
+            'User:SaoMikoto/Bot/config/invisibleCharacter.json',
+        );
+    });
 })();
