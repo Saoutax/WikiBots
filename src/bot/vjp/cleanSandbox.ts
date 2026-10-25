@@ -27,7 +27,7 @@ import { CleanSandbox } from '../modules';
                     '沙盒清理作业，若想保留较长时间，可在[[Special:MyPage/沙盒|个人沙盒]]进行测试，或查阅页面历史并再次编辑本页。',
             },
             'Module:沙盒': {
-                content: '',
+                content: `local p = {}\n\nfunction p.main(frame)\n\treturn ''\nend\n\nreturn p`,
                 summary:
                     '沙盒清理作业，若想保留较长时间，可建立「Module:沙盒/用户名/沙盒名」进行测试，或查阅页面历史并再次编辑本页。',
             },
