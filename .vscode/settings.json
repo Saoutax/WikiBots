@@ -32,6 +32,8 @@
         "VJP/nullEdit",
         "VJP/siteStatistics",
         "api/config",
+        "api/instances",
+        "api/login",
         "api/run",
         "api/types",
         "lib/batchQuery",
