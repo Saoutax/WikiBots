@@ -1,12 +1,8 @@
-import { uewapi as api, Login } from '@/api';
+import { run, uewapi as api } from '@/api';
 import { InvisibleCharacter } from '../modules';
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
-
-    await new Login(api).login({ site: 'uew', account: 'bot' });
-
-    await new InvisibleCharacter(api).main('invisibleCharacterUEW');
-
-    console.log(`End time: ${new Date().toISOString()}`);
+    await run({ api, site: 'uew' }, async () => {
+        await new InvisibleCharacter(api).main('invisibleCharacterUEW');
+    });
 })();

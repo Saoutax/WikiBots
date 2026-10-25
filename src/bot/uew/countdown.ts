@@ -1,25 +1,21 @@
-import { uewapi as api, Login } from '@/api';
+import { run, uewapi as api } from '@/api';
+import { BotInstance } from '@/lib';
 import { dayjs } from '@/utils';
 
-const target = dayjs.tz('2027-02-06', 'Asia/Shanghai'),
-    today = dayjs.tz().startOf('day'),
-    diff = target.diff(today, 'day');
+const bot = new BotInstance(api);
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run({ api, site: 'uew' }, async () => {
+        const target = dayjs.tz('2027-02-06', 'Asia/Shanghai'),
+            today = dayjs.tz().startOf('day'),
+            diff = target.diff(today, 'day');
 
-    await new Login(api).login({ site: 'uew', account: 'bot' });
-
-    await api.postWithToken('csrf', {
-        action: 'edit',
-        title: 'Template:上映倒计时',
-        text: diff,
-        summary: '更新倒计时',
-        tags: 'Bot',
-        minor: true,
-        bot: true,
+        await bot.edit({
+            title: 'Template:上映倒计时',
+            text: diff,
+            summary: '更新倒计时',
+            tags: 'Bot',
+        });
+        console.log('Update success.');
     });
-    console.log('Update success.');
-
-    console.log(`End time: ${new Date().toISOString()}`);
 })();
