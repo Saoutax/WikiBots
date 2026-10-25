@@ -1,4 +1,4 @@
-import { zhapi, cmapi, Login } from '@/api';
+import { run, zhapi, cmapi } from '@/api';
 import { BotInstance } from '@/lib';
 import {
     booleanFilter,
@@ -9,13 +9,9 @@ import {
     dayjs,
 } from '@/utils';
 
-const now = dayjs().tz(),
-    lestart = now.toISOString(),
-    leend = await getTimeData('deleteRedirect');
-
 const cmbot = new BotInstance(cmapi);
 
-const getRecentMoves = async (): Promise<string[]> => {
+const getRecentMoves = async (lestart: string, leend: string | undefined): Promise<string[]> => {
     try {
         const { data } = await cmapi.post({
             action: 'query',
@@ -35,24 +31,29 @@ const getRecentMoves = async (): Promise<string[]> => {
     }
 };
 
-const recordInUsed = async (inUsed: string[]) => {
-    const filepath = 'data/inUsedRedirect.json',
-        { content, sha } = await readGHFile(filepath),
-        record = JSON.parse(content) as Record<string, string[]>;
-    record[lestart] = inUsed;
-    await writeGHFile(
-        filepath,
-        JSON.stringify(record, null, 4),
-        'chore: auto record redirect for in-use files',
-        sha,
+const deleteRedirect = async (titles: string[]) => {
+    await Promise.all(
+        titles.map(async title => {
+            await cmapi.postWithToken('csrf', {
+                action: 'delete',
+                title,
+                reason: '自动删除文件移动残留重定向',
+                tags: 'Bot',
+                bot: true,
+            });
+        }),
     );
 };
 
-const processRecent = async () => {
+const processRecord = async (lestart: string, inUsed: string[]) => {
     const filepath = 'data/inUsedRedirect.json',
         { content, sha } = await readGHFile(filepath),
         record = JSON.parse(content) as Record<string, string[]>,
         original = JSON.stringify(record);
+
+    if (inUsed.length > 0) {
+        record[lestart] = inUsed;
+    }
 
     for (const [timestamp, files] of Object.entries(record)) {
         if (files.length === 0) {
@@ -60,26 +61,16 @@ const processRecent = async () => {
             continue;
         }
 
-        const usage = await cmbot.checkGlobalUsage(files);
-        const { isFalse: notInUsed, isTrue: inUsed } = booleanFilter(usage);
+        const usage = await cmbot.checkGlobalUsage(files),
+            { isFalse: notInUsed, isTrue: stillInUsed } = booleanFilter(usage);
 
         if (notInUsed.length > 0) {
-            await Promise.all(
-                notInUsed.map(async title => {
-                    await cmapi.postWithToken('csrf', {
-                        action: 'delete',
-                        title,
-                        reason: '自动删除文件移动残留重定向',
-                        tags: 'Bot',
-                        bot: true,
-                    });
-                }),
-            );
+            await deleteRedirect(notInUsed);
             console.log(`删除记录中的 ${notInUsed.length} 个新无使用重定向`);
         }
 
-        if (inUsed.length > 0) {
-            record[timestamp] = inUsed;
+        if (stillInUsed.length > 0) {
+            record[timestamp] = stillInUsed;
         } else {
             delete record[timestamp];
         }
@@ -96,43 +87,37 @@ const processRecent = async () => {
 };
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run(
+        [
+            { api: zhapi, site: 'zh' },
+            { api: cmapi, site: 'cm' },
+        ],
+        async () => {
+            const now = dayjs.tz(),
+                lestart = now.toISOString(),
+                leend = await getTimeData('deleteRedirect');
 
-    await new Login(zhapi).login({ site: 'zh', account: 'bot' });
-    await new Login(cmapi).login({ site: 'cm', account: 'bot' });
+            const movedFiles = await getRecentMoves(lestart, leend);
 
-    const movedFiles = await getRecentMoves();
+            const redirects = await cmbot.checkRedirect(movedFiles),
+                { isTrue: isRedirect } = booleanFilter(redirects);
 
-    const redirects = await cmbot.checkRedirect(movedFiles),
-        { isTrue: isRedirect } = booleanFilter(redirects);
+            const usage = await cmbot.checkGlobalUsage(isRedirect),
+                { isFalse, isTrue } = booleanFilter(usage);
 
-    const usage = await cmbot.checkGlobalUsage(isRedirect),
-        { isFalse, isTrue } = booleanFilter(usage);
+            if (isTrue.length > 0) {
+                console.log(`共 ${isTrue.length} 个重定向仍存在使用：\n${isTrue.join('\n')}`);
+            }
 
-    if (isTrue.length > 0) {
-        console.log(`共 ${isTrue.length} 个重定向仍存在使用：\n${isTrue.join('\n')}`);
-        await recordInUsed(isTrue);
-    }
+            if (isFalse.length > 0) {
+                await deleteRedirect(isFalse);
+            } else {
+                console.log('没有需要删除的重定向');
+            }
 
-    if (isFalse.length > 0) {
-        await Promise.all(
-            isFalse.map(async title => {
-                await cmapi.postWithToken('csrf', {
-                    action: 'delete',
-                    title,
-                    reason: '自动删除文件移动残留重定向',
-                    tags: 'Bot',
-                    bot: true,
-                });
-            }),
-        );
-    } else {
-        console.log('没有需要删除的重定向');
-    }
+            await processRecord(lestart, isTrue);
 
-    await processRecent();
-
-    await updateTimeData('deleteRedirect', lestart);
-
-    console.log(`End time: ${new Date().toISOString()}`);
+            await updateTimeData('deleteRedirect', lestart);
+        },
+    );
 })();

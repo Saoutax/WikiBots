@@ -1,6 +1,7 @@
-import { zhapi, cmapi, Login } from '@/api';
+import { run, zhapi, cmapi } from '@/api';
 import { BotInstance } from '@/lib';
 import { getTimeData, updateTimeData, dayjs } from '@/utils';
+import { collectRecentChanges } from '../modules';
 
 interface Config {
     excludeCategory: string[];
@@ -9,19 +10,15 @@ interface Config {
     excludeFile: string[];
 }
 
-const now = dayjs.tz(),
-    rcstart = now.toISOString(),
-    rcend = await getTimeData('markImg');
+const zhbot = new BotInstance(zhapi),
+    cmbot = new BotInstance(cmapi);
 
-const zhbot = new BotInstance(zhapi);
-
-const getPages = async () => {
+const getPages = async (rcstart: string, rcend: string | undefined) => {
     const pages = new Set<string>();
-    let rccontinue: string | undefined;
 
-    do {
-        const { data } = await zhapi.post({
-            list: 'recentchanges',
+    await collectRecentChanges<{ title: string }>(
+        zhapi,
+        {
             rcprop: 'title|timestamp',
             rctype: 'edit|new',
             rctag: '疑似外链调用内部文件',
@@ -29,20 +26,13 @@ const getPages = async () => {
             rcstart,
             rcend,
             rclimit: 'max',
-            rccontinue,
-        });
-
-        const list = data?.query?.recentchanges;
-        if (!list?.length) {
-            break;
-        }
-
-        for (const rc of list) {
-            pages.add(rc.title);
-        }
-
-        rccontinue = data?.continue?.rccontinue;
-    } while (rccontinue);
+        },
+        list => {
+            for (const rc of list) {
+                pages.add(rc.title);
+            }
+        },
+    );
 
     return Array.from(pages);
 };
@@ -71,7 +61,7 @@ const matchFiles = async (titles: string[]) => {
     const extTest =
         /\.(png|gif|jpg|jpeg|webp|svg|pdf|jp2|mp3|ttf|woff2|ogg|ogv|oga|flac|opus|wav|webm|midi|mid|mpg|mpeg)$/i;
 
-    for (const [title, content] of Object.entries(pages)) {
+    for (const [title, { content }] of Object.entries(pages)) {
         filepathRegex.lastIndex = 0;
         urlRegex.lastIndex = 0;
 
@@ -130,44 +120,40 @@ const notInCat = async (fileList: string[], category: string) => {
 };
 
 const addTemplate = async (file: string, pageName: string) => {
-    await cmapi.postWithToken(
-        'csrf',
-        {
-            action: 'edit',
-            title: file,
-            appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
-            summary: '标记存在非链入使用的文件',
-            minor: true,
-            bot: true,
-            tags: 'Bot',
-        },
-        { retry: 10 },
-    );
+    await cmbot.edit({
+        title: file,
+        appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
+        summary: '标记存在非链入使用的文件',
+        tags: 'Bot',
+    });
 
     console.log(`${file}已标记。`);
 };
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run(
+        [
+            { api: zhapi, site: 'zh' },
+            { api: cmapi, site: 'cm' },
+        ],
+        async () => {
+            const now = dayjs.tz(),
+                rcstart = now.toISOString(),
+                rcend = await getTimeData('markImg');
 
-    await Promise.all([
-        new Login(zhapi).login({ site: 'zh', account: 'bot' }),
-        new Login(cmapi).login({ site: 'cm', account: 'bot' }),
-    ]);
+            const pages = await getPages(rcstart, rcend);
+            const fileList = await matchFiles(pages);
+            const titles = Object.keys(fileList);
+            const needMark = await notInCat(titles, '非链入使用的文件');
 
-    const pages = await getPages();
-    const fileList = await matchFiles(pages);
-    const titles = Object.keys(fileList);
-    const needMark = await notInCat(titles, '非链入使用的文件');
+            for (const file of needMark) {
+                if (!file) {
+                    continue;
+                }
+                await addTemplate(file, fileList[file]!);
+            }
 
-    for (const file of needMark) {
-        if (!file) {
-            continue;
-        }
-        await addTemplate(file, fileList[file]!);
-    }
-
-    await updateTimeData('markImg', rcstart);
-
-    console.log(`End time: ${new Date().toISOString()}`);
+            await updateTimeData('markImg', rcstart);
+        },
+    );
 })();

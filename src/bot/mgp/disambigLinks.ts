@@ -1,6 +1,6 @@
 import { pinyin } from 'pinyin-pro';
 import { toRomaji } from 'wanakana';
-import { zhapi as api, Login } from '@/api';
+import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 
 const bot = new BotInstance(api);
@@ -87,33 +87,26 @@ const generateReport = (obj: Record<string, Record<string, string[]>>) => {
 };
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run({ api, site: 'zh' }, async () => {
+        const disambig = await bot.queryCategory('Category:消歧义页', false, ['page']);
 
-    await new Login(api).login({ site: 'zh', account: 'bot' });
+        const linkPages = await bot.getLinked(disambig, [0], false);
 
-    const disambig = await bot.queryCategory('Category:消歧义页', false, ['page']);
+        const deDuplicate = processObject(disambig, linkPages);
+        console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
 
-    const linkPages = await bot.getLinked(disambig, [0], false);
+        const report = generateReport(grouping(deDuplicate));
 
-    const deDuplicate = processObject(disambig, linkPages);
-    console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
-
-    const report = generateReport(grouping(deDuplicate));
-
-    await Promise.all(
-        Object.entries(report).map(async ([title, text]) => {
-            await api.postWithToken('csrf', {
-                action: 'edit',
-                title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
-                text,
-                summary: '更新数据报告',
-                minor: true,
-                tags: 'Bot',
-                bot: true,
-            });
-            console.log(`Done: ${title}`);
-        }),
-    );
-
-    console.log(`End time: ${new Date().toISOString()}`);
+        await Promise.all(
+            Object.entries(report).map(async ([title, text]) => {
+                await bot.edit({
+                    title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
+                    text,
+                    summary: '更新数据报告',
+                    tags: 'Bot',
+                });
+                console.log(`Done: ${title}`);
+            }),
+        );
+    });
 })();

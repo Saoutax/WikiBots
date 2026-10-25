@@ -1,6 +1,7 @@
 import Parser from 'wikiparser-node';
-import { zhapi as api, Login } from '@/api';
+import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
+import type { PageContent } from '@/lib';
 
 interface Config {
     from: string;
@@ -13,61 +14,48 @@ interface Config {
 const bot = new BotInstance(api);
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run({ api, site: 'zh' }, async () => {
+        const { from, to, excludepages, excludecategory, extendsummary } =
+            await bot.getJson<Config>('User:SaoMikoto/Bot/config/linkModifier.json');
 
-    await new Login(api).login({ site: 'zh', account: 'bot' });
+        const exclude = [
+            ...new Set([
+                ...(await bot.queryCategory(excludecategory, false, ['page'])),
+                ...excludepages,
+            ]),
+        ];
 
-    const { from, to, excludepages, excludecategory, extendsummary } = await bot.getJson<Config>(
-        'User:SaoMikoto/Bot/config/linkModifier.json',
-    );
+        const [linkPages] = Object.values(await bot.getLinked(from, [0, 10])),
+            modify = linkPages!.filter(item => !exclude.includes(item)),
+            pageContent = await bot.batchQuery(modify);
 
-    const exclude = [
-        ...new Set([
-            ...(await bot.queryCategory(excludecategory, false, ['page'])),
-            ...excludepages,
-        ]),
-    ];
-
-    const [linkPages] = Object.values(await bot.getLinked(from, [0, 10])),
-        modify = linkPages!.filter(item => !exclude.includes(item)),
-        pageContent = await bot.batchQuery(modify);
-
-    const result: Record<string, string> = {};
-    for (const [page, content] of Object.entries(pageContent)) {
-        const parsed = Parser.parse(content),
-            links = parsed.querySelectorAll<Parser.LinkToken>(`link[name="${from}"]`);
-        for (const link of links) {
-            const show = link.innerText === from;
-            const fragment = link.fragment;
-            link.setTarget(to);
-            if (fragment !== undefined) {
-                link.fragment = fragment;
+        const result: Record<string, PageContent> = {};
+        for (const [page, { content, revid }] of Object.entries(pageContent)) {
+            const parsed = Parser.parse(content),
+                links = parsed.querySelectorAll<Parser.LinkToken>(`link[name="${from}"]`);
+            for (const link of links) {
+                const show = link.innerText === from;
+                const fragment = link.fragment;
+                link.setTarget(to);
+                if (fragment !== undefined) {
+                    link.fragment = fragment;
+                }
+                if (show) {
+                    link.innerText = from;
+                }
             }
-            if (show) {
-                link.innerText = from;
+            const newContent = parsed.toString();
+            if (newContent !== content) {
+                result[page] = { content: newContent, revid };
             }
         }
-        const newContent = parsed.toString();
-        if (newContent !== content) {
-            result[page] = newContent;
+
+        console.log(`Total: ${Object.values(result).length}`);
+
+        const summary = `替换链接：[[${from}]] → [[${to}]]${extendsummary ? `：${extendsummary}` : ''}`;
+        for (const [title, { content: text, revid }] of Object.entries(result)) {
+            await bot.edit({ title, text, baserevid: revid, summary, tags: 'Bot' });
+            console.log(`Done: ${title}`);
         }
-    }
-
-    console.log(`Total: ${Object.values(result).length}`);
-
-    const summary = `替换链接：[[${from}]] → [[${to}]]${extendsummary ? `：${extendsummary}` : ''}`;
-    for (const [title, text] of Object.entries(result)) {
-        await api.postWithToken('csrf', {
-            action: 'edit',
-            title,
-            text,
-            tags: 'Bot',
-            summary,
-            bot: true,
-            minor: true,
-        });
-        console.log(`Done: ${title}`);
-    }
-
-    console.log(`End time: ${new Date().toISOString()}`);
+    });
 })();

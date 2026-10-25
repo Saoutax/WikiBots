@@ -1,5 +1,5 @@
 import Parser from 'wikiparser-node';
-import { zhapi as api, Login } from '@/api';
+import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 
 const bot = new BotInstance(api);
@@ -25,48 +25,37 @@ const getNewCount = async (templates: string[]) => {
 };
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
+    await run({ api, site: 'zh' }, async () => {
+        const riskDocs = (await bot.getEmbedded('Template:High-risk', [10]))
+                .filter(item => item !== 'Template:High-risk' && item !== 'Template:High-risk/doc')
+                .filter(item => item.includes('/doc')),
+            risk = riskDocs.map(item => item.replace('/doc', ''));
 
-    await new Login(api).login({ site: 'zh', account: 'bot' });
+        const newCount = await getNewCount(risk);
 
-    const riskDocs = (await bot.getEmbedded('Template:High-risk', [10]))
-            .filter(item => item !== 'Template:High-risk' && item !== 'Template:High-risk/doc')
-            .filter(item => item.includes('/doc')),
-        risk = riskDocs.map(item => item.replace('/doc', ''));
-
-    const newCount = await getNewCount(risk);
-
-    const pageContent = await bot.batchQuery(riskDocs);
-    await Promise.all(
-        Object.entries(pageContent).map(async ([title, content]) => {
-            const root = Parser.parse(content),
-                highRiskTemplate = root.querySelector<Parser.TranscludeToken>(
-                    'template[name="Template:High-risk"]',
-                ),
-                count = highRiskTemplate?.getValue(1),
-                newNum = newCount[title];
-            if (count !== newNum && newNum) {
-                highRiskTemplate?.setValue('1', `${newNum}`);
-                await api.postWithToken(
-                    'csrf',
-                    {
-                        action: 'edit',
+        const pageContent = await bot.batchQuery(riskDocs);
+        await Promise.all(
+            Object.entries(pageContent).map(async ([title, { content, revid }]) => {
+                const root = Parser.parse(content),
+                    highRiskTemplate = root.querySelector<Parser.TranscludeToken>(
+                        'template[name="Template:High-risk"]',
+                    ),
+                    count = highRiskTemplate?.getValue(1),
+                    newNum = newCount[title];
+                if (count !== newNum && newNum) {
+                    highRiskTemplate?.setValue('1', `${newNum}`);
+                    await bot.edit({
                         title,
                         text: root.toString(),
+                        baserevid: revid,
                         summary: '更新模板链入数据',
-                        bot: true,
-                        minor: true,
                         tags: 'Bot',
-                        format: 'json',
-                    },
-                    { retry: 10 },
-                );
-                console.log(`${title}：「${count}」→「${newNum}」`);
-            } else {
-                console.log(`Skipped: ${title}`);
-            }
-        }),
-    );
-
-    console.log(`End time: ${new Date().toISOString()}`);
+                    });
+                    console.log(`${title}：「${count}」→「${newNum}」`);
+                } else {
+                    console.log(`Skipped: ${title}`);
+                }
+            }),
+        );
+    });
 })();
