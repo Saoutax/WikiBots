@@ -1,5 +1,5 @@
 import type { MediaWikiApi } from 'wiki-saikou';
-import { Login } from './index';
+import { Login } from './login';
 import type { SiteAccount } from './types';
 
 interface BotTarget {
