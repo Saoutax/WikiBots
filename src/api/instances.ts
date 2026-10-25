@@ -28,7 +28,6 @@ const zhapi = createApi('zh'),
     vjpapi = createApi('vjp'),
     uewapi = createApi('uew'),
     qwapi = createApi('qw'),
-    elainaapi = createApi('elaina'),
-    sapapi = createApi('sap');
+    elainaapi = createApi('elaina');
 
-export { cmapi, zhapi, vjpapi, uewapi, qwapi, elainaapi, sapapi };
+export { cmapi, zhapi, vjpapi, uewapi, qwapi, elainaapi };

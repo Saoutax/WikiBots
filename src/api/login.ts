@@ -9,7 +9,6 @@ const SITE_NAMES: Record<SiteAccount['site'], string> = {
     uew: 'United Earth Wiki',
     qw: 'QiuwenBaike',
     elaina: 'ElainaWiki',
-    sap: 'SAPedia',
 };
 
 class Login {

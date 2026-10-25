@@ -18,11 +18,10 @@ interface Config {
     uew: Site;
     qw: Site;
     elaina: Site;
-    sap: Site;
 }
 
 interface SiteAccount {
-    site: 'zh' | 'cm' | 'uew' | 'vjp' | 'qw' | 'elaina' | 'sap';
+    site: 'zh' | 'cm' | 'uew' | 'vjp' | 'qw' | 'elaina';
     account: 'main' | 'bot' | 'ibot' | 'abot';
 }
 
