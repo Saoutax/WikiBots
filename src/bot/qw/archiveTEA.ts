@@ -1,8 +1,9 @@
 import { cloneDeep } from 'es-toolkit/object';
 import Parser from 'wikiparser-node';
-import { qwapi as api, Login } from '@/api';
+import { run, qwapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 import { parseThread, parsedToString, dayjs } from '@/utils';
+import { archiveDiscussion } from '../modules';
 
 const bot = new BotInstance(api);
 
@@ -16,7 +17,8 @@ const main = async (targets: string[]) => {
     };
 
     for (const target of targets) {
-        const discussionThread = parseThread(await bot.getContent(target));
+        const { content: pageContent, revid } = await bot.getContent(target);
+        const discussionThread = parseThread(pageContent);
 
         let archive = '';
         const newDiscussion = cloneDeep(discussionThread);
@@ -49,37 +51,20 @@ const main = async (targets: string[]) => {
         }
 
         const archiveTitle = makeArchiveTitle(target);
-        const append = await bot.checkExist(archiveTitle);
-        const params = {
-            action: 'edit',
+        await archiveDiscussion(api, {
+            target,
+            archiveTitle,
+            discussion: parsedToString(newDiscussion),
+            archive,
             summary: '机器人：存档讨论',
-            minor: true,
-            bot: true,
-        };
-        await Promise.all([
-            api.postWithToken('csrf', {
-                ...params,
-                title: target,
-                text: parsedToString(newDiscussion),
-            }),
-            api.postWithToken('csrf', {
-                ...params,
-                title: archiveTitle,
-                ...(append
-                    ? { appendtext: `\n\n${archive}` }
-                    : { text: `{{talkarchive}}\n\n${archive}` }),
-            }),
-        ]);
+            baserevid: revid,
+        });
         console.log(`Archived: ${target} → ${archiveTitle}`);
     }
 };
 
 (async () => {
-    console.log(`Start time: ${new Date().toISOString()}`);
-
-    await new Login(api).login({ site: 'qw', account: 'bot' });
-
-    await main(['Qiuwen_talk:茶馆/编辑', 'Qiuwen_talk:茶馆/其他']);
-
-    console.log(`End time: ${new Date().toISOString()}`);
+    await run({ api, site: 'qw' }, async () => {
+        await main(['Qiuwen_talk:茶馆/编辑', 'Qiuwen_talk:茶馆/其他']);
+    });
 })();
