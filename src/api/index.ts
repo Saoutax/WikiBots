@@ -2,88 +2,51 @@ import { MediaWikiApi } from 'wiki-saikou';
 import config from './config';
 import type { SiteAccount } from './types';
 
-const zhapi = new MediaWikiApi({
-    baseURL: config.zh.api,
-    fexiosConfigs: {
-        headers: { 'user-agent': config.useragent },
-    },
-});
-
-const cmapi = new MediaWikiApi({
-    baseURL: config.cm.api,
-    fexiosConfigs: {
-        headers: { 'user-agent': config.useragent },
-    },
-});
-
-const vjpapi = new MediaWikiApi({
-    baseURL: config.vjp.api,
-    fexiosConfigs: {
-        headers: { 'user-agent': config.useragent },
-    },
-});
-
-const uewapi = new MediaWikiApi({
-    baseURL: config.uew.api,
-    fexiosConfigs: {
-        headers: {
-            'user-agent': config.useragent,
-            'saoutax-bot': config.uew.cf!,
+/**
+ * 按站点创建 MediaWikiApi 实例
+ *
+ * 站点差异（专属 user-agent、附加请求头）统一由 config 字段声明。
+ *
+ * @param site - 站点标识
+ * @returns MediaWikiApi 实例
+ */
+const createApi = (site: SiteAccount['site']) => {
+    const { api, cf, useragent } = config[site];
+    return new MediaWikiApi({
+        baseURL: api,
+        fexiosConfigs: {
+            headers: {
+                'user-agent': useragent ?? config.useragent,
+                ...(cf !== undefined ? { 'saoutax-bot': cf } : {}),
+            },
         },
-    },
-});
+    });
+};
 
-const qwapi = new MediaWikiApi({
-    baseURL: config.qw.api,
-    fexiosConfigs: {
-        headers: { 'user-agent': config.qw.useragent! },
-    },
-});
+const zhapi = createApi('zh'),
+    cmapi = createApi('cm'),
+    vjpapi = createApi('vjp'),
+    uewapi = createApi('uew'),
+    qwapi = createApi('qw'),
+    elainaapi = createApi('elaina'),
+    sapapi = createApi('sap');
 
-const elainaapi = new MediaWikiApi({
-    baseURL: config.elaina.api,
-    fexiosConfigs: {
-        headers: { 'user-agent': config.useragent },
-    },
-});
-
-const sapapi = new MediaWikiApi({
-    baseURL: config.sap.api,
-    fexiosConfigs: {
-        headers: { 'user-agent': config.useragent },
-    },
-});
+const SITE_NAMES: Record<SiteAccount['site'], string> = {
+    zh: 'MoegirlPedia(zh)',
+    cm: 'MoegirlPedia(commons)',
+    vjp: 'Vocawiki',
+    uew: 'United Earth Wiki',
+    qw: 'QiuwenBaike',
+    elaina: 'ElainaWiki',
+    sap: 'SAPedia',
+};
 
 class Login {
     constructor(private api: MediaWikiApi) {}
 
     async login({ site, account }: SiteAccount) {
-        let sitename: string;
-        switch (site) {
-            case 'zh':
-                sitename = 'MoegirlPedia(zh)';
-                break;
-            case 'cm':
-                sitename = 'MoegirlPedia(commons)';
-                break;
-            case 'vjp':
-                sitename = 'Vocawiki';
-                break;
-            case 'uew':
-                sitename = 'United Earth Wiki';
-                break;
-            case 'qw':
-                sitename = 'QiuwenBaike';
-                break;
-            case 'elaina':
-                sitename = 'ElainaWiki';
-                break;
-            case 'sap':
-                sitename = 'SAPedia';
-                break;
-        }
-
-        const siteConfig = config[site];
+        const sitename = SITE_NAMES[site],
+            siteConfig = config[site];
 
         if (!siteConfig.accounts[account]) {
             throw new Error(`Invalid account: ${account}`);
@@ -104,3 +67,4 @@ class Login {
 }
 
 export { cmapi, zhapi, vjpapi, uewapi, qwapi, elainaapi, sapapi, Login };
+export { run } from './run';
