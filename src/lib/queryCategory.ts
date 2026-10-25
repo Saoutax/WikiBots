@@ -50,11 +50,9 @@ class QueryCategory extends BaseApi {
         let cmcontinue: string | undefined;
         do {
             const {
-                data,
-                data: {
-                    query: { categorymembers },
-                },
-            } = await this.api.post<{ query: { categorymembers: MWCategory[] } }>({
+                query: { categorymembers },
+                continue: cont,
+            } = await this.queryData<{ categorymembers: MWCategory[] }>({
                 action: 'query',
                 list: 'categorymembers',
                 cmtitle: category,
@@ -78,7 +76,7 @@ class QueryCategory extends BaseApi {
                     results.add(member.title);
                 }
             }
-            cmcontinue = data?.continue?.cmcontinue;
+            cmcontinue = cont?.cmcontinue;
         } while (cmcontinue);
     };
 }

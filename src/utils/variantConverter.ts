@@ -1,5 +1,10 @@
 import OpenCC from 'opencc-js';
 
+const fromTW = OpenCC.Converter({ from: 'tw', to: 'cn' }),
+    fromHK = OpenCC.Converter({ from: 'hk', to: 'cn' }),
+    toTW = OpenCC.Converter({ from: 'cn', to: 'tw' }),
+    toHK = OpenCC.Converter({ from: 'cn', to: 'hk' });
+
 /**
  * 将输入文字（简体或繁体）转换为 CN / TW / HK 三种变体，以数组形式返回
  *
@@ -7,12 +12,7 @@ import OpenCC from 'opencc-js';
  * @returns [zh-cn, zh-tw, zh-hk]
  */
 const variantConverter = (input: string) => {
-    const fromTW = OpenCC.Converter({ from: 'tw', to: 'cn' }),
-        fromHK = OpenCC.Converter({ from: 'hk', to: 'cn' });
     const simplified = fromHK(fromTW(input));
-
-    const toTW = OpenCC.Converter({ from: 'cn', to: 'tw' }),
-        toHK = OpenCC.Converter({ from: 'cn', to: 'hk' });
 
     return [...new Set([simplified, toTW(simplified), toHK(simplified), input])];
 };

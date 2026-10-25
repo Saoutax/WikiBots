@@ -12,7 +12,7 @@
  * // result: ['hello_world|foo_bar', 'baz']
  */
 const splitAndJoin = (list: unknown[], size = 500) => {
-    const result = [];
+    const result: string[] = [];
     for (let i = 0; i < list.length; i += size) {
         const chunk = list
             .slice(i, i + size)

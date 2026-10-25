@@ -5,16 +5,12 @@ import { readGHFile, writeGHFile } from './readAndWrite';
  * 获取时间戳记录
  *
  * @param name 任务名称
- * @returns 时间戳
+ * @returns 时间戳，未记录时返回 undefined
  */
 const getTimeData = async (name: string) => {
     const { content } = await readGHFile('data/time.yaml'),
-        record = load(content) as Record<string, string>;
-    if (record[name]) {
-        return record[name];
-    } else {
-        throw new Error(`Failed to find ${name} time record.`);
-    }
+        record = load(content) as Record<string, string> | undefined;
+    return record?.[name];
 };
 
 /**

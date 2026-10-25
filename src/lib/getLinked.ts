@@ -29,11 +29,9 @@ class GetLinked extends BaseApi {
                 let lhcontinue: string | undefined;
                 do {
                     const {
-                        data,
-                        data: {
-                            query: { pages = [] },
-                        },
-                    } = await this.api.post<{ query: { pages?: MWPage[] } }>({
+                        query: { pages = [] },
+                        continue: cont,
+                    } = await this.queryData<{ pages?: MWPage[] }>({
                         action: 'query',
                         prop: 'linkshere',
                         titles: group,
@@ -52,7 +50,7 @@ class GetLinked extends BaseApi {
                             result[page.title]?.push(title);
                         });
                     }
-                    lhcontinue = data?.continue?.lhcontinue;
+                    lhcontinue = cont?.lhcontinue;
                 } while (lhcontinue);
             }),
         );

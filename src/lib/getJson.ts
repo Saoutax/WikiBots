@@ -1,31 +1,18 @@
 import { BaseApi } from '@/utils';
+import { GetContent } from './getContent';
 
-class GetJSON extends BaseApi {
+class GetJson extends BaseApi {
+    #source = new GetContent(this.api);
+
     /**
      * 获取页面JSON内容
-     * @param title 页面标题
-     * @returns 返回解析后的JSON
+     * @param title - 页面标题
+     * @returns 解析后的JSON
      */
     get = async <T = object>(title: string): Promise<T> => {
-        const {
-            data: {
-                query: {
-                    pages: [
-                        {
-                            revisions: [{ content }],
-                        },
-                    ],
-                },
-            },
-        } = await this.api.post({
-            action: 'query',
-            prop: 'revisions',
-            rvprop: 'content',
-            titles: title,
-        });
-
-        return JSON.parse(content);
+        const { content } = await this.#source.get(title);
+        return JSON.parse(content) as T;
     };
 }
 
-export { GetJSON };
+export { GetJson };

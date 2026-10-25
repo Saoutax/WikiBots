@@ -19,11 +19,9 @@ class GetEmbedded extends BaseApi {
         let eicontinue: string | undefined;
         do {
             const {
-                data,
-                data: {
-                    query: { embeddedin = [] },
-                },
-            } = await this.api.post<{ query: { embeddedin?: { title: string }[] } }>({
+                query: { embeddedin = [] },
+                continue: cont,
+            } = await this.queryData<{ embeddedin?: { title: string }[] }>({
                 action: 'query',
                 list: 'embeddedin',
                 eititle: title,
@@ -35,7 +33,7 @@ class GetEmbedded extends BaseApi {
             embeddedin.forEach(page => {
                 result.push(page.title);
             });
-            eicontinue = data?.continue?.eicontinue;
+            eicontinue = cont?.eicontinue;
         } while (eicontinue);
         return result;
     };

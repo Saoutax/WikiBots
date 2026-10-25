@@ -1,4 +1,3 @@
-import { Buffer } from 'buffer';
 import process from 'node:process';
 import { Octokit } from 'octokit';
 
@@ -27,7 +26,7 @@ const readGHFile = async (path: string) => {
         return { content, sha: data.sha };
     } catch (err) {
         console.error(err);
-        throw new Error();
+        throw err;
     }
 };
 
@@ -52,7 +51,7 @@ const writeGHFile = async (path: string, content: string, message: string, sha?:
         console.log('Update success.');
     } catch (err) {
         console.error(err);
-        throw new Error();
+        throw err;
     }
 };
 

@@ -1,5 +1,9 @@
 import { BaseApi } from '@/utils';
 
+interface MWPage {
+    missing?: boolean;
+}
+
 class CheckExist extends BaseApi {
     /**
      * 检查是否存在目标页面
@@ -7,18 +11,12 @@ class CheckExist extends BaseApi {
      * @returns 检查结果
      */
     check = async (title: string) => {
-        const {
-            data: {
-                query: { pages },
-            },
-        } = await this.api.post({
+        const pages = await this.queryPages<MWPage>({
             action: 'query',
-            format: 'json',
             prop: 'info',
             titles: title,
-            formatversion: '2',
         });
-        return pages[0]?.missing ? false : true;
+        return !pages[0]?.missing;
     };
 }
 

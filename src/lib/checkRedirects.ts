@@ -5,7 +5,7 @@ interface MWPage {
     redirect?: boolean;
 }
 
-class CheckRedirect extends BaseApi {
+class CheckRedirects extends BaseApi {
     /**
      * 检查页面是否为重定向页面
      * @param titles - 页面标题数组
@@ -17,15 +17,10 @@ class CheckRedirect extends BaseApi {
 
         await Promise.all(
             splitAndJoin(titles, size).map(async group => {
-                const {
-                    data: {
-                        query: { pages },
-                    },
-                } = await this.api.post<{ query: { pages: MWPage[] } }>({
+                const pages = await this.queryPages<MWPage>({
                     action: 'query',
                     prop: 'info',
                     titles: group,
-                    formatversion: '2',
                 });
                 pages.forEach(page => {
                     result[page.title] = Object.hasOwn(page, 'redirect');
@@ -37,4 +32,4 @@ class CheckRedirect extends BaseApi {
     };
 }
 
-export { CheckRedirect };
+export { CheckRedirects };

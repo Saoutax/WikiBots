@@ -23,11 +23,9 @@ class CheckGlobalUsage extends BaseApi {
                     let gucontinue: string | undefined;
                     do {
                         const {
-                            data,
-                            data: {
-                                query: { pages },
-                            },
-                        } = await this.api.post<{ query: { pages: MWPage[] } }>({
+                            query: { pages },
+                            continue: cont,
+                        } = await this.queryData<{ pages: MWPage[] }>({
                             action: 'query',
                             prop: 'globalusage',
                             titles: group,
@@ -41,7 +39,7 @@ class CheckGlobalUsage extends BaseApi {
                                 result[title] = false;
                             }
                         });
-                        gucontinue = data?.continue?.gucontinue;
+                        gucontinue = cont?.gucontinue;
                     } while (gucontinue);
                 }),
             ),
