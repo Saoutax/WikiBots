@@ -39,8 +39,8 @@ importers:
         specifier: ^7.3.3
         version: 7.3.3
       pinyin-pro:
-        specifier: ^3.29.4
-        version: 3.29.4
+        specifier: ^3.29.5
+        version: 3.29.5
       tsx:
         specifier: ^4.23.15
         version: 4.23.15
@@ -1377,8 +1377,8 @@ packages:
     resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  pinyin-pro@3.29.4:
-    resolution: {integrity: sha512-SPXpDT2cHEy+d26V1RXYMlVzXN42hotFAak1fzyWPi4o2dKXb61UqD4pzxDJHwk6gbv8vQ6EfErd+hYX0Qhzug==}
+  pinyin-pro@3.29.5:
+    resolution: {integrity: sha512-Fk5YoRmtdHqJWqAuzYVG/NzvzeCbaG+ZEwbY6Nbps3QAIrvQQEtcm49frcyCM8i2b5najnzPDtYqrHRYTTiuwQ==}
 
   postcss-safe-parser@7.1.0:
     resolution: {integrity: sha512-1WzZxRLaAFwEh6Do+zyGpjWV3nGJNxxhuh7Ubu/q1ICImMgZJnLwhoaEpRbG4pJppp2Y1ncL9ffA2f+LhrefQg==}
@@ -2677,7 +2677,7 @@ snapshots:
 
   picomatch@2.3.2: {}
 
-  pinyin-pro@3.29.4: {}
+  pinyin-pro@3.29.5: {}
 
   postcss-safe-parser@7.1.0(postcss@8.5.31):
     dependencies:
