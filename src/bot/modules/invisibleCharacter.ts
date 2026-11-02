@@ -244,6 +244,8 @@ class InvisibleCharacter extends BaseApi {
                 rcend,
                 rctag: 'invisibleCharacter',
                 rcprop: 'title|ids',
+                rcnamespace: '*',
+                rctoponly: true,
                 rclimit: 'max',
                 ...(rccontinue ? { rccontinue } : {}),
             });
@@ -289,7 +291,14 @@ class InvisibleCharacter extends BaseApi {
         await Promise.all(
             result.map(async ({ title, text, revid, summary }) => {
                 try {
-                    await bot.edit({ title, text, baserevid: revid, summary, tags: 'Bot' });
+                    await bot.edit({
+                        title,
+                        text,
+                        baserevid: revid,
+                        summary,
+                        tags: 'Bot',
+                        nocreate: true,
+                    });
                     console.log(`Done: ${title}`);
                 } catch (error) {
                     failed.push(title);
