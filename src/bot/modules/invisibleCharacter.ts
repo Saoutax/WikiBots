@@ -40,6 +40,7 @@ const LITERAL_TAGS = [
     'chem',
     'score',
     'poem',
+    'charinsert',
     'templatedata',
     'imagemap',
     'graph',
@@ -56,7 +57,7 @@ const ZERO_WIDTH_SPACE = '\u200B';
 const BYTE_ORDER_MARK = '\uFEFF';
 
 /** 零宽空格紧邻这些字符时，往往是在拆断标记语法，不能当作垃圾清理 */
-const MARKUP_CHARS = new Set("{}[]|=<>#*:;'!-_");
+const MARKUP_CHARS = new Set("{}[]|=<>#*:;'!-_~");
 
 /** 行首锚点：紧跟在行首的零宽空格常用于阻止标题、列表等行首语法生效 */
 const WHITESPACE = new Set([' ', '\t', '\n', '\r']);
@@ -277,6 +278,11 @@ class InvisibleCharacter extends BaseApi {
                 bump(kept, label, count);
             }
             if (cleaned === text) {
+                continue;
+            }
+            // 清理后整页为空说明原文只有不可见字符，宁可不动，也不清空页面
+            if (cleaned.trim() === '') {
+                console.warn(`Skip: ${title}（清理后页面为空）`);
                 continue;
             }
             result.push({
