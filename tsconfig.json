@@ -28,6 +28,5 @@
         "noUncheckedSideEffectImports": true,
         "moduleDetection": "force",
         "skipLibCheck": true
-    },
-    "exclude": ["src/bot/tmp"]
+    }
 }
