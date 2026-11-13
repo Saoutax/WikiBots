@@ -42,7 +42,7 @@ jobs:
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
               with:
-                  node-version: '20.x'
+                  node-version: '24.4.1'
             - name: Run Script
               run: npx tsx src/bot/mgp/deleteRedirect.ts
 
