@@ -39,7 +39,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -52,7 +52,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -65,7 +65,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -78,7 +78,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -91,7 +91,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -104,7 +104,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -117,7 +117,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -130,7 +130,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -143,7 +143,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
@@ -156,7 +156,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Script
