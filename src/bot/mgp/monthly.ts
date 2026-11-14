@@ -20,7 +20,7 @@ const bot = new BotInstance(api);
         const { content } = await bot.getContent('萌娘百科:萌娘百科月报/订阅');
 
         const root = Parser.parse(content),
-            links = root.querySelectorAll<Parser.LinkToken>('list + link');
+            links = root.querySelectorAll<Parser.LinkToken>('list + list-range > link');
 
         const targets = [
             ...new Set(links.map(item => item.name).filter(name => name.startsWith('User_talk:'))),
