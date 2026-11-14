@@ -32,7 +32,7 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
 
             - name: Initialize CodeQL
               uses: github/codeql-action/init@v4
@@ -50,7 +50,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
-              uses: actions/checkout@v6
+              uses: actions/checkout@v7
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
             - name: Run Lint test
