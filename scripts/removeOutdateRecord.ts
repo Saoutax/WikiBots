@@ -1,4 +1,5 @@
-import { readGHFile, writeGHFile, dayjs } from '@/utils';
+import { readGHFile, writeGHFile } from '@/utils';
+import { filterOutdatedRecords } from './lib/outdatedRecords';
 
 (async () => {
     const filepath = 'data/inUsedRedirect.json',
@@ -6,25 +7,15 @@ import { readGHFile, writeGHFile, dayjs } from '@/utils';
         data = JSON.parse(content) as Record<string, string[]>,
         original = JSON.stringify(data, null, 4);
 
-    const count = dayjs().tz().subtract(14, 'day');
+    const { filtered, removed } = filterOutdatedRecords(data);
 
-    const filteredData: Record<string, string[]> = {};
-    let removedCount = 0;
-
-    Object.keys(data).forEach(timestamp => {
-        const recordDate = dayjs(timestamp);
-
-        if (recordDate.isAfter(count)) {
-            filteredData[timestamp] = data[timestamp]!;
-        } else {
-            removedCount++;
-            console.log(`移除超过14天的记录: ${timestamp} (${data[timestamp]?.length} 个项目)`);
-        }
+    removed.forEach(timestamp => {
+        console.log(`移除超过14天的记录: ${timestamp} (${data[timestamp]?.length} 个项目)`);
     });
 
-    console.log(`总共移除了 ${removedCount} 个超过14天的记录`);
+    console.log(`总共移除了 ${removed.length} 个超过14天的记录`);
 
-    const newContent = JSON.stringify(filteredData, null, 4);
+    const newContent = JSON.stringify(filtered, null, 4);
 
     if (newContent === original) {
         console.log('没有需要移除的记录，跳过更新');
