@@ -4,3 +4,5 @@ export { collectRecentChanges } from './recentChanges';
 export { statusList } from './statusList';
 export { archiveDiscussion } from './archive';
 export type { ArchiveParams } from './archive';
+export { archiveList } from './archiveList';
+export type { ArchiveListParams, ListEntry } from './archiveList';

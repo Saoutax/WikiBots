@@ -18,6 +18,9 @@ on:
                     - archiveRFRD
                     - archiveRFES
                     - archiveRFR
+                    - archiveCV
+                    - archiveNotability
+                    - archiveFileCSD
             category:
                 description: '分类'
                 type: string
@@ -118,3 +121,42 @@ jobs:
               uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/qw/archiveRFR.ts
+
+    archiveCV:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveCV'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveCV.ts
+
+    archiveNotability:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveNotability'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveNotability.ts
+
+    archiveFileCSD:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveFileCSD'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveFileCSD.ts
