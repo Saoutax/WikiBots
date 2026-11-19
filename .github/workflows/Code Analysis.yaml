@@ -57,6 +57,8 @@ jobs:
               run: pnpm run lint
             - name: Run Typecheck
               run: pnpm run typecheck
+            - name: Run Unit Tests
+              run: pnpm test
 
     auto-assign:
         if: github.event_name == 'pull_request_target'

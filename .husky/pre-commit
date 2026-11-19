@@ -1,1 +1,1 @@
-pnpm fmt && pnpm lint && pnpm typecheck
+pnpm fmt && pnpm lint && pnpm typecheck && pnpm test
