@@ -126,7 +126,7 @@ const normalizeHeadingSpacing = (text: string): string => {
         }
 
         const currentTime = dayjs().tz();
-        const archivedSections: { heading: string; entries: Entry[] }[] = [];
+        const archiveBlocks: string[] = [];
         const removeRanges: [number, number][] = [];
         let archivedCount = 0;
 
@@ -175,12 +175,15 @@ const normalizeHeadingSpacing = (text: string): string => {
                 continue;
             }
 
-            archivedSections.push({ heading: section.heading, entries: archivedEntries });
             archivedCount += archivedEntries.length;
 
             if (remaining === 0) {
+                archiveBlocks.push(content.slice(section.start, section.end).trimEnd());
                 removeRanges.push([section.start, section.end]);
             } else {
+                archiveBlocks.push(
+                    `${section.heading.trimEnd()}\n${archivedEntries.map(e => e.text).join('')}`.trimEnd(),
+                );
                 removeRanges.push(
                     ...archivedEntries.map(({ start, end }): [number, number] => [start, end]),
                 );
@@ -192,13 +195,7 @@ const normalizeHeadingSpacing = (text: string): string => {
             return;
         }
 
-        const archive = archivedSections
-            .map(
-                ({ heading, entries }) =>
-                    `${heading.trimEnd()}\n${entries.map(e => e.text).join('')}`,
-            )
-            .join('\n')
-            .trimEnd();
+        const archive = archiveBlocks.join('\n').trimEnd();
 
         removeRanges.sort((a, b) => b[0] - a[0]);
 
@@ -206,7 +203,7 @@ const normalizeHeadingSpacing = (text: string): string => {
         for (const [start, end] of removeRanges) {
             discussion = discussion.slice(0, start) + discussion.slice(end);
         }
-        discussion = normalizeHeadingSpacing(discussion).trimEnd() + '\n';
+        discussion = `${normalizeHeadingSpacing(discussion).trimEnd()}\n`;
 
         await archiveDiscussion(api, {
             target: TARGET,

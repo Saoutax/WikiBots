@@ -93,7 +93,7 @@ const parseListEntries = (content: string): ListEntry[] => {
             if (child.type === 'list' || child.type === 'list-range') {
                 continue;
             }
-            if (child.type === 'text' && child.text().trim() === '') {
+            if (child.type === 'comment' || (child.type === 'text' && child.text().trim() === '')) {
                 continue;
             }
             end = child.getAbsoluteIndex();

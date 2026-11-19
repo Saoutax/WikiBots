@@ -11,12 +11,19 @@ const findSourcesTemplates = new Set(['template:findsources', 'template:find sou
 const getReportedTitle = (
     firstLine: string,
     links: { title: string; ns: number }[],
-): string | undefined =>
-    links[0]?.title ??
-    Parser.parse(firstLine)
+): string | undefined => {
+    const fromTemplate = Parser.parse(firstLine)
         .querySelectorAll<Parser.TranscludeToken>('template')
         .find(({ name }) => findSourcesTemplates.has(name.replaceAll('_', ' ').toLowerCase()))
-        ?.getValue('1');
+        ?.getValue('1')
+        ?.trim();
+
+    if (fromTemplate) {
+        return fromTemplate;
+    }
+
+    return (links.find(({ ns }) => ns !== 2 && ns !== 3) ?? links[0])?.title;
+};
 
 (async () => {
     await run({ api, site: 'qw' }, () =>
