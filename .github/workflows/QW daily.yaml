@@ -21,6 +21,7 @@ on:
                     - archiveCV
                     - archiveNotability
                     - archiveFileCSD
+                    - archiveFAC
             category:
                 description: '分类'
                 type: string
@@ -160,3 +161,16 @@ jobs:
               uses: ./.github/actions/setup-bot
             - name: Run Script
               run: npx tsx src/bot/qw/archiveFileCSD.ts
+
+    archiveFAC:
+        if: |
+            github.event.schedule == '10 16 * * *' ||
+            github.event.inputs.task == 'archiveFAC'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+            - name: Run Script
+              run: npx tsx src/bot/qw/archiveFAC.ts
