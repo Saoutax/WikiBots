@@ -7,6 +7,9 @@ import { archiveDiscussion } from '../modules';
 
 const bot = new BotInstance(api);
 
+const MESSAGE_TARGET = 'Qiuwen_talk:茶馆/消息',
+    INACTIVE_DAYS = 7;
+
 const main = async (targets: string[]) => {
     const currentTime = dayjs().tz(),
         currentMonth = dayjs().tz().format('YYYY年MM月');
@@ -25,7 +28,14 @@ const main = async (targets: string[]) => {
 
         const removeIndices: number[] = [];
 
-        for (const [i, { thread, content }] of discussionThread.sections.entries()) {
+        for (const [i, { thread, content, timestamp }] of discussionThread.sections.entries()) {
+            if (target === MESSAGE_TARGET) {
+                if (timestamp && currentTime.diff(timestamp, 'day') >= INACTIVE_DAYS) {
+                    archive += thread;
+                    removeIndices.push(i);
+                }
+                continue;
+            }
             const mar = Parser.parse(content).querySelector<Parser.TranscludeToken>(
                 'template:is(#Template:MarkAsResolved, #Template:正在公示, #Template:讨论结束)',
             );
@@ -65,6 +75,11 @@ const main = async (targets: string[]) => {
 
 (async () => {
     await run({ api, site: 'qw' }, async () => {
-        await main(['Qiuwen_talk:茶馆/编辑', 'Qiuwen_talk:茶馆/其他']);
+        await main([
+            'Qiuwen_talk:茶馆/编辑',
+            'Qiuwen_talk:茶馆/其他',
+            'Qiuwen_talk:茶馆/方针',
+            MESSAGE_TARGET,
+        ]);
     });
 })();
