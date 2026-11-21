@@ -9,3 +9,7 @@ export { getTimeData, updateTimeData } from './recordTime';
 export { delay } from './delay';
 export { dayjs } from './time';
 export { variantConverter } from './variantConverter';
+export { deriveTalkPage, sameTitle } from './title';
+export { extractChineseDate } from './extractChineseDate';
+export { findTemplates, normalizeTemplateName } from './template';
+export { normalizeHeadingSpacing } from './normalizeHeadingSpacing';
