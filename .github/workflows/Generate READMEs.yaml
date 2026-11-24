@@ -10,6 +10,9 @@ on:
             - 'scripts/lib/readmes.ts'
     workflow_dispatch:
 
+env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 concurrency:
     group: generate-readmes-${{ github.ref_name }}
     cancel-in-progress: false
@@ -24,9 +27,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v7
-              with:
-                  ref: ${{ github.ref_name }}
-                  token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Setup Bot
               uses: ./.github/actions/setup-bot
@@ -34,17 +34,5 @@ jobs:
             - name: Generate READMEs
               run: pnpm readme
 
-            - name: Commit and push
-              run: |
-                  if [ -z "$(git status --porcelain -- 'src/bot/*/README.md')" ]; then
-                      echo 'No README changes.'
-                      exit 0
-                  fi
-                  git config user.name 'github-actions[bot]'
-                  git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-                  git add -- 'src/bot/*/README.md'
-                  git commit -m 'chore: auto generate site READMEs'
-                  git push origin "HEAD:${GITHUB_REF_NAME}" || {
-                      git pull --rebase --autostash
-                      git push origin "HEAD:${GITHUB_REF_NAME}"
-                  }
+            - name: Commit READMEs
+              run: npx tsx scripts/commitSiteReadmes.ts

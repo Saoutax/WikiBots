@@ -81,7 +81,7 @@ test/                 — Offline Vitest tests; mirrors src/ and adds bot script
 
 All task scheduling is via GitHub Actions; see `.github/workflows/` for per-site daily workflows and repository maintenance. Workflows share the composite action `.github/actions/setup-bot` (pnpm + Node + dependencies). The `Code Analysis` workflow runs lint, typecheck, and unit tests; CodeQL analysis runs on the same trigger.
 
-Site READMEs are generated, not written by hand. `scripts/generateSiteReadmes.ts` derives the task name, script link, and CST schedule for every job that runs `src/bot/<site>/*.ts`, so a `# 说明: ...` comment above the job (or on its first line) supplies the description column and is required. The `Generate READMEs` workflow runs `pnpm readme` on every branch after pushes that touch workflows or the generator, then commits the result back to that branch. Add or change a task in the workflow only; run `pnpm readme` locally before pushing if the branch will not run Actions.
+Site READMEs are generated, not written by hand. `scripts/generateSiteReadmes.ts` derives the task name, script link, and CST schedule for every job that runs `src/bot/<site>/*.ts`, so a `# 说明: ...` comment above the job (or on its first line) supplies the description column and is required. The `Generate READMEs` workflow runs `pnpm readme` on every branch after pushes that touch workflows or the generator, then commits the changed READMEs back to that branch via the GitHub API (`scripts/commitSiteReadmes.ts`, Octokit, requires `GITHUB_TOKEN` and `GITHUB_REF_NAME`; run only in Actions). Add or change a task in the workflow only; run `pnpm readme` locally before pushing if the branch will not run Actions.
 
 ## Coding conventions
 
