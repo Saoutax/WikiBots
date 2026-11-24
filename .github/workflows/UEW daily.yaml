@@ -4,7 +4,7 @@ on:
     schedule:
         - cron: '10 16 * * *' # 00:10 CST Everyday
         - cron: '30 16 * * *' # 00:30 CST Everyday
-        - cron: '30 16 * * 2' # 00:30 CST Tuesday
+        - cron: '30 16 * * 2' # 00:30 CST Wednesday
         - cron: '30 20 * * *' # 04:30 CST Everyday
     workflow_dispatch:
         inputs:
@@ -25,6 +25,7 @@ env:
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+    # 说明: 清理沙盒
     cleanSandbox:
         if: |
             github.event.schedule == '30 20 * * *' ||
@@ -40,6 +41,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/uew/cleanSandbox.ts
 
+    # 说明: 移除不可见字符
     invisibleCharacter:
         if: |
             github.event.schedule == '30 16 * * 2' ||
@@ -55,6 +57,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/uew/invisibleCharacter.ts
 
+    # 说明: 更新上映倒计时
     countdown:
         if: |
             github.event.schedule == '30 16 * * *' ||
@@ -70,6 +73,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/uew/countdown.ts
 
+    # 说明: 每月 1 号存档会议大厅超过 5 天无回复的讨论串
     archiveThread:
         if: |
             github.event.schedule == '10 16 * * *' ||

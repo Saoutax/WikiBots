@@ -33,6 +33,7 @@ env:
     QW_BOT: ${{ secrets.QW_BOT }}
 
 jobs:
+    # 说明: 移除已弃用的内部链接助手模板
     internalLink:
         if: |
             github.event.inputs.task == 'internalLink'
@@ -45,6 +46,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/internalLink.ts
 
+    # 说明: 处理「有蓝链却未移除内部链接助手模板的页面」分类：移除残留模板，无模板时零编辑
     internalLink-exist:
         if: |
             github.event.inputs.task == 'internalLink-exist'
@@ -57,6 +59,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/internalLink-exist.ts
 
+    # 说明: 对指定分类下的页面批量零编辑
     nullEdit:
         if: |
             github.event.inputs.task == 'nullEdit'
@@ -71,6 +74,7 @@ jobs:
                   CATEGORY: ${{ github.event.inputs.category }}
               run: npx tsx src/bot/qw/nullEdit.ts
 
+    # 说明: 存档茶馆中 7 天无回复的讨论串
     archiveTEA:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -84,6 +88,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveTEA.ts
 
+    # 说明: 存档版本删除提报中已处理的提报
     archiveRFRD:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -97,6 +102,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveRFRD.ts
 
+    # 说明: 存档条目署名申请中已处理的申请
     archiveRFES:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -110,6 +116,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveRFES.ts
 
+    # 说明: 存档各权限申请板块中已处理的申请
     archiveRFR:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -123,6 +130,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveRFR.ts
 
+    # 说明: 存档侵权提报中已处理的提报
     archiveCV:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -136,6 +144,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveCV.ts
 
+    # 说明: 存档关注度提报中已处理的提报
     archiveNotability:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -149,6 +158,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveNotability.ts
 
+    # 说明: 存档文件快速删除提报中已处理的提报
     archiveFileCSD:
         if: |
             github.event.schedule == '10 16 * * *' ||
@@ -162,6 +172,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/qw/archiveFileCSD.ts
 
+    # 说明: 存档内容评选中已结束的评选
     archiveFAC:
         if: |
             github.event.schedule == '10 16 * * *' ||

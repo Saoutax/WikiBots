@@ -17,6 +17,7 @@ env:
     MH_BOT: ${{ secrets.MH_BOT }}
 
 jobs:
+    # 说明: 清理沙盒
     cleanSandbox:
         if: |
             github.event.schedule == '10 16 * * *' ||

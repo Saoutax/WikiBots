@@ -31,6 +31,7 @@ env:
     CM_BOT: ${{ secrets.CM_BOT }}
 
 jobs:
+    # 说明: 删除昨日无使用的共享站移动残留重定向
     deleteRedirect:
         if: |
             github.event.schedule == '20 1,13 * * *' ||
@@ -46,6 +47,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/deleteRedirect.ts
 
+    # 说明: 根据`#疑似外链调用内部文件`为文件添加{{非链入使用}}模板
     markImg:
         if: |
             github.event.schedule == '00 20 * * *' ||
@@ -61,6 +63,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/markImg.ts
 
+    # 说明: 更新被标记{{Highrisk}}的模板使用数量
     highRiskCount:
         if: |
             github.event.schedule == '00 19 * * 3' ||
@@ -76,6 +79,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/highRiskCount.ts
 
+    # 说明: 删除特定分类下的无使用文件
     deleteUnused:
         if: |
             github.event.schedule == '00 21 * * 5' ||
@@ -91,6 +95,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/deleteUnused.ts
 
+    # 说明: 更新[萌娘百科:疑似链入消歧义页面的条目](https://mzh.moegirl.org.cn/_?curid=545554)
     disambigLinks:
         if: |
             github.event.schedule == '10 16 * * 5' ||
@@ -106,6 +111,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/disambigLinks.ts
 
+    # 说明: 修复{{Navbox}}常见错误排版
     correctNavFormat:
         if: |
             github.event.schedule == '00 18 * * 2' ||
@@ -121,6 +127,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/correctNavFormat.ts
 
+    # 说明: 扫描最近更改，移除多余的管道符
     removeExtraPipe:
         if: |
             github.event.schedule == '00 17 * * *' ||

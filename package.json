@@ -16,6 +16,7 @@
         "fmt": "oxfmt",
         "lint": "oxlint",
         "lint:fix": "oxlint --fix",
+        "readme": "tsx scripts/generateSiteReadmes.ts && oxfmt \"src/bot/*/README.md\"",
         "test": "vitest run",
         "test:live": "tsx src/bot/tmp/test.ts",
         "test:watch": "vitest",

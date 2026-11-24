@@ -17,6 +17,7 @@ env:
     ZH_BOT: ${{ secrets.ZH_BOT }}
 
 jobs:
+    # 说明: 根据配置文件替换页面中的链接目标
     linkModifier:
         if: |
             github.event.inputs.task == 'linkModifier'
@@ -31,6 +32,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/mgp/linkModifier.ts
 
+    # 说明: 向订阅用户发送萌娘百科月报
     monthly:
         if: |
             github.event.inputs.task == 'monthly'

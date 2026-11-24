@@ -8,6 +8,7 @@ This file provides guidance to AI coding agents working with code in this reposi
 - **Lint**: `pnpm lint` (oxlint)
 - **Lint fix**: `pnpm lint:fix`
 - **Format**: `pnpm fmt` (oxfmt)
+- **Generate site READMEs**: `pnpm readme` (rebuilds `src/bot/<site>/README.md` from the workflows)
 - **Typecheck**: `pnpm typecheck` (tsc --noEmit)
 - **Test**: `pnpm test` (vitest, fully offline; watch mode: `pnpm test:watch`)
 - **Run a bot script**: `tsx src/bot/<site>/<script>.ts`
@@ -62,7 +63,7 @@ src/
 data/
   time.yaml           — Timestamps for incremental task processing
   inUsedRedirect.json — Persistent tracking of in-use redirects
-scripts/              — Repository maintenance scripts (commit-scope generation, outdated-record cleanup)
+scripts/              — Repository maintenance scripts (commit-scope generation, outdated-record cleanup, site README generation)
 test/                 — Offline Vitest tests; mirrors src/ and adds bot script integration tests
 ```
 
@@ -79,6 +80,8 @@ test/                 — Offline Vitest tests; mirrors src/ and adds bot script
 ### CI/CD (GitHub Actions workflows)
 
 All task scheduling is via GitHub Actions; see `.github/workflows/` for per-site daily workflows and repository maintenance. Workflows share the composite action `.github/actions/setup-bot` (pnpm + Node + dependencies). The `Code Analysis` workflow runs lint, typecheck, and unit tests; CodeQL analysis runs on the same trigger.
+
+Site READMEs are generated, not written by hand. `scripts/generateSiteReadmes.ts` derives the task name, script link, and CST schedule for every job that runs `src/bot/<site>/*.ts`, so a `# 说明: ...` comment above the job (or on its first line) supplies the description column and is required. The `Generate READMEs` workflow runs `pnpm readme` on every branch after pushes that touch workflows or the generator, then commits the result back to that branch. Add or change a task in the workflow only; run `pnpm readme` locally before pushing if the branch will not run Actions.
 
 ## Coding conventions
 
