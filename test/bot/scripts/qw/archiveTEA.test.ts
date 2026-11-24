@@ -113,6 +113,36 @@ const OTHER_NOT_DUE_FIXTURE = `${OTHER_PREFACE}== 普通章节 ==
 `;
 const POLICY_NOT_DUE_FIXTURE = POLICY_PREFACE + POLICY_PENDING_THREAD;
 
+/** 正文只剩 {{移动至}} 的章节：签名满三日、无签名均应存档 */
+const MOVED_SIGNED_THREAD = `== 已移动章节 ==
+{{移动至|Talk:条目甲|sign=[[User:甲|甲]]（[[User talk:甲|留言]]） 2026年3月5日 (四) 12:00 (CST)}}
+
+`;
+const MOVED_VARIANT_THREAD = `== 繁体移动章节 ==
+{{移動至|Talk:条目乙|sign=[[User:乙|乙]]（[[User talk:乙|留言]]） 2026年3月4日 (三) 12:00 (CST)}}
+
+`;
+const MOVED_UNSIGNED_THREAD = `== 无签名章节 ==
+{{移动至|Talk:条目丙|reason=2026年3月9日 (一) 12:00 (CST) 内容离题}}
+
+`;
+const MOVED_RECENT_THREAD = `== 未满三日章节 ==
+{{移动至|Talk:条目丁|sign=[[User:丁|丁]]（[[User talk:丁|留言]]） 2026年3月9日 (一) 12:00 (CST)}}
+
+`;
+const MOVED_WITH_TEXT_THREAD = `== 仍有正文章节 ==
+{{移动至|Talk:条目戊}}
+该讨论仍在进行。2026年3月1日 (日) 12:00 (CST)
+
+`;
+const MOVED_FIXTURE =
+    EDIT_PREFACE +
+    MOVED_SIGNED_THREAD +
+    MOVED_VARIANT_THREAD +
+    MOVED_UNSIGNED_THREAD +
+    MOVED_RECENT_THREAD +
+    MOVED_WITH_TEXT_THREAD;
+
 const routeQueries = (
     stub: { post: ReturnType<typeof vi.fn> },
     fixtures: Record<string, string>,
@@ -351,4 +381,92 @@ it('消息页恰好 7 天无新发言时存档，差不到 7 天时保留', asyn
 
     expect(getEdit(1).title).toBe(MESSAGE_TARGET);
     expect(getEdit(1).text).toBe(MESSAGE_PREFACE + justUnderThread);
+});
+
+it('仅含移动至模板的章节按签名满三日存档，无签名直接存档', async () => {
+    vi.useFakeTimers({ now: NOW });
+
+    const stub = runtime.stubs['qw']!;
+    routeQueries(stub, {
+        [EDIT_TARGET]: MOVED_FIXTURE,
+        [OTHER_TARGET]: OTHER_NOT_DUE_FIXTURE,
+        [POLICY_TARGET]: POLICY_NOT_DUE_FIXTURE,
+        [MESSAGE_TARGET]: MESSAGE_FIXTURE,
+    });
+    stub.postWithToken.mockResolvedValue({ data: { edit: { result: 'Success' } } });
+
+    await import('@/bot/qw/archiveTEA');
+    const result = await runtime.drain();
+
+    expect(result.errors).toEqual([]);
+    expect(stub.postWithToken).toHaveBeenCalledTimes(2);
+
+    // 存档页：签名满三日与无签名的章节写入，未满三日与仍有正文的章节保留
+    const archiveEdit = getEdit(0);
+    expect(archiveEdit.title).toBe(EDIT_ARCHIVE_TITLE);
+    expect(editedPage(archiveEdit)).toBe(
+        `{{talkarchive}}\n\n${MOVED_SIGNED_THREAD}${MOVED_VARIANT_THREAD}${MOVED_UNSIGNED_THREAD}`,
+    );
+
+    const discussionEdit = getEdit(1);
+    expect(discussionEdit.title).toBe(EDIT_TARGET);
+    expect(discussionEdit.text).toBe(EDIT_PREFACE + MOVED_RECENT_THREAD + MOVED_WITH_TEXT_THREAD);
+    expect(discussionEdit.summary).toBe('机器人：存档讨论');
+    expect(discussionEdit.baserevid).toBe(REVID);
+});
+
+it('仅含移动至模板时恰好三日存档，差不到三日保留', async () => {
+    vi.useFakeTimers({ now: NOW });
+
+    const boundaryThread = `== 恰好三日 ==
+{{移动至|Talk:条目己|sign=[[User:己|己]]（[[User talk:己|留言]]） 2026年3月7日 (六) 04:00 (UTC)}}
+
+`;
+    const justUnderThread = `== 不足三日 ==
+{{移动至|Talk:条目庚|sign=[[User:庚|庚]]（[[User talk:庚|留言]]） 2026年3月7日 (六) 04:01 (UTC)}}
+
+`;
+    const stub = runtime.stubs['qw']!;
+    routeQueries(stub, {
+        [EDIT_TARGET]: EDIT_PREFACE + boundaryThread + justUnderThread,
+        [OTHER_TARGET]: OTHER_NOT_DUE_FIXTURE,
+        [POLICY_TARGET]: POLICY_NOT_DUE_FIXTURE,
+        [MESSAGE_TARGET]: MESSAGE_FIXTURE,
+    });
+    stub.postWithToken.mockResolvedValue({ data: { edit: { result: 'Success' } } });
+
+    await import('@/bot/qw/archiveTEA');
+    const result = await runtime.drain();
+
+    expect(result.errors).toEqual([]);
+    expect(stub.postWithToken).toHaveBeenCalledTimes(2);
+
+    expect(getEdit(0).title).toBe(EDIT_ARCHIVE_TITLE);
+    expect(editedPage(getEdit(0))).toBe(`{{talkarchive}}\n\n${boundaryThread}`);
+
+    expect(getEdit(1).title).toBe(EDIT_TARGET);
+    expect(getEdit(1).text).toBe(EDIT_PREFACE + justUnderThread);
+});
+
+it('消息页的移动通知章节仍按 7 天规则', async () => {
+    vi.useFakeTimers({ now: NOW });
+
+    const movedMessageThread = `== 未满七天 ==
+{{移动至|Talk:条目辛|sign=[[User:辛|辛]]（[[User talk:辛|留言]]） 2026年3月6日 (五) 12:00 (CST)}}
+
+`;
+    const stub = runtime.stubs['qw']!;
+    routeQueries(stub, {
+        [EDIT_TARGET]: EDIT_NOT_DUE_FIXTURE,
+        [OTHER_TARGET]: OTHER_NOT_DUE_FIXTURE,
+        [POLICY_TARGET]: POLICY_NOT_DUE_FIXTURE,
+        [MESSAGE_TARGET]: MESSAGE_PREFACE + movedMessageThread,
+    });
+    stub.postWithToken.mockResolvedValue({ data: { edit: { result: 'Success' } } });
+
+    await import('@/bot/qw/archiveTEA');
+    const result = await runtime.drain();
+
+    expect(result.errors).toEqual([]);
+    expect(stub.postWithToken).not.toHaveBeenCalled();
 });
