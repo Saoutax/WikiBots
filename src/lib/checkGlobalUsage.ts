@@ -1,11 +1,6 @@
 import pLimit from 'p-limit';
 import { BaseApi, splitAndJoin } from '@/utils';
 
-interface MWPage {
-    title: string;
-    globalusage: [];
-}
-
 class CheckGlobalUsage extends BaseApi {
     /**
      * 检查页面是否存在全域使用
@@ -23,9 +18,9 @@ class CheckGlobalUsage extends BaseApi {
                     let gucontinue: string | undefined;
                     do {
                         const {
-                            query: { pages },
+                            query: { pages = [] },
                             continue: cont,
-                        } = await this.queryData<{ pages: MWPage[] }>({
+                        } = await this.queryData({
                             action: 'query',
                             prop: 'globalusage',
                             titles: group,
@@ -33,6 +28,9 @@ class CheckGlobalUsage extends BaseApi {
                             gucontinue,
                         });
                         pages.forEach(({ title, globalusage }) => {
+                            if (!title) {
+                                return;
+                            }
                             if (globalusage?.length) {
                                 result[title] = true;
                             } else if (!(title in result)) {

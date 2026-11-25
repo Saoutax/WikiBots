@@ -1,3 +1,4 @@
+import type { ApiQueryResponseWithResult, InfoPage } from 'types-mediawiki-response';
 import type { MwApiParams } from 'wiki-saikou';
 import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
@@ -35,26 +36,7 @@ const SUMMARIES = {
 } as const;
 
 type Action = keyof typeof SUMMARIES;
-
-interface SearchResult {
-    title: string;
-}
-
-interface SearchResponse {
-    query: {
-        search: SearchResult[];
-    };
-    continue?: {
-        sroffset: number | string;
-    };
-}
-
-interface PageInfo {
-    title: string;
-    missing?: boolean;
-    redirect?: boolean;
-    lastrevid?: number;
-}
+type PageInfo = InfoPage;
 
 interface EditStats {
     failed: string[];
@@ -81,14 +63,16 @@ const queryPageInfo = async (titles: string[]): Promise<Record<string, PageInfo>
     const result: Record<string, PageInfo> = {};
 
     for (const group of splitAndJoin(titles)) {
-        const { data } = await api.post<{ query: { pages: PageInfo[] } }>({
+        const { data } = await api.post<ApiQueryResponseWithResult>({
             action: 'query',
             prop: 'info',
             titles: group,
         });
 
-        data.query.pages.forEach(page => {
-            result[page.title] = page;
+        (data.query.pages ?? []).forEach(page => {
+            if (page.title) {
+                result[page.title] = page;
+            }
         });
     }
 
@@ -114,9 +98,9 @@ const searchPages = async (query: string): Promise<string[]> => {
                 srprop: '',
                 ...(sroffset ? { sroffset } : {}),
             },
-            { data } = await api.post<SearchResponse>(params);
+            { data } = await api.post<ApiQueryResponseWithResult>(params);
 
-        data.query.search.forEach(({ title }) => titles.add(title));
+        (data.query.search ?? []).forEach(({ title }) => titles.add(title));
 
         if (!data.continue?.sroffset) {
             break;

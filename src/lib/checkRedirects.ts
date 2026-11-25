@@ -1,9 +1,5 @@
+import type { InfoPage } from 'types-mediawiki-response';
 import { BaseApi, splitAndJoin } from '@/utils';
-
-interface MWPage {
-    title: string;
-    redirect?: boolean;
-}
 
 class CheckRedirects extends BaseApi {
     /**
@@ -17,13 +13,15 @@ class CheckRedirects extends BaseApi {
 
         await Promise.all(
             splitAndJoin(titles, size).map(async group => {
-                const pages = await this.queryPages<MWPage>({
+                const pages = await this.queryPages<InfoPage>({
                     action: 'query',
                     prop: 'info',
                     titles: group,
                 });
                 pages.forEach(page => {
-                    result[page.title] = Object.hasOwn(page, 'redirect');
+                    if (page.title) {
+                        result[page.title] = Object.hasOwn(page, 'redirect');
+                    }
                 });
             }),
         );

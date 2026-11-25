@@ -1,3 +1,4 @@
+import type { ApiPage, ApiQueryResponseWithResult, ApiQueryResult } from 'types-mediawiki-response';
 import type { MediaWikiApi, MwApiParams } from 'wiki-saikou';
 
 /**
@@ -11,8 +12,8 @@ class BaseApi {
      * @param params - API 参数
      * @returns 响应中的 data 字段
      */
-    protected async queryData<T>(params: MwApiParams) {
-        const { data } = await this.api.post<{ query: T }>(params);
+    protected async queryData<T extends ApiQueryResult = ApiQueryResult>(params: MwApiParams) {
+        const { data } = await this.api.post<ApiQueryResponseWithResult & { query: T }>(params);
         return data;
     }
 
@@ -21,10 +22,10 @@ class BaseApi {
      * @param params - API 参数
      * @returns 响应中的 pages 数组
      */
-    protected async queryPages<P>(params: MwApiParams) {
+    protected async queryPages<P extends ApiPage = ApiPage>(params: MwApiParams): Promise<P[]> {
         const {
-            query: { pages },
-        } = await this.queryData<{ pages: P[] }>(params);
+            query: { pages = [] },
+        } = await this.queryData<{ pages?: P[] }>(params);
         return pages;
     }
 }

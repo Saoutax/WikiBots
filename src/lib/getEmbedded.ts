@@ -21,7 +21,7 @@ class GetEmbedded extends BaseApi {
             const {
                 query: { embeddedin = [] },
                 continue: cont,
-            } = await this.queryData<{ embeddedin?: { title: string }[] }>({
+            } = await this.queryData({
                 action: 'query',
                 list: 'embeddedin',
                 eititle: title,
