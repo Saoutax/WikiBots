@@ -11,6 +11,7 @@ interface PostParams {
 interface FixturePage {
     content: string;
     revid: number;
+    redirect?: boolean | '';
 }
 
 const PAGES: Record<string, FixturePage> = {
@@ -62,6 +63,24 @@ const PAGES: Record<string, FixturePage> = {
         revid: 24,
     },
     'Template:Shared/styles.css': { content: '.shared{}', revid: 25 },
+    'Template:Nested/sandbox/sub': {
+        content: '<includeonly><templatestyles src="Nested/styles.css" /></includeonly>',
+        revid: 26,
+    },
+    'Template:RedirectStyleCase': {
+        content:
+            '<includeonly><templatestyles src="RedirectStyle/styles.css" /></includeonly><noinclude>{{TemplateStyles|RedirectStyle/styles.css}}</noinclude>',
+        revid: 27,
+    },
+    'Template:RedirectStyle/styles.css': {
+        content: '#REDIRECT [[Template:Shared/styles.css]]',
+        revid: 28,
+        redirect: '',
+    },
+    'Template:Orphan/styles.css': {
+        content: '/* for [[Template:OldA]]、[[Template:OldB]] */\n.orphan{}',
+        revid: 29,
+    },
 };
 
 const SEARCH: Record<string, string[]> = {
@@ -74,9 +93,12 @@ const SEARCH: Record<string, string[]> = {
         'Template:BareCase',
         'Template:MismatchCase',
         'Template:HumanCase',
+        'Template:Nested/sandbox/sub',
+        'Template:RedirectStyleCase',
     ],
     'insource:"{{CSS"': [],
     'insource:"{{模板样式"': [],
+    'insource:"/* for"': ['Template:Orphan/styles.css'],
 };
 
 const resolve = (title: string): string | undefined => {
@@ -88,35 +110,45 @@ const resolve = (title: string): string | undefined => {
 const configureStub = () => {
     const stub = runtime.stubs['zh']!;
 
-    stub.post.mockImplementation(async (params: PostParams) => {
+    stub.post.mockImplementation((params: PostParams) => {
         if (params.list === 'search') {
             const titles = SEARCH[params.srsearch ?? ''] ?? [];
 
-            return { data: { query: { search: titles.map(title => ({ title })) } } };
+            return Promise.resolve({
+                data: { query: { search: titles.map(title => ({ title })) } },
+            });
         }
 
         if (params.prop === 'info') {
             const titles = String(params.titles).split('|');
 
-            return {
+            return Promise.resolve({
                 data: {
                     query: {
                         pages: titles.map(title => {
                             const real = resolve(title);
 
-                            return real === undefined
-                                ? { title, missing: true }
-                                : { title: real, missing: false };
+                            if (real === undefined) {
+                                return { title, missing: true };
+                            }
+
+                            const page = PAGES[real]!;
+
+                            return {
+                                title: real,
+                                missing: false,
+                                ...(page.redirect !== undefined ? { redirect: page.redirect } : {}),
+                            };
                         }),
                     },
                 },
-            };
+            });
         }
 
         if (params.prop === 'revisions') {
             const titles = String(params.titles).split('|');
 
-            return {
+            return Promise.resolve({
                 data: {
                     query: {
                         pages: titles.flatMap(title => {
@@ -136,10 +168,10 @@ const configureStub = () => {
                         }),
                     },
                 },
-            };
+            });
         }
 
-        throw new Error(`Unexpected request: ${JSON.stringify(params)}`);
+        return Promise.reject(new Error(`Unexpected request: ${JSON.stringify(params)}`));
     });
     stub.postWithToken.mockResolvedValue({ data: { edit: { result: 'Success' } } });
 
@@ -150,8 +182,8 @@ beforeEach(() => {
     delete process.env.DRY_RUN;
     vi.resetModules();
     runtime.reset();
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
 });
 
 afterEach(() => {
@@ -184,7 +216,7 @@ it('同步标记与样式页注释，跳过一致的裸标记与人工注释', a
         expect.objectContaining({
             text: '{{TemplateStyles|DocCase/styles.css}}\n文档内容',
             baserevid: 12,
-            summary: '添加{{TemplateStyles}}标记',
+            summary: '添加{{[[T:TemplateStyles|TemplateStyles]]}}标记',
             tags: 'Bot',
         }),
     );
@@ -208,7 +240,7 @@ it('同步标记与样式页注释，跳过一致的裸标记与人工注释', a
     expect(byTitle.get('Template:RemoveCase')).toEqual(
         expect.objectContaining({
             text: '<noinclude></noinclude>',
-            summary: '移除{{TemplateStyles}}标记',
+            summary: '移除{{[[T:TemplateStyles|TemplateStyles]]}}标记',
         }),
     );
 
@@ -216,7 +248,7 @@ it('同步标记与样式页注释，跳过一致的裸标记与人工注释', a
     expect(byTitle.get('Template:MismatchCase')).toEqual(
         expect.objectContaining({
             text: '<includeonly><templatestyles src="Human/styles.css" /></includeonly><noinclude>{{TemplateStyles|Human/styles.css}}</noinclude>',
-            summary: '同步{{TemplateStyles}}标记',
+            summary: '更新{{[[T:TemplateStyles|TemplateStyles]]}}标记',
         }),
     );
 
@@ -237,15 +269,26 @@ it('同步标记与样式页注释，跳过一致的裸标记与人工注释', a
         expect.objectContaining({
             text: '/* for [[Template:PlainCase]]、[[Template:SharedCase]] */\n.shared{}',
             baserevid: 25,
-            summary: '注明模板样式表的使用者',
+            summary: '更新模板样式表使用情况',
         }),
     );
     expect(byTitle.has('Template:Human/styles.css')).toBe(false);
 
-    // 裸标记与自动推断一致时不编辑
+    // 无使用者的受管样式页清理旧注释
+    expect(byTitle.get('Template:Orphan/styles.css')).toEqual(
+        expect.objectContaining({
+            text: '.orphan{}',
+            baserevid: 29,
+            summary: '更新模板样式表使用情况',
+        }),
+    );
+
+    // 嵌套沙盒页面、重定向样式页、裸标记与自动推断一致时不编辑
+    expect(byTitle.has('Template:Nested/sandbox/sub')).toBe(false);
+    expect(byTitle.has('Template:RedirectStyle/styles.css')).toBe(false);
     expect(byTitle.has('Template:BareCase')).toBe(false);
     expect(byTitle.has('Template:DocCase')).toBe(false);
     expect(byTitle.has('Template:BareCase/styles.css')).toBe(false);
 
-    expect(bodies).toHaveLength(8);
+    expect(bodies).toHaveLength(9);
 });

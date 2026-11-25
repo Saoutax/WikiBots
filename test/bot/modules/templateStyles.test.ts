@@ -37,9 +37,9 @@ describe('extractTemplateStyles', () => {
         expect(extractTemplateStyles(text)).toEqual(['A.css', 'B.css']);
     });
 
-    it('忽略注释、nowiki 与没有 src 的标签', () => {
+    it('忽略注释、nowiki、没有 src 或含非法字符的标签', () => {
         const text =
-            '<!-- <templatestyles src="X.css" /> --><nowiki><templatestyles src="Y.css" /></nowiki><templatestyles />';
+            '<!-- <templatestyles src="X.css" /> --><nowiki><templatestyles src="Y.css" /></nowiki><templatestyles /><templatestyles src="A.css|evil=1" /><templatestyles src="B.css}}" />';
 
         expect(extractTemplateStyles(text)).toEqual([]);
     });
@@ -96,6 +96,18 @@ describe('syncTemplateStylesDoc', () => {
 
     it('没有标记也没有样式时原样返回', () => {
         expect(syncTemplateStylesDoc('文档', [])).toBe('文档');
+    });
+
+    it('存在多个标记时保留首个并移除后续多余标记', () => {
+        expect(
+            syncTemplateStylesDoc('{{TemplateStyles|Old.css}}\n说明\n{{CSS|Stale.css}}\n结尾', [
+                'A.css',
+            ]),
+        ).toBe('{{TemplateStyles|A.css}}\n说明\n结尾');
+
+        expect(
+            syncTemplateStylesDoc('{{TemplateStyles|Old.css}}\n说明\n{{CSS|Stale.css}}', []),
+        ).toBe('说明\n');
     });
 });
 
@@ -189,6 +201,15 @@ describe('syncTemplateStylesPage', () => {
 
         expect(syncTemplateStylesPage(once, ['A.css'])).toBe(once);
     });
+
+    it('存在多个标记时同步首个并移除后续多余标记', () => {
+        expect(
+            syncTemplateStylesPage(
+                '<noinclude>{{TemplateStyles|Old.css}}\n说明\n{{CSS|Stale.css}}\n</noinclude>',
+                ['A.css'],
+            ),
+        ).toBe('<noinclude>{{TemplateStyles|A.css}}\n说明\n</noinclude>');
+    });
 });
 
 describe('syncStylePageComment', () => {
@@ -210,8 +231,11 @@ describe('syncStylePageComment', () => {
         ).toBe('/* for [[Template:A]]、[[Template:B]] */\n.a{}');
     });
 
-    it('没有使用者时移除注释', () => {
+    it('没有使用者或只剩一个使用者时移除受管注释', () => {
         expect(syncStylePageComment('/* for [[Template:A]] */\n\n.a{}', [])).toBe('.a{}');
+        expect(
+            syncStylePageComment('/* for [[Template:A]]、[[Template:B]] */\n.a{}', ['Template:A']),
+        ).toBe('.a{}');
     });
 
     it('只有一个使用者时不添加注释', () => {

@@ -6,8 +6,10 @@ type AstChild = AstNode['childNodes'][number];
 const STYLE_SELECTOR = 'ext[name=templatestyles]';
 const MARKER_TEMPLATES = new Set(['templatestyles', 'css', '模板样式', '模板样式表']);
 const DOC_TEMPLATES = new Set(['doc', 'documentation', '模板文件', '文档', '模板说明']);
-const MANAGED_COMMENT = /^[ \t]*\/\*\s*for\s+((?:\[\[[^\]\n]+\]\]\s*[、,]?\s*)+)\*\//iu;
+const MANAGED_COMMENT =
+    /^[ \t]*\/\*[ \t]*for[ \t]+(\[\[[^\]\n]+\]\](?:(?:[ \t]*[、,][ \t]*|[ \t]*)\[\[[^\]\n]+\]\])*)[ \t]*\*\//iu;
 const TEMPLATE_LINK = /\[\[([^\]\n]+)\]\]/gu;
+const INVALID_TITLE_CHARS = /[|{}[\]<>\n\r#]/u;
 
 interface MarkerInfo {
     /** 标记模板节点 */
@@ -89,14 +91,30 @@ const sameTitles = (a: string[], b: string[]): boolean => {
 };
 
 /**
+ * 判断样式页标题是否安全有效
+ * @param title - 样式页标题
+ * @returns 是否不包含维基文本控制字符
+ */
+const isValidStyleTitle = (title: string): boolean => {
+    const trimmed = title.trim();
+
+    return trimmed.length > 0 && !INVALID_TITLE_CHARS.test(trimmed);
+};
+
+/**
  * 生成标记文本
  * @param styles - 样式页名列表
  * @param name - 模板名
  * @param extra - 附加的命名参数文本
  * @returns `{{TemplateStyles|样式1|样式2}}`
  */
-const formatMarker = (styles: string[], name = 'TemplateStyles', extra = ''): string =>
-    `{{${name}|${styles.join('|')}${extra}}}`;
+const formatMarker = (styles: string[], name = 'TemplateStyles', extra = ''): string => {
+    if (styles.some(style => !isValidStyleTitle(style))) {
+        throw new Error('Invalid TemplateStyles source title');
+    }
+
+    return `{{${name}|${styles.join('|')}${extra}}}`;
+};
 
 /**
  * 按原有模板名与命名参数重写标记
@@ -158,7 +176,7 @@ const extractTemplateStyles = (wikitext: string): string[] => {
     for (const root of parseWithIncludes(wikitext)) {
         for (const token of root.querySelectorAll<Parser.ExtToken>(STYLE_SELECTOR)) {
             const src = token.getAttr('src')?.trim();
-            if (src) {
+            if (src && isValidStyleTitle(src)) {
                 styles.add(src);
             }
         }
@@ -168,33 +186,39 @@ const extractTemplateStyles = (wikitext: string): string[] => {
 };
 
 /**
- * 查找页面中的 TemplateStyles 标记
+ * 查找页面中的所有 TemplateStyles 标记
+ * @param wikitext - 页面内容
+ * @returns 所有标记信息列表
+ */
+const findTemplateStylesMarkers = (wikitext: string): MarkerInfo[] => {
+    const root = Parser.parse(wikitext);
+
+    return root
+        .querySelectorAll<Parser.TranscludeToken>('template')
+        .filter(token => MARKER_TEMPLATES.has(templateKey(token.name)))
+        .map(node => {
+            const styles = node
+                .getAnonArgs()
+                .map(arg => arg.value.trim())
+                .filter(Boolean);
+
+            return {
+                node,
+                index: node.getAbsoluteIndex(),
+                length: node.toString().length,
+                styles,
+                bare: styles.length === 0,
+            };
+        });
+};
+
+/**
+ * 查找页面中的首个 TemplateStyles 标记
  * @param wikitext - 页面内容
  * @returns 第一个标记的信息，没有时返回 `undefined`
  */
-const findTemplateStylesMarker = (wikitext: string): MarkerInfo | undefined => {
-    const root = Parser.parse(wikitext),
-        node = root
-            .querySelectorAll<Parser.TranscludeToken>('template')
-            .find(token => MARKER_TEMPLATES.has(templateKey(token.name)));
-
-    if (!node) {
-        return undefined;
-    }
-
-    const styles = node
-        .getAnonArgs()
-        .map(arg => arg.value.trim())
-        .filter(Boolean);
-
-    return {
-        node,
-        index: node.getAbsoluteIndex(),
-        length: node.toString().length,
-        styles,
-        bare: styles.length === 0,
-    };
-};
+const findTemplateStylesMarker = (wikitext: string): MarkerInfo | undefined =>
+    findTemplateStylesMarkers(wikitext)[0];
 
 /**
  * 在指定位置替换文本
@@ -222,6 +246,22 @@ const removeMarker = (text: string, marker: MarkerInfo): string => {
 
     if (after === '\n' && (index === 0 || before === '\n' || before === '>')) {
         next = `${next.slice(0, index)}${next.slice(index + 1)}`;
+    }
+
+    return next;
+};
+
+/**
+ * 按从后往前的顺序批量删除标记
+ * @param text - 原文
+ * @param markers - 标记信息列表（按起始位置升序）
+ * @returns 删除后的文本
+ */
+const removeMarkers = (text: string, markers: MarkerInfo[]): string => {
+    let next = text;
+
+    for (let i = markers.length - 1; i >= 0; i--) {
+        next = removeMarker(next, markers[i]!);
     }
 
     return next;
@@ -370,21 +410,25 @@ const moveIntoDoc = (text: string, marker: MarkerInfo, styles: string[]): string
  * @returns 同步后的文档内容
  */
 const syncTemplateStylesDoc = (doc: string, styles: string[]): string => {
-    const marker = findTemplateStylesMarker(doc);
+    const markers = findTemplateStylesMarkers(doc),
+        first = markers[0];
 
-    if (!marker) {
+    if (!first) {
         return styles.length === 0 ? doc : `${formatMarker(styles)}\n${doc}`;
     }
 
     if (styles.length === 0) {
-        return removeMarker(doc, marker);
+        return removeMarkers(doc, markers);
     }
 
-    if (sameTitles(marker.styles, styles)) {
-        return doc;
+    const next = removeMarkers(doc, markers.slice(1)),
+        current = markers.length > 1 ? (findTemplateStylesMarker(next) ?? first) : first;
+
+    if (sameTitles(current.styles, styles)) {
+        return next;
     }
 
-    return splice(doc, marker.index, marker.length, rebuildMarker(marker, styles));
+    return splice(next, current.index, current.length, rebuildMarker(current, styles));
 };
 
 /**
@@ -404,18 +448,22 @@ const syncTemplateStylesPage = (
     options: { allowDocContent?: boolean } = {},
 ): string => {
     const allowDocContent = options.allowDocContent ?? true,
-        marker = findTemplateStylesMarker(page);
+        markers = findTemplateStylesMarkers(page),
+        first = markers[0];
 
-    if (marker) {
+    if (first) {
         if (styles.length === 0) {
-            return removeMarker(page, marker);
+            return removeMarkers(page, markers);
         }
 
-        if (!sameTitles(marker.styles, styles)) {
-            return splice(page, marker.index, marker.length, rebuildMarker(marker, styles));
+        const cleaned = removeMarkers(page, markers.slice(1)),
+            current = markers.length > 1 ? (findTemplateStylesMarker(cleaned) ?? first) : first;
+
+        if (!sameTitles(current.styles, styles)) {
+            return splice(cleaned, current.index, current.length, rebuildMarker(current, styles));
         }
 
-        return allowDocContent ? (moveIntoDoc(page, marker, styles) ?? page) : page;
+        return allowDocContent ? (moveIntoDoc(cleaned, current, styles) ?? cleaned) : cleaned;
     }
 
     if (styles.length === 0) {
@@ -496,7 +544,7 @@ const syncStylePageComment = (css: string, templates: string[]): string => {
             return css;
         }
 
-        if (list.length === 0) {
+        if (list.length < 2) {
             const rest = css.slice(managed[0].length).replace(/^\n+/u, '');
 
             return rest.trim() === '' ? css : rest;
@@ -519,6 +567,7 @@ const syncStylePageComment = (css: string, templates: string[]): string => {
 export {
     extractTemplateStyles,
     findTemplateStylesMarker,
+    findTemplateStylesMarkers,
     keyOf,
     syncStylePageComment,
     syncTemplateStylesDoc,
