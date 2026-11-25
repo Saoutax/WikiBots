@@ -3,13 +3,35 @@ import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 import type { PageContent } from '@/lib';
 import { delay, splitAndJoin } from '@/utils';
-import { extractTemplateStyles, markTemplateStylesDoc, markTemplateStylesPage } from '../modules';
+import {
+    extractTemplateStyles,
+    findTemplateStylesMarker,
+    keyOf,
+    syncStylePageComment,
+    syncTemplateStylesDoc,
+    syncTemplateStylesPage,
+} from '../modules';
 
 const bot = new BotInstance(api);
 
 const DRY_RUN = process.env.DRY_RUN === '1';
-const SEARCH_QUERY = 'insource:"<templatestyles"';
+const SEARCH_QUERIES = [
+    'insource:"TemplateStyles"',
+    'insource:"{{CSS"',
+    'insource:"{{模板样式"',
+] as const;
 const SKIP_SUBPAGE = /\/(?:doc|sandbox|testcases|test)$/i;
+const SANDBOX_SUBPAGE = /(?:^|\/)(?:沙盒|sandbox|testcases|test)(?:\/|$)/i;
+const INFERRED_SUFFIXES = ['/styles.css', '/style.css'] as const;
+
+const SUMMARIES = {
+    add: '添加{{TemplateStyles}}标记',
+    sync: '同步{{TemplateStyles}}标记',
+    remove: '移除{{TemplateStyles}}标记',
+    comment: '注明模板样式表的使用者',
+} as const;
+
+type Action = keyof typeof SUMMARIES;
 
 interface SearchResult {
     title: string;
@@ -28,13 +50,6 @@ interface PageInfo {
     title: string;
     missing?: boolean;
     redirect?: boolean;
-}
-
-interface Candidate {
-    title: string;
-    content: string;
-    revid: number;
-    styles: string[];
 }
 
 /**
@@ -61,10 +76,11 @@ const queryPageInfo = async (titles: string[]): Promise<Record<string, PageInfo>
 };
 
 /**
- * 搜索模板命名空间中带 `<templatestyles>` 标签的页面
+ * 搜索一个关键词下的页面
+ * @param query - 搜索表达式
  * @returns 页面标题列表
  */
-const searchTemplates = async (): Promise<string[]> => {
+const searchPages = async (query: string): Promise<string[]> => {
     const titles = new Set<string>();
     let sroffset: number | string = 0;
 
@@ -72,7 +88,7 @@ const searchTemplates = async (): Promise<string[]> => {
         const params: MwApiParams = {
                 action: 'query',
                 list: 'search',
-                srsearch: SEARCH_QUERY,
+                srsearch: query,
                 srnamespace: '10',
                 srlimit: 'max',
                 srprop: '',
@@ -92,42 +108,92 @@ const searchTemplates = async (): Promise<string[]> => {
     return [...titles];
 };
 
+/**
+ * 搜索含标记或标签的模板页
+ * @returns 页面标题列表
+ */
+const searchCandidates = async (): Promise<string[]> => {
+    const titles = new Set<string>();
+
+    for (const query of SEARCH_QUERIES) {
+        for (const title of await searchPages(query)) {
+            if (!SKIP_SUBPAGE.test(title)) {
+                titles.add(title);
+            }
+        }
+    }
+
+    return [...titles];
+};
+
+/**
+ * 判断文档页是否可用
+ * @param info - 页面信息
+ * @returns 页面存在且不是重定向
+ */
+const isUsableDoc = (info: PageInfo | undefined): boolean =>
+    info !== undefined && !info.missing && !info.redirect;
+
+/**
+ * 推断裸标记自动匹配的样式页
+ * @param title - 模板标题
+ * @param existing - 已存在的样式页集合
+ * @returns 推断出的样式页，没有时返回 `undefined`
+ */
+const inferStyle = (title: string, existing: Set<string>): string | undefined =>
+    INFERRED_SUFFIXES.map(suffix => keyOf(`${title}${suffix}`)).find(key => existing.has(key));
+
+/**
+ * 判断裸标记的自动推断是否与实际标签一致
+ * @param title - 模板标题
+ * @param styles - 实际使用的样式页名列表
+ * @param existing - 已存在的样式页集合
+ * @returns 是否一致
+ */
+const isBareAccurate = (title: string, styles: string[], existing: Set<string>): boolean => {
+    if (styles.length !== 1) {
+        return false;
+    }
+
+    const inferred = inferStyle(title, existing);
+
+    return inferred !== undefined && inferred === keyOf(styles[0]!);
+};
+
 (async () => {
     await run({ api, site: 'zh' }, async () => {
-        const titles = (await searchTemplates()).filter(title => !SKIP_SUBPAGE.test(title)),
-            templateInfo = await queryPageInfo(titles),
-            contentTitles = titles.filter(title => {
-                const info = templateInfo[title];
+        const titles = await searchCandidates(),
+            docTitles = titles.map(title => `${title}/doc`),
+            infos = await queryPageInfo([...titles, ...docTitles]),
+            pageContents = await bot.batchQuery(titles),
+            docContents = await bot.batchQuery(
+                docTitles.filter(title => isUsableDoc(infos[title])),
+            );
 
-                return info !== undefined && !info.missing && !info.redirect;
-            }),
-            pageContents = await bot.batchQuery(contentTitles),
-            candidates: Candidate[] = [];
-
-        for (const [title, { content, revid }] of Object.entries(pageContents)) {
-            const styles = extractTemplateStyles(content);
-            if (styles.length > 0) {
-                candidates.push({ title, content, revid, styles });
+        const styleKeys = new Set<string>();
+        for (const { content } of Object.values(pageContents)) {
+            for (const src of extractTemplateStyles(content)) {
+                styleKeys.add(keyOf(src));
             }
         }
 
-        const docTitles = candidates.map(({ title }) => `${title}/doc`),
-            docInfo = await queryPageInfo(docTitles),
-            docContentTitles = docTitles.filter(title => {
-                const info = docInfo[title];
+        const styleInfos = await queryPageInfo([...styleKeys]),
+            existingStyles = new Set(
+                Object.entries(styleInfos)
+                    .filter(([, info]) => !info.missing)
+                    .map(([title]) => title),
+            );
 
-                return info !== undefined && !info.missing && !info.redirect;
-            }),
-            docContents = await bot.batchQuery(docContentTitles),
-            failed: string[] = [];
-        let planned = 0,
-            edited = 0,
-            skipped = 0;
+        const failed: string[] = [],
+            counts: Record<string, number> = {};
+        let skipped = 0,
+            planned = 0,
+            edited = 0;
 
-        const edit = async (title: string, text: string, baserevid: number) => {
+        const edit = async (title: string, text: string, baserevid: number, action: Action) => {
             if (DRY_RUN) {
                 planned++;
-                console.log(`[dry-run] ${title}: ${text.split('\n')[0]}`);
+                console.log(`[dry-run] ${action} ${title}: ${text.split('\n')[0]}`);
                 return;
             }
 
@@ -136,10 +202,11 @@ const searchTemplates = async (): Promise<string[]> => {
                     title,
                     text,
                     baserevid,
-                    summary: '添加{{TemplateStyles}}标记',
+                    summary: SUMMARIES[action],
                     tags: 'Bot',
                 });
                 edited++;
+                counts[action] = (counts[action] ?? 0) + 1;
                 console.log(`√ ${title}`);
             } catch (error) {
                 failed.push(title);
@@ -151,39 +218,80 @@ const searchTemplates = async (): Promise<string[]> => {
             await delay(1000);
         };
 
-        for (const { title, content, revid, styles } of candidates) {
-            const docTitle = `${title}/doc`,
-                info = docInfo[docTitle],
-                doc: PageContent | undefined = docContents[docTitle];
+        for (const [title, { content, revid }] of Object.entries(pageContents)) {
+            const styles = extractTemplateStyles(content),
+                docTitle = `${title}/doc`,
+                doc: PageContent | undefined = docContents[docTitle],
+                docRedirect = Boolean(infos[docTitle]?.redirect),
+                pageMarker = findTemplateStylesMarker(content),
+                target = doc && !pageMarker ? docTitle : title,
+                text = target === docTitle ? (doc?.content ?? '') : content,
+                baseRevid = target === docTitle ? (doc?.revid ?? revid) : revid,
+                marker = target === docTitle ? findTemplateStylesMarker(text) : pageMarker;
 
-            if (info?.redirect) {
+            if (marker?.bare && isBareAccurate(title, styles, existingStyles)) {
                 skipped++;
                 continue;
             }
 
-            if (doc) {
-                const text = markTemplateStylesDoc(doc.content, styles);
-                if (text === doc.content) {
-                    skipped++;
-                    continue;
+            const next =
+                target === docTitle
+                    ? syncTemplateStylesDoc(text, styles)
+                    : syncTemplateStylesPage(text, styles, {
+                          allowDocContent: !doc && !docRedirect,
+                      });
+
+            if (next === text) {
+                skipped++;
+                continue;
+            }
+
+            const action: Action = marker ? (styles.length === 0 ? 'remove' : 'sync') : 'add';
+
+            await edit(target, next, baseRevid, action);
+        }
+
+        const styleUsers = new Map<string, Set<string>>();
+        for (const [title, { content }] of Object.entries(pageContents)) {
+            for (const src of extractTemplateStyles(content)) {
+                const key = keyOf(src);
+
+                if (!styleUsers.has(key)) {
+                    styleUsers.set(key, new Set());
                 }
 
-                await edit(docTitle, text, doc.revid);
-            } else {
-                const text = markTemplateStylesPage(content, styles);
-                if (text === content) {
-                    skipped++;
-                    continue;
-                }
-
-                await edit(title, text, revid);
+                styleUsers.get(key)!.add(title);
             }
         }
 
+        const stylePages = await bot.batchQuery([...styleUsers.keys()]);
+
+        for (const [key, users] of styleUsers) {
+            const page = stylePages[key];
+
+            if (!page || styleInfos[key]?.redirect) {
+                continue;
+            }
+
+            const templates = [...users].filter(title => !SANDBOX_SUBPAGE.test(title)).sort(),
+                next = syncStylePageComment(page.content, templates);
+
+            if (next === page.content) {
+                skipped++;
+                continue;
+            }
+
+            await edit(key, next, page.revid, 'comment');
+        }
+
+        const detail = Object.entries(counts)
+            .map(([action, count]) => `${SUMMARIES[action as Action]} ${count}`)
+            .join('，');
+
         console.log(
             DRY_RUN
-                ? `完成：候选 ${candidates.length}，计划 ${planned}，跳过 ${skipped}，失败 ${failed.length}。`
-                : `完成：候选 ${candidates.length}，编辑 ${edited}，跳过 ${skipped}，失败 ${failed.length}。`,
+                ? `完成：候选 ${titles.length}，计划 ${planned}，跳过 ${skipped}，失败 ${failed.length}。`
+                : `完成：候选 ${titles.length}，编辑 ${edited}（${detail || '无'}），跳过 ${skipped}，失败 ${failed.length}。`,
         );
 
         if (failed.length > 0) {

@@ -1,10 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import {
     extractTemplateStyles,
-    hasTemplateStylesMarker,
-    markTemplateStylesDoc,
-    markTemplateStylesPage,
+    findTemplateStylesMarker,
+    keyOf,
+    syncStylePageComment,
+    syncTemplateStylesDoc,
+    syncTemplateStylesPage,
 } from '@/bot/modules/templateStyles';
+
+describe('keyOf', () => {
+    it.each([
+        ['ps/styles.css', 'Template:Ps/styles.css'],
+        ['Template:Link/page.css', 'Template:Link/page.css'],
+        [':Template:渐变发光/style.css', 'Template:渐变发光/style.css'],
+        ['T:Mjs/styles.css', 'Template:Mjs/styles.css'],
+        ['用户_用户页/styles.css', 'Template:用户 用户页/styles.css'],
+        [':盲盒派对/styles.css', '盲盒派对/styles.css'],
+    ])('把 %s 归一化为 %s', (title, expected) => {
+        expect(keyOf(title)).toBe(expected);
+    });
+});
 
 describe('extractTemplateStyles', () => {
     it('提取 includeonly 中的样式', () => {
@@ -28,93 +43,201 @@ describe('extractTemplateStyles', () => {
 
         expect(extractTemplateStyles(text)).toEqual([]);
     });
-
-    it('去掉样式名首尾空白', () => {
-        expect(extractTemplateStyles('<templatestyles src=" A.css " />')).toEqual(['A.css']);
-    });
 });
 
-describe('hasTemplateStylesMarker', () => {
-    it.each([
-        '{{TemplateStyles|A.css}}',
-        '{{templatestyles|A.css}}',
-        '{{CSS|A.css}}',
-        '{{模板样式|A.css}}',
-        '{{模板样式表|A.css}}',
-    ])('识别标记 %s', text => {
-        expect(hasTemplateStylesMarker(text)).toBe(true);
+describe('findTemplateStylesMarker', () => {
+    it('返回匿名参数与裸标记信息', () => {
+        const marker = findTemplateStylesMarker('{{TemplateStyles|A.css|B.css}}');
+
+        expect(marker?.styles).toEqual(['A.css', 'B.css']);
+        expect(marker?.bare).toBe(false);
+        expect(marker?.index).toBe(0);
     });
 
-    it('识别 includeonly 中的标记', () => {
-        expect(hasTemplateStylesMarker('<includeonly>{{TemplateStyles|A.css}}</includeonly>')).toBe(
-            true,
-        );
+    it('识别裸标记', () => {
+        expect(findTemplateStylesMarker('{{TemplateStyles}}')?.bare).toBe(true);
+    });
+
+    it('识别文档模板 content 中的标记', () => {
+        const marker = findTemplateStylesMarker('{{doc|content={{TemplateStyles|A.css}}\n说明}}');
+
+        expect(marker?.styles).toEqual(['A.css']);
     });
 
     it('不把链接模板、注释和 nowiki 当作标记', () => {
-        expect(hasTemplateStylesMarker('{{tl|TemplateStyles}}')).toBe(false);
-        expect(hasTemplateStylesMarker('<!-- {{TemplateStyles|A.css}} -->')).toBe(false);
-        expect(hasTemplateStylesMarker('<nowiki>{{TemplateStyles|A.css}}</nowiki>')).toBe(false);
+        expect(findTemplateStylesMarker('{{tl|TemplateStyles}}')).toBeUndefined();
+        expect(findTemplateStylesMarker('<!-- {{TemplateStyles|A.css}} -->')).toBeUndefined();
+        expect(
+            findTemplateStylesMarker('<nowiki>{{TemplateStyles|A.css}}</nowiki>'),
+        ).toBeUndefined();
     });
 });
 
-describe('markTemplateStylesDoc', () => {
+describe('syncTemplateStylesDoc', () => {
     it('在文档开头插入标记', () => {
-        expect(markTemplateStylesDoc('文档内容', ['A.css', 'B.css'])).toBe(
+        expect(syncTemplateStylesDoc('文档内容', ['A.css', 'B.css'])).toBe(
             '{{TemplateStyles|A.css|B.css}}\n文档内容',
         );
     });
 
-    it('已有标记时原样返回', () => {
-        const doc = '{{CSS|A.css}}\n文档内容';
-
-        expect(markTemplateStylesDoc(doc, ['B.css'])).toBe(doc);
+    it('已有标记时同步参数', () => {
+        expect(syncTemplateStylesDoc('{{CSS|A.css}}\n文档', ['B.css'])).toBe('{{CSS|B.css}}\n文档');
     });
 
-    it('没有样式时原样返回', () => {
-        expect(markTemplateStylesDoc('文档', [])).toBe('文档');
+    it('参数一致时原样返回', () => {
+        const doc = '{{TemplateStyles|A.css}}\n文档';
+
+        expect(syncTemplateStylesDoc(doc, ['A.css'])).toBe(doc);
+    });
+
+    it('没有样式时移除标记', () => {
+        expect(syncTemplateStylesDoc('{{TemplateStyles|A.css}}\n文档', [])).toBe('文档');
+    });
+
+    it('没有标记也没有样式时原样返回', () => {
+        expect(syncTemplateStylesDoc('文档', [])).toBe('文档');
     });
 });
 
-describe('markTemplateStylesPage', () => {
-    it('插入第一个 noinclude 的开头', () => {
+describe('syncTemplateStylesPage', () => {
+    it('写入 noinclude 内文档模板的 content', () => {
         expect(
-            markTemplateStylesPage(
-                '<includeonly>正文</includeonly><noinclude>{{doc}}</noinclude>',
+            syncTemplateStylesPage('<includeonly>x</includeonly><noinclude>{{doc}}</noinclude>', [
+                'A.css',
+            ]),
+        ).toBe(
+            '<includeonly>x</includeonly><noinclude>{{doc|content={{TemplateStyles|A.css}}}}</noinclude>',
+        );
+    });
+
+    it('文档模板已有 content 时把标记放在内容之前', () => {
+        expect(
+            syncTemplateStylesPage(
+                '<includeonly>x</includeonly><noinclude>\n{{Documentation|content=\n说明}}\n[[Cat]]\n</noinclude>',
+                ['B.css'],
+            ),
+        ).toBe(
+            '<includeonly>x</includeonly><noinclude>\n{{Documentation|content={{TemplateStyles|B.css}}\n说明}}\n[[Cat]]\n</noinclude>',
+        );
+    });
+
+    it('文档模板引用其它页文档时写在 noinclude 开头', () => {
+        expect(
+            syncTemplateStylesPage(
+                '<includeonly>x</includeonly><noinclude>{{doc|Template:Other/doc}}</noinclude>',
+                ['D.css'],
+            ),
+        ).toBe(
+            '<includeonly>x</includeonly><noinclude>{{TemplateStyles|D.css}}\n{{doc|Template:Other/doc}}</noinclude>',
+        );
+    });
+
+    it('没有文档模板时写入 noinclude 开头', () => {
+        expect(
+            syncTemplateStylesPage('<includeonly>x</includeonly><noinclude>\n说明\n</noinclude>', [
+                'A.css',
+            ]),
+        ).toBe(
+            '<includeonly>x</includeonly><noinclude>{{TemplateStyles|A.css}}\n说明\n</noinclude>',
+        );
+    });
+
+    it('没有 noinclude 时在页尾补充', () => {
+        expect(syncTemplateStylesPage('正文', ['A.css'])).toBe(
+            '正文\n<noinclude>{{TemplateStyles|A.css}}</noinclude>\n',
+        );
+    });
+
+    it('禁止写入文档模板时写在 noinclude 开头', () => {
+        expect(
+            syncTemplateStylesPage('<noinclude>{{doc}}</noinclude>', ['A.css'], {
+                allowDocContent: false,
+            }),
+        ).toBe('<noinclude>{{TemplateStyles|A.css}}\n{{doc}}</noinclude>');
+    });
+
+    it('把 noinclude 内的标记移进文档模板', () => {
+        expect(
+            syncTemplateStylesPage(
+                '<includeonly>x</includeonly><noinclude>{{TemplateStyles|A.css}}\n{{doc}}</noinclude>',
                 ['A.css'],
             ),
         ).toBe(
-            '<includeonly>正文</includeonly><noinclude>{{TemplateStyles|A.css}}\n{{doc}}</noinclude>',
+            '<includeonly>x</includeonly><noinclude>{{doc|content={{TemplateStyles|A.css}}}}</noinclude>',
         );
     });
 
-    it('noinclude 后已有换行时不重复换行', () => {
-        expect(markTemplateStylesPage('<noinclude>\n说明</noinclude>', ['A.css'])).toBe(
-            '<noinclude>{{TemplateStyles|A.css}}\n说明</noinclude>',
-        );
-    });
-
-    it('没有 noinclude 时在末尾补充', () => {
-        expect(markTemplateStylesPage('正文\n', ['A.css'])).toBe(
-            '正文\n<noinclude>{{TemplateStyles|A.css}}</noinclude>\n',
-        );
-    });
-
-    it('没有结尾换行时在末尾补充', () => {
-        expect(markTemplateStylesPage('正文', ['A.css'])).toBe(
-            '正文\n<noinclude>{{TemplateStyles|A.css}}</noinclude>\n',
-        );
-    });
-
-    it('忽略注释中的 noinclude', () => {
+    it('同步已有标记的参数并保留命名参数', () => {
         expect(
-            markTemplateStylesPage('<!-- <noinclude> --><noinclude>正文</noinclude>', ['A.css']),
-        ).toBe('<!-- <noinclude> --><noinclude>{{TemplateStyles|A.css}}\n正文</noinclude>');
+            syncTemplateStylesPage('<noinclude>{{CSS|X.css|nocat=true}}</noinclude>', ['A.css']),
+        ).toBe('<noinclude>{{CSS|A.css|nocat=true}}</noinclude>');
     });
 
-    it('已有标记时原样返回', () => {
-        const page = '<noinclude>{{TemplateStyles|A.css}}</noinclude>';
+    it('没有样式时移除标记并清理空行', () => {
+        expect(
+            syncTemplateStylesPage(
+                '<includeonly>x</includeonly><noinclude>{{TemplateStyles|A.css}}\n[[Cat]]</noinclude>',
+                [],
+            ),
+        ).toBe('<includeonly>x</includeonly><noinclude>[[Cat]]</noinclude>');
+    });
 
-        expect(markTemplateStylesPage(page, ['B.css'])).toBe(page);
+    it('重复调用结果不变', () => {
+        const page =
+                '<includeonly><templatestyles src="A.css" /></includeonly><noinclude>{{doc}}</noinclude>',
+            once = syncTemplateStylesPage(page, ['A.css']);
+
+        expect(syncTemplateStylesPage(once, ['A.css'])).toBe(once);
+    });
+});
+
+describe('syncStylePageComment', () => {
+    it('被多个模板使用时在顶部添加注释', () => {
+        expect(syncStylePageComment('.a{}', ['Template:B', 'Template:A'])).toBe(
+            '/* for [[Template:A]]、[[Template:B]] */\n.a{}',
+        );
+    });
+
+    it('注释一致时原样返回', () => {
+        const css = '/* for [[Template:A]]、[[Template:B]] */\n.a{}';
+
+        expect(syncStylePageComment(css, ['Template:A', 'Template:B'])).toBe(css);
+    });
+
+    it('使用者变化时改写注释', () => {
+        expect(
+            syncStylePageComment('/* for [[Template:A]] */\n.a{}', ['Template:A', 'Template:B']),
+        ).toBe('/* for [[Template:A]]、[[Template:B]] */\n.a{}');
+    });
+
+    it('没有使用者时移除注释', () => {
+        expect(syncStylePageComment('/* for [[Template:A]] */\n\n.a{}', [])).toBe('.a{}');
+    });
+
+    it('只有一个使用者时不添加注释', () => {
+        expect(syncStylePageComment('.a{}', ['Template:A'])).toBe('.a{}');
+    });
+
+    it('跳过人工维护的说明注释', () => {
+        expect(
+            syncStylePageComment('/* Only for [[Template:Quote]] */\n.a{}', [
+                'Template:A',
+                'Template:B',
+            ]),
+        ).toBe('/* Only for [[Template:Quote]] */\n.a{}');
+        expect(
+            syncStylePageComment('/* for {{文字模糊}} */\n.a{}', ['Template:A', 'Template:B']),
+        ).toBe('/* for {{文字模糊}} */\n.a{}');
+    });
+
+    it('分类注释不影响添加', () => {
+        expect(
+            syncStylePageComment('/* [[Category:在模板命名空间下的CSS页面]] */\n.a{}', [
+                'Template:A',
+                'Template:B',
+            ]),
+        ).toBe(
+            '/* for [[Template:A]]、[[Template:B]] */\n/* [[Category:在模板命名空间下的CSS页面]] */\n.a{}',
+        );
     });
 });

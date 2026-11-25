@@ -8,7 +8,10 @@ export { archiveList } from './archiveList';
 export type { ArchiveListParams, ListEntry } from './archiveList';
 export {
     extractTemplateStyles,
-    hasTemplateStylesMarker,
-    markTemplateStylesDoc,
-    markTemplateStylesPage,
+    findTemplateStylesMarker,
+    keyOf,
+    syncStylePageComment,
+    syncTemplateStylesDoc,
+    syncTemplateStylesPage,
 } from './templateStyles';
+export type { MarkerInfo } from './templateStyles';

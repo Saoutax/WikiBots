@@ -5,6 +5,7 @@ interface PostParams {
     list?: string;
     prop?: string;
     titles?: string;
+    srsearch?: string;
 }
 
 interface FixturePage {
@@ -18,73 +19,80 @@ const PAGES: Record<string, FixturePage> = {
             '<includeonly><templatestyles src="DocCase/styles.css" /></includeonly><noinclude>{{doc}}</noinclude>',
         revid: 11,
     },
-    'Template:DocCase/doc': {
-        content: '文档内容',
-        revid: 21,
-    },
+    'Template:DocCase/doc': { content: '文档内容', revid: 12 },
     'Template:NoDocCase': {
         content:
-            '<noinclude>说明</noinclude><includeonly><templatestyles src="NoDocCase/style.css" /></includeonly>',
-        revid: 12,
-    },
-    'Template:MarkedDocCase': {
-        content:
-            '<includeonly><templatestyles src="Marked/styles.css" /></includeonly><noinclude>{{doc}}</noinclude>',
+            '<includeonly><templatestyles src="NoDocCase/style.css" /></includeonly><noinclude>{{doc}}</noinclude>',
         revid: 13,
     },
-    'Template:MarkedDocCase/doc': {
-        content: '{{CSS|Marked/styles.css}}\n文档',
+    'Template:PlainCase': {
+        content:
+            '<includeonly><templatestyles src="Shared/styles.css" /></includeonly><noinclude>说明</noinclude>',
         revid: 14,
     },
-    'Template:RedirectDocCase': {
+    'Template:SharedCase': {
         content:
-            '<includeonly><templatestyles src="Redirect/styles.css" /></includeonly><noinclude>{{doc}}</noinclude>',
+            '<includeonly><templatestyles src="Shared/styles.css" /></includeonly><noinclude>说明</noinclude>',
         revid: 15,
     },
-    'Template:RedirectDocCase/doc': {
-        content: '#重定向 [[Template:Other/doc]]',
+    'Template:RemoveCase': {
+        content: '<noinclude>{{TemplateStyles|Old/styles.css}}</noinclude>',
         revid: 16,
     },
-    'Template:RedirectCase': {
-        content: '#重定向 [[Template:Other]]',
-        revid: 20,
-    },
-    'Template:EmptyCase': {
-        content: '{{doc}}',
+    'Template:BareCase': {
+        content:
+            '<includeonly><templatestyles src="BareCase/styles.css" /></includeonly><noinclude>{{TemplateStyles}}</noinclude>',
         revid: 17,
     },
-    'Template:EmptyCase/doc': {
-        content: '没有样式',
+    'Template:MismatchCase': {
+        content:
+            '<includeonly><templatestyles src="Human/styles.css" /></includeonly><noinclude>{{TemplateStyles|Stale.css}}</noinclude>',
         revid: 18,
     },
-    'Template:Foo/doc': {
-        content: '<templatestyles src="Foo/doc.css" />',
+    'Template:HumanCase': {
+        content:
+            '<includeonly><templatestyles src="Human/styles.css" /></includeonly><noinclude>说明</noinclude>',
         revid: 19,
     },
+    'Template:DocCase/styles.css': { content: '.doccase{}', revid: 21 },
+    'Template:NoDocCase/style.css': { content: '.nodoc{}', revid: 22 },
+    'Template:BareCase/styles.css': { content: '.bare{}', revid: 23 },
+    'Template:Human/styles.css': {
+        content: '/* Only for [[Template:HumanCase]] */\n.human{}',
+        revid: 24,
+    },
+    'Template:Shared/styles.css': { content: '.shared{}', revid: 25 },
 };
 
-const INFO: Record<string, { missing?: boolean; redirect?: boolean }> = {
-    'Template:RedirectCase': { redirect: true },
-    'Template:RedirectDocCase/doc': { redirect: true },
-    'Template:NoDocCase/doc': { missing: true },
+const SEARCH: Record<string, string[]> = {
+    'insource:"TemplateStyles"': [
+        'Template:DocCase',
+        'Template:NoDocCase',
+        'Template:PlainCase',
+        'Template:SharedCase',
+        'Template:RemoveCase',
+        'Template:BareCase',
+        'Template:MismatchCase',
+        'Template:HumanCase',
+    ],
+    'insource:"{{CSS"': [],
+    'insource:"{{模板样式"': [],
 };
 
-const SEARCH_TITLES = [
-    'Template:DocCase',
-    'Template:NoDocCase',
-    'Template:MarkedDocCase',
-    'Template:RedirectDocCase',
-    'Template:RedirectCase',
-    'Template:EmptyCase',
-    'Template:Foo/doc',
-];
+const resolve = (title: string): string | undefined => {
+    const candidates = [title, title.replaceAll('_', ' ')];
+
+    return candidates.find(candidate => PAGES[candidate] !== undefined);
+};
 
 const configureStub = () => {
     const stub = runtime.stubs['zh']!;
 
     stub.post.mockImplementation(async (params: PostParams) => {
         if (params.list === 'search') {
-            return { data: { query: { search: SEARCH_TITLES.map(title => ({ title })) } } };
+            const titles = SEARCH[params.srsearch ?? ''] ?? [];
+
+            return { data: { query: { search: titles.map(title => ({ title })) } } };
         }
 
         if (params.prop === 'info') {
@@ -93,7 +101,13 @@ const configureStub = () => {
             return {
                 data: {
                     query: {
-                        pages: titles.map(title => ({ title, ...INFO[title] })),
+                        pages: titles.map(title => {
+                            const real = resolve(title);
+
+                            return real === undefined
+                                ? { title, missing: true }
+                                : { title: real, missing: false };
+                        }),
                     },
                 },
             };
@@ -105,15 +119,20 @@ const configureStub = () => {
             return {
                 data: {
                     query: {
-                        pages: titles.map(title => {
-                            const page = PAGES[title];
+                        pages: titles.flatMap(title => {
+                            const real = resolve(title);
+                            if (real === undefined) {
+                                return [];
+                            }
 
-                            return page
-                                ? {
-                                      title,
-                                      revisions: [{ content: page.content, revid: page.revid }],
-                                  }
-                                : { title, missing: true };
+                            const page = PAGES[real]!;
+
+                            return [
+                                {
+                                    title: real,
+                                    revisions: [{ content: page.content, revid: page.revid }],
+                                },
+                            ];
                         }),
                     },
                 },
@@ -139,7 +158,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it('为有文档和无文档的模板补充 TemplateStyles 标记，跳过已有标记与重定向', async () => {
+it('同步标记与样式页注释，跳过一致的裸标记与人工注释', async () => {
     const stub = configureStub();
 
     await import('@/bot/mgp/templateStyles');
@@ -151,44 +170,82 @@ it('为有文档和无文档的模板补充 TemplateStyles 标记，跳过已有
         expect.objectContaining({
             action: 'query',
             list: 'search',
-            srsearch: 'insource:"<templatestyles"',
+            srsearch: 'insource:"TemplateStyles"',
             srnamespace: '10',
             srlimit: 'max',
         }),
     );
-    expect(stub.post).toHaveBeenCalledWith(
-        expect.objectContaining({
-            action: 'query',
-            prop: 'info',
-        }),
-    );
 
-    expect(stub.postWithToken).toHaveBeenCalledTimes(2);
-    const bodies = stub.postWithToken.mock.calls.map(([, body]) => body);
+    const bodies = stub.postWithToken.mock.calls.map(([, body]) => body),
+        byTitle = new Map(bodies.map((body: { title: string }) => [body.title, body]));
 
-    expect(bodies).toContainEqual(
+    // 有文档页：写到文档顶部
+    expect(byTitle.get('Template:DocCase/doc')).toEqual(
         expect.objectContaining({
-            title: 'Template:DocCase/doc',
             text: '{{TemplateStyles|DocCase/styles.css}}\n文档内容',
-            baserevid: 21,
-            summary: '添加{{TemplateStyles}}标记',
-            tags: 'Bot',
-        }),
-    );
-    expect(bodies).toContainEqual(
-        expect.objectContaining({
-            title: 'Template:NoDocCase',
-            text: '<noinclude>{{TemplateStyles|NoDocCase/style.css}}\n说明</noinclude><includeonly><templatestyles src="NoDocCase/style.css" /></includeonly>',
             baserevid: 12,
             summary: '添加{{TemplateStyles}}标记',
             tags: 'Bot',
         }),
     );
 
-    // 已有标记、文档重定向、模板重定向、无样式页面与 /doc 页面本身都不编辑
-    expect(bodies.map(body => body.title)).not.toContain('Template:MarkedDocCase/doc');
-    expect(bodies.map(body => body.title)).not.toContain('Template:RedirectDocCase/doc');
-    expect(bodies.map(body => body.title)).not.toContain('Template:RedirectCase');
-    expect(bodies.map(body => body.title)).not.toContain('Template:EmptyCase');
-    expect(bodies.map(body => body.title)).not.toContain('Template:Foo/doc');
+    // 无文档页且 noinclude 内有 doc：写进 content
+    expect(byTitle.get('Template:NoDocCase')).toEqual(
+        expect.objectContaining({
+            text: '<includeonly><templatestyles src="NoDocCase/style.css" /></includeonly><noinclude>{{doc|content={{TemplateStyles|NoDocCase/style.css}}}}</noinclude>',
+            baserevid: 13,
+        }),
+    );
+
+    // 无文档页且无 doc 模板：写进 noinclude 开头
+    expect(byTitle.get('Template:PlainCase')).toEqual(
+        expect.objectContaining({
+            text: '<includeonly><templatestyles src="Shared/styles.css" /></includeonly><noinclude>{{TemplateStyles|Shared/styles.css}}\n说明</noinclude>',
+        }),
+    );
+
+    // 没有标签但存在标记：移除标记
+    expect(byTitle.get('Template:RemoveCase')).toEqual(
+        expect.objectContaining({
+            text: '<noinclude></noinclude>',
+            summary: '移除{{TemplateStyles}}标记',
+        }),
+    );
+
+    // 参数与标签不一致：改写参数
+    expect(byTitle.get('Template:MismatchCase')).toEqual(
+        expect.objectContaining({
+            text: '<includeonly><templatestyles src="Human/styles.css" /></includeonly><noinclude>{{TemplateStyles|Human/styles.css}}</noinclude>',
+            summary: '同步{{TemplateStyles}}标记',
+        }),
+    );
+
+    // 无标记的模板补标记
+    expect(byTitle.get('Template:HumanCase')).toEqual(
+        expect.objectContaining({
+            text: '<includeonly><templatestyles src="Human/styles.css" /></includeonly><noinclude>{{TemplateStyles|Human/styles.css}}\n说明</noinclude>',
+        }),
+    );
+    expect(byTitle.get('Template:SharedCase')).toEqual(
+        expect.objectContaining({
+            text: '<includeonly><templatestyles src="Shared/styles.css" /></includeonly><noinclude>{{TemplateStyles|Shared/styles.css}}\n说明</noinclude>',
+        }),
+    );
+
+    // 被两个模板使用的样式页补充注释；有人工注释的样式页跳过
+    expect(byTitle.get('Template:Shared/styles.css')).toEqual(
+        expect.objectContaining({
+            text: '/* for [[Template:PlainCase]]、[[Template:SharedCase]] */\n.shared{}',
+            baserevid: 25,
+            summary: '注明模板样式表的使用者',
+        }),
+    );
+    expect(byTitle.has('Template:Human/styles.css')).toBe(false);
+
+    // 裸标记与自动推断一致时不编辑
+    expect(byTitle.has('Template:BareCase')).toBe(false);
+    expect(byTitle.has('Template:DocCase')).toBe(false);
+    expect(byTitle.has('Template:BareCase/styles.css')).toBe(false);
+
+    expect(bodies).toHaveLength(8);
 });
