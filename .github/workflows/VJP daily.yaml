@@ -144,7 +144,7 @@ jobs:
             - name: Run Script
               run: npx tsx src/bot/vjp/doubleRedirects.ts
 
-    # 说明: 修复[[:Category:尚未清空的已重定向分类]]
+    # 说明: 修复[Category:尚未清空的已重定向分类](https://voca.wiki/_?curid=64008)
     fixRedirects:
         if: |
             github.event.schedule == '10 17 * * *' ||
