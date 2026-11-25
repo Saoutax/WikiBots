@@ -2,8 +2,8 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { runtime } from '../../../helpers/bot';
 
 const LIST_CATEGORY = 'Category:尚未清空的已重定向分类',
-    OLD_CATEGORY = 'Category:旧分类',
-    NEW_CATEGORY = 'Category:新分类',
+    OLD_CATEGORY = 'Category:V flower',
+    NEW_CATEGORY = 'Category:flower',
     FIX_SUMMARY = `修复分类重定向：[[${OLD_CATEGORY}]] → [[${NEW_CATEGORY}]]`;
 
 interface PostParams {
@@ -38,23 +38,15 @@ const configureStub = ({
 
     stub.post.mockImplementation(async (params: PostParams) => {
         if (params.list === 'categorymembers') {
-            if (params.cmtitle === LIST_CATEGORY) {
-                return {
-                    data: {
-                        query: { categorymembers: categories.map(title => ({ ns: 14, title })) },
+            const isList = params.cmtitle === LIST_CATEGORY,
+                members = isList ? categories : pages.map(({ title }) => title);
+            return {
+                data: {
+                    query: {
+                        categorymembers: members.map(title => ({ ns: isList ? 14 : 0, title })),
                     },
-                };
-            }
-
-            if (params.cmtitle === OLD_CATEGORY) {
-                return {
-                    data: {
-                        query: {
-                            categorymembers: pages.map(({ title }) => ({ ns: 0, title })),
-                        },
-                    },
-                };
-            }
+                },
+            };
         }
 
         if (params.redirects === true) {
@@ -82,15 +74,20 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-it('把正文中的旧分类名（含简繁变体）改为重定向目标，保留排序键', async () => {
+it('把含空格的旧分类名（含大小写变体）改为重定向目标，保留排序键', async () => {
     const stub = configureStub({
         pages: [
-            { title: 'Page A', revisions: [{ content: '[[Category:旧分类]]', revid: 41 }] },
+            { title: 'Page A', revisions: [{ content: '[[Category:V flower]]', revid: 41 }] },
             {
                 title: 'Page B',
-                revisions: [{ content: '文本 [[Category:舊分類|排序]] 尾', revid: 42 }],
+                revisions: [{ content: '文本 [[Category:v flower|排序]] 尾', revid: 42 }],
             },
-            { title: 'Page C', revisions: [{ content: '[[Category:其他分类]]', revid: 43 }] },
+            {
+                title: 'Page C',
+                revisions: [
+                    { content: '[[Category:V flowermore]] [[Category:其他分类]]', revid: 43 },
+                ],
+            },
         ],
     });
 
@@ -112,7 +109,7 @@ it('把正文中的旧分类名（含简繁变体）改为重定向目标，保�
     });
     expect(stub.post).toHaveBeenCalledWith({
         action: 'query',
-        titles: OLD_CATEGORY,
+        titles: OLD_CATEGORY.replaceAll(' ', '_'),
         redirects: true,
     });
     expect(stub.post).toHaveBeenCalledWith({
@@ -137,14 +134,14 @@ it('把正文中的旧分类名（含简繁变体）改为重定向目标，保�
 
     expect(first![0]).toBe('csrf');
     expect(first![1].title).toBe('Page A');
-    expect(first![1].text).toBe('[[Category:新分类]]');
+    expect(first![1].text).toBe('[[Category:flower]]');
     expect(first![1].baserevid).toBe(41);
     expect(first![1].summary).toBe(FIX_SUMMARY);
     expect(first![1].tags).toBe('Bot');
     expect(first![2]).toEqual({ retry: 10, noCache: true });
 
     expect(second![1].title).toBe('Page B');
-    expect(second![1].text).toBe('文本 [[Category:新分类|排序]] 尾');
+    expect(second![1].text).toBe('文本 [[Category:flower|排序]] 尾');
     expect(second![1].baserevid).toBe(42);
 
     // 不含旧分类名的 Page C 不被编辑
@@ -152,16 +149,37 @@ it('把正文中的旧分类名（含简繁变体）改为重定向目标，保�
         'Page A',
         'Page B',
     ]);
+    expect(console.log).toHaveBeenCalledWith(`[[${OLD_CATEGORY}]] → [[${NEW_CATEGORY}]]：3 个页面`);
     expect(console.log).toHaveBeenCalledWith(`Page A: ${OLD_CATEGORY} → ${NEW_CATEGORY}`);
     expect(console.log).toHaveBeenCalledWith(`Page B: ${OLD_CATEGORY} → ${NEW_CATEGORY}`);
 });
 
-it('正文没有旧分类名时不编辑', async () => {
+it('分类名不含空格时同样匹配，且简繁变体都能识别', async () => {
+    const stub = configureStub({
+        categories: ['Category:旧分类'],
+        redirects: [{ from: 'Category:旧分类', to: 'Category:新分类' }],
+        pages: [
+            { title: 'Page D', revisions: [{ content: '[[Category:旧分类]]', revid: 61 }] },
+            { title: 'Page E', revisions: [{ content: '[[Category:舊分類|排序]]', revid: 62 }] },
+        ],
+    });
+
+    await import('@/bot/vjp/fixRedirects');
+    const result = await runtime.drain();
+
+    expect(result.errors).toEqual([]);
+    expect(stub.postWithToken.mock.calls.map(([, body]) => [body.title, body.text])).toEqual([
+        ['Page D', '[[Category:新分类]]'],
+        ['Page E', '[[Category:新分类|排序]]'],
+    ]);
+});
+
+it('正文没有旧分类名时不编辑，并记录可能由模板引入的提示', async () => {
     const stub = configureStub({
         pages: [
             {
                 title: 'Page A',
-                revisions: [{ content: '[[Category:其他分类]] [[Category:新分类]]', revid: 51 }],
+                revisions: [{ content: '[[Category:其他分类]] [[Category:flower]]', revid: 51 }],
             },
         ],
     });
@@ -171,6 +189,23 @@ it('正文没有旧分类名时不编辑', async () => {
 
     expect(result.errors).toEqual([]);
     expect(stub.postWithToken).not.toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(
+        `未找到需修复的分类链接（可能由模板引入）：[[${OLD_CATEGORY}]]`,
+    );
+});
+
+it('分类本身已空时不编辑，也不提示', async () => {
+    const stub = configureStub({ pages: [] });
+
+    await import('@/bot/vjp/fixRedirects');
+    const result = await runtime.drain();
+
+    expect(result.errors).toEqual([]);
+    expect(stub.postWithToken).not.toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledWith(`[[${OLD_CATEGORY}]] → [[${NEW_CATEGORY}]]：0 个页面`);
+    expect(console.log).not.toHaveBeenCalledWith(
+        `未找到需修复的分类链接（可能由模板引入）：[[${OLD_CATEGORY}]]`,
+    );
 });
 
 it('已重定向分类列表为空时不查询分类重定向，也不编辑', async () => {
