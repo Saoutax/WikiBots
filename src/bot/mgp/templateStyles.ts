@@ -51,8 +51,8 @@ interface SearchResponse {
 
 interface PageInfo {
     title: string;
-    missing?: boolean | '';
-    redirect?: boolean | '';
+    missing?: boolean;
+    redirect?: boolean;
     lastrevid?: number;
 }
 
@@ -64,14 +64,6 @@ interface EditStats {
     edited: number;
     edit: (title: string, text: string, baserevid: number, action: Action) => Promise<void>;
 }
-
-/**
- * 判断 MediaWiki API 返回的布尔标志是否生效（兼容 formatversion=1 的空字符串与 formatversion=2 的布尔值）
- * @param value - 标志值
- * @returns 是否为真
- */
-const hasFlag = (value: boolean | '' | undefined): boolean =>
-    value !== undefined && value !== false;
 
 /**
  * 判断页面内容是否为重定向文本
@@ -170,7 +162,7 @@ const searchManagedStylePages = async (): Promise<string[]> => {
  * @returns 页面存在且不是重定向
  */
 const isUsableDoc = (info: PageInfo | undefined): boolean =>
-    info !== undefined && !hasFlag(info.missing) && !hasFlag(info.redirect);
+    info !== undefined && !info.missing && !info.redirect;
 
 /**
  * 推断裸标记自动匹配的样式页
@@ -261,7 +253,7 @@ const syncMarkers = async (
             docTitle = `${title}/doc`,
             rawDoc = docContents[docTitle],
             docRedirect =
-                hasFlag(infos[docTitle]?.redirect) ||
+                Boolean(infos[docTitle]?.redirect) ||
                 (rawDoc !== undefined && isRedirectContent(rawDoc.content)),
             doc = docRedirect ? undefined : rawDoc,
             pageMarker = findTemplateStylesMarker(content),
@@ -352,7 +344,7 @@ const syncStyleComments = async (
     for (const [key, users] of styleUsers) {
         const page = stylePages[key];
 
-        if (!page || hasFlag(styleInfos[key]?.redirect) || isRedirectContent(page.content)) {
+        if (!page || styleInfos[key]?.redirect || isRedirectContent(page.content)) {
             continue;
         }
 
@@ -391,7 +383,7 @@ const syncStyleComments = async (
         const styleInfos = await queryPageInfo([...styleKeys]),
             existingStyles = new Set(
                 Object.entries(styleInfos)
-                    .filter(([, info]) => !hasFlag(info.missing))
+                    .filter(([, info]) => !info.missing)
                     .map(([title]) => title),
             );
 

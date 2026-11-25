@@ -11,7 +11,7 @@ interface PostParams {
 interface FixturePage {
     content: string;
     revid: number;
-    redirect?: boolean | '';
+    redirect?: boolean;
 }
 
 const PAGES: Record<string, FixturePage> = {
@@ -75,7 +75,7 @@ const PAGES: Record<string, FixturePage> = {
     'Template:RedirectStyle/styles.css': {
         content: '#REDIRECT [[Template:Shared/styles.css]]',
         revid: 28,
-        redirect: '',
+        redirect: true,
     },
     'Template:Orphan/styles.css': {
         content: '/* for [[Template:OldA]]、[[Template:OldB]] */\n.orphan{}',
