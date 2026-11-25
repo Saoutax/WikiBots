@@ -25,10 +25,10 @@ const SANDBOX_SUBPAGE = /(?:^|\/)(?:沙盒|sandbox|testcases|test)(?:\/|$)/i;
 const INFERRED_SUFFIXES = ['/styles.css', '/style.css'] as const;
 
 const SUMMARIES = {
-    add: '添加{{TemplateStyles}}标记',
-    sync: '同步{{TemplateStyles}}标记',
-    remove: '移除{{TemplateStyles}}标记',
-    comment: '注明模板样式表的使用者',
+    add: '添加{{[[T:TemplateStyles|TemplateStyles]]}}标记',
+    sync: '更新{{[[T:TemplateStyles|TemplateStyles]]}}标记',
+    remove: '移除{{[[T:TemplateStyles|TemplateStyles]]}}标记',
+    comment: '更新模板样式表使用情况',
 } as const;
 
 type Action = keyof typeof SUMMARIES;
