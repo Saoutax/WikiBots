@@ -345,48 +345,52 @@ const syncStyleComments = async (
 };
 
 (async () => {
-    await run({ api, site: 'zh' }, async () => {
-        const [titles, managedStylePages] = await Promise.all([
-                searchCandidates(),
-                searchManagedStylePages(),
-            ]),
-            docTitles = titles.map(title => `${title}/doc`),
-            infos = await queryPageInfo([...titles, ...docTitles]),
-            pageContents = await bot.batchQuery(titles),
-            docContents = await bot.batchQuery(
-                docTitles.filter(title => isUsableDoc(infos[title])),
-            );
+    await run(
+        { api, site: 'zh' },
+        async () => {
+            const [titles, managedStylePages] = await Promise.all([
+                    searchCandidates(),
+                    searchManagedStylePages(),
+                ]),
+                docTitles = titles.map(title => `${title}/doc`),
+                infos = await queryPageInfo([...titles, ...docTitles]),
+                pageContents = await bot.batchQuery(titles),
+                docContents = await bot.batchQuery(
+                    docTitles.filter(title => isUsableDoc(infos[title])),
+                );
 
-        const styleKeys = new Set<string>();
-        for (const { content } of Object.values(pageContents)) {
-            for (const src of extractTemplateStyles(content)) {
-                styleKeys.add(keyOf(src));
+            const styleKeys = new Set<string>();
+            for (const { content } of Object.values(pageContents)) {
+                for (const src of extractTemplateStyles(content)) {
+                    styleKeys.add(keyOf(src));
+                }
             }
-        }
 
-        const styleInfos = await queryPageInfo([...styleKeys]),
-            existingStyles = new Set(
-                Object.entries(styleInfos)
-                    .filter(([, info]) => !info.missing)
-                    .map(([title]) => title),
+            const styleInfos = await queryPageInfo([...styleKeys]),
+                existingStyles = new Set(
+                    Object.entries(styleInfos)
+                        .filter(([, info]) => !info.missing)
+                        .map(([title]) => title),
+                );
+
+            const stats = createEditStats();
+            await syncMarkers(pageContents, docContents, infos, existingStyles, stats);
+            await syncStyleComments(pageContents, managedStylePages, stats);
+
+            const detail = Object.entries(stats.counts)
+                .map(([action, count]) => `${SUMMARIES[action as Action]} ${count}`)
+                .join('，');
+
+            console.log(
+                DRY_RUN
+                    ? `完成：候选 ${titles.length}，计划 ${stats.planned}，跳过 ${stats.skipped}，失败 ${stats.failed.length}。`
+                    : `完成：候选 ${titles.length}，编辑 ${stats.edited}（${detail || '无'}），跳过 ${stats.skipped}，失败 ${stats.failed.length}。`,
             );
 
-        const stats = createEditStats();
-        await syncMarkers(pageContents, docContents, infos, existingStyles, stats);
-        await syncStyleComments(pageContents, managedStylePages, stats);
-
-        const detail = Object.entries(stats.counts)
-            .map(([action, count]) => `${SUMMARIES[action as Action]} ${count}`)
-            .join('，');
-
-        console.log(
-            DRY_RUN
-                ? `完成：候选 ${titles.length}，计划 ${stats.planned}，跳过 ${stats.skipped}，失败 ${stats.failed.length}。`
-                : `完成：候选 ${titles.length}，编辑 ${stats.edited}（${detail || '无'}），跳过 ${stats.skipped}，失败 ${stats.failed.length}。`,
-        );
-
-        if (stats.failed.length > 0) {
-            throw new Error(`以下页面编辑失败：${stats.failed.join('、')}`);
-        }
-    });
+            if (stats.failed.length > 0) {
+                throw new Error(`以下页面编辑失败：${stats.failed.join('、')}`);
+            }
+        },
+        true,
+    );
 })();

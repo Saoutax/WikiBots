@@ -33,6 +33,7 @@ src/
     checkRedirects.ts   — Check whether pages are redirects
     checkGlobalUsage.ts — Check cross-wiki file usage (prop=globalusage)
     edit.ts             — Unified page edit helper (csrf token, retry, bot/minor flags)
+    feishu.ts           — Feishu bot notification client (card + .log file upload)
     flagDelete.ts       — Tag pages for deletion
     getContent.ts       — Fetch a single page's raw wikitext (prop=revisions)
     getJson.ts          — Parse page content as JSON config
@@ -45,6 +46,7 @@ src/
     delay.ts              — Promise-based sleep (default 3000 ms)
     formatNamespace.ts    — Format namespace numbers for API parameters
     getLatestTimestamp.ts — Extract the latest signed timestamp (CST/UTC) from wikitext via regex
+    logCapture.ts         — Capture console output into a bounded in-memory buffer
     parseThread.ts        — Parse wiki discussion threads (split sections by == headings ==)
     readAndWrite.ts       — Read/write files in the GitHub repo via Octokit
     recordTime.ts         — Persist/read task timestamps in data/time.yaml via the GitHub API

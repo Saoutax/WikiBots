@@ -15,6 +15,10 @@ env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     ZH_BOT: ${{ secrets.ZH_BOT }}
+    FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+    FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+    FEISHU_RECEIVE_ID: ${{ secrets.FEISHU_RECEIVE_ID }}
+    FEISHU_RECEIVE_ID_TYPE: ${{ secrets.FEISHU_RECEIVE_ID_TYPE }}
 
 jobs:
     # 说明: 根据配置文件替换页面中的链接目标

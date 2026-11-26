@@ -99,4 +99,49 @@ describe('run', () => {
         expect(error).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenCalledWith(expect.stringMatching(/^End time: /));
     });
+
+    it('默认不开启飞书通知时不会发起网络请求', async () => {
+        const stub = createApiStub();
+        vi.spyOn(console, 'log').mockImplementation(() => {});
+        stub.login.mockResolvedValue({ lgusername: '机娘亚衣琴@saoutaxbot' });
+        const task = vi.fn().mockResolvedValue(undefined);
+        const fetchMock = vi.fn();
+
+        vi.stubEnv('FEISHU_APP_ID', 'cli_test');
+        vi.stubEnv('FEISHU_APP_SECRET', 'secret_test');
+        vi.stubEnv('FEISHU_RECEIVE_ID', 'oc_test');
+        vi.stubGlobal('fetch', fetchMock);
+
+        try {
+            await run({ api: stub.api, site: 'zh' }, task);
+
+            expect(fetchMock).not.toHaveBeenCalled();
+        } finally {
+            vi.unstubAllEnvs();
+            vi.unstubAllGlobals();
+        }
+    });
+
+    it('开启通知且飞书请求失败时不影响任务退出码', async () => {
+        const stub = createApiStub();
+        vi.spyOn(console, 'log').mockImplementation(() => {});
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        stub.login.mockResolvedValue({ lgusername: '机娘亚衣琴@saoutaxbot' });
+        const task = vi.fn().mockResolvedValue(undefined);
+
+        vi.stubEnv('FEISHU_APP_ID', 'cli_test');
+        vi.stubEnv('FEISHU_APP_SECRET', 'secret_test');
+        vi.stubEnv('FEISHU_RECEIVE_ID', 'oc_test');
+        vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')));
+
+        try {
+            await run({ api: stub.api, site: 'zh' }, task, true);
+
+            expect(process.exitCode).toBe(savedExitCode);
+            expect(warn).toHaveBeenCalledTimes(1);
+        } finally {
+            vi.unstubAllEnvs();
+            vi.unstubAllGlobals();
+        }
+    });
 });

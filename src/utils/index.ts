@@ -15,3 +15,5 @@ export { deriveTalkPage, sameTitle } from './title';
 export { extractChineseDate } from './extractChineseDate';
 export { findTemplates, normalizeTemplateName } from './template';
 export { normalizeHeadingSpacing } from './normalizeHeadingSpacing';
+export { startLogCapture } from './logCapture';
+export type { LogCapture, LogCaptureOptions } from './logCapture';

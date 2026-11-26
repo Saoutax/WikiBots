@@ -142,12 +142,16 @@ const main = async (targets: string[]) => {
 };
 
 (async () => {
-    await run({ api, site: 'qw' }, async () => {
-        await main([
-            'Qiuwen_talk:茶馆/编辑',
-            'Qiuwen_talk:茶馆/其他',
-            'Qiuwen_talk:茶馆/方针',
-            MESSAGE_TARGET,
-        ]);
-    });
+    await run(
+        { api, site: 'qw' },
+        async () => {
+            await main([
+                'Qiuwen_talk:茶馆/编辑',
+                'Qiuwen_talk:茶馆/其他',
+                'Qiuwen_talk:茶馆/方针',
+                MESSAGE_TARGET,
+            ]);
+        },
+        true,
+    );
 })();

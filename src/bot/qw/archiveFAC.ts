@@ -529,28 +529,32 @@ const archiveToTalkPages = async (threads: ThreadInfo[]): Promise<void> => {
 };
 
 (async () => {
-    await run({ api, site: 'qw' }, async () => {
-        const { content, revid } = await bot.getContent(TARGET),
-            currentTime = dayjs().tz(),
-            archiveTitle = `${TARGET}/存档/${currentTime.format('YYYY年M月')}`,
-            threads = parseClosedThreads(content, revid, archiveTitle);
+    await run(
+        { api, site: 'qw' },
+        async () => {
+            const { content, revid } = await bot.getContent(TARGET),
+                currentTime = dayjs().tz(),
+                archiveTitle = `${TARGET}/存档/${currentTime.format('YYYY年M月')}`,
+                threads = parseClosedThreads(content, revid, archiveTitle);
 
-        if (threads.length === 0) {
-            console.log('No threads need to be archived.');
-            return;
-        }
+            if (threads.length === 0) {
+                console.log('No threads need to be archived.');
+                return;
+            }
 
-        await archiveToTalkPages(threads);
+            await archiveToTalkPages(threads);
 
-        await archiveDiscussion(api, {
-            target: TARGET,
-            archiveTitle,
-            discussion: removeThreads(content, threads),
-            archive: threads.map(buildArchiveBlock).join('\n\n'),
-            summary: SUMMARY,
-            baserevid: revid,
-        });
+            await archiveDiscussion(api, {
+                target: TARGET,
+                archiveTitle,
+                discussion: removeThreads(content, threads),
+                archive: threads.map(buildArchiveBlock).join('\n\n'),
+                summary: SUMMARY,
+                baserevid: revid,
+            });
 
-        console.log(`Archived ${threads.length} threads.`);
-    });
+            console.log(`Archived ${threads.length} threads.`);
+        },
+        true,
+    );
 })();

@@ -26,11 +26,14 @@ const getReportedTitle = (
 };
 
 (async () => {
-    await run({ api, site: 'qw' }, () =>
-        archiveList(api, {
-            target: TARGET,
-            archiveTitle: `${TARGET}/存档/${dayjs().tz().format('YYYY年')}`,
-            getReportedTitle,
-        }),
+    await run(
+        { api, site: 'qw' },
+        () =>
+            archiveList(api, {
+                target: TARGET,
+                archiveTitle: `${TARGET}/存档/${dayjs().tz().format('YYYY年')}`,
+                getReportedTitle,
+            }),
+        true,
     );
 })();

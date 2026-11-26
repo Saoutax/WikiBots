@@ -10,11 +10,14 @@ const getReportedTitle = (
 ): string | undefined => links.find(({ ns }) => ns === 6)?.title;
 
 (async () => {
-    await run({ api, site: 'qw' }, () =>
-        archiveList(api, {
-            target: TARGET,
-            archiveTitle: `${TARGET}/存档/${dayjs().tz().format('YYYY年')}`,
-            getReportedTitle,
-        }),
+    await run(
+        { api, site: 'qw' },
+        () =>
+            archiveList(api, {
+                target: TARGET,
+                archiveTitle: `${TARGET}/存档/${dayjs().tz().format('YYYY年')}`,
+                getReportedTitle,
+            }),
+        true,
     );
 })();

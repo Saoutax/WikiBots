@@ -30,6 +30,10 @@ env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
     VJP_BOT: ${{ secrets.VJP_BOT }}
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+    FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+    FEISHU_RECEIVE_ID: ${{ secrets.FEISHU_RECEIVE_ID }}
+    FEISHU_RECEIVE_ID_TYPE: ${{ secrets.FEISHU_RECEIVE_ID_TYPE }}
 
 jobs:
     # 说明: 清理沙盒

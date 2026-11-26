@@ -86,103 +86,109 @@ const parseDateSections = (content: string): DateSection[] => {
 };
 
 (async () => {
-    await run({ api, site: 'qw' }, async () => {
-        const { content, revid } = await bot.getContent(TARGET);
-        const sections = parseDateSections(content);
+    await run(
+        { api, site: 'qw' },
+        async () => {
+            const { content, revid } = await bot.getContent(TARGET);
+            const sections = parseDateSections(content);
 
-        if (sections.length === 0) {
-            console.log('No date sections found.');
-            return;
-        }
+            if (sections.length === 0) {
+                console.log('No date sections found.');
+                return;
+            }
 
-        const currentTime = dayjs().tz();
-        const archiveBlocks: string[] = [];
-        const removeRanges: [number, number][] = [];
-        let archivedCount = 0;
+            const currentTime = dayjs().tz();
+            const archiveBlocks: string[] = [];
+            const removeRanges: [number, number][] = [];
+            let archivedCount = 0;
 
-        for (const section of sections) {
-            const archivedEntries: Entry[] = [];
-            let remaining = 0;
+            for (const section of sections) {
+                const archivedEntries: Entry[] = [];
+                let remaining = 0;
 
-            for (const entry of section.entries) {
-                const template = Parser.parse(entry.text)
-                    .querySelectorAll<Parser.TranscludeToken>('template')
-                    .find(isCopyvioTemplate);
-                const page = template?.getValue('1')?.trim();
+                for (const entry of section.entries) {
+                    const template = Parser.parse(entry.text)
+                        .querySelectorAll<Parser.TranscludeToken>('template')
+                        .find(isCopyvioTemplate);
+                    const page = template?.getValue('1')?.trim();
 
-                if (!page) {
-                    console.log(`Skip ${entry.title}: CopyvioEntry template not found.`);
-                    remaining++;
-                    continue;
-                }
-
-                const timestamp = getLatestTimestamp(entry.text);
-                if (!timestamp || dayjs(currentTime).diff(timestamp, 'day') < MAR_DAYS) {
-                    console.log(
-                        `Skip ${entry.title}: latest comment is less than ${MAR_DAYS} days old.`,
-                    );
-                    remaining++;
-                    continue;
-                }
-
-                try {
-                    if (await bot.checkExist(page)) {
-                        console.log(`Skip ${entry.title}: ${page} still exists.`);
+                    if (!page) {
+                        console.log(`Skip ${entry.title}: CopyvioEntry template not found.`);
                         remaining++;
                         continue;
                     }
-                } catch (error) {
-                    console.log(`Skip ${entry.title}: failed to check ${page}: ${String(error)}`);
-                    remaining++;
+
+                    const timestamp = getLatestTimestamp(entry.text);
+                    if (!timestamp || dayjs(currentTime).diff(timestamp, 'day') < MAR_DAYS) {
+                        console.log(
+                            `Skip ${entry.title}: latest comment is less than ${MAR_DAYS} days old.`,
+                        );
+                        remaining++;
+                        continue;
+                    }
+
+                    try {
+                        if (await bot.checkExist(page)) {
+                            console.log(`Skip ${entry.title}: ${page} still exists.`);
+                            remaining++;
+                            continue;
+                        }
+                    } catch (error) {
+                        console.log(
+                            `Skip ${entry.title}: failed to check ${page}: ${String(error)}`,
+                        );
+                        remaining++;
+                        continue;
+                    }
+
+                    console.log(`Archive ${entry.title}: ${page} no longer exists.`);
+                    archivedEntries.push(entry);
+                }
+
+                if (archivedEntries.length === 0) {
                     continue;
                 }
 
-                console.log(`Archive ${entry.title}: ${page} no longer exists.`);
-                archivedEntries.push(entry);
+                archivedCount += archivedEntries.length;
+
+                if (remaining === 0) {
+                    archiveBlocks.push(content.slice(section.start, section.end).trimEnd());
+                    removeRanges.push([section.start, section.end]);
+                } else {
+                    archiveBlocks.push(
+                        `${section.heading.trimEnd()}\n${archivedEntries.map(e => e.text).join('')}`.trimEnd(),
+                    );
+                    removeRanges.push(
+                        ...archivedEntries.map(({ start, end }): [number, number] => [start, end]),
+                    );
+                }
             }
 
-            if (archivedEntries.length === 0) {
-                continue;
+            if (archivedCount === 0) {
+                console.log('No entries need to be archived.');
+                return;
             }
 
-            archivedCount += archivedEntries.length;
+            const archive = archiveBlocks.join('\n').trimEnd();
 
-            if (remaining === 0) {
-                archiveBlocks.push(content.slice(section.start, section.end).trimEnd());
-                removeRanges.push([section.start, section.end]);
-            } else {
-                archiveBlocks.push(
-                    `${section.heading.trimEnd()}\n${archivedEntries.map(e => e.text).join('')}`.trimEnd(),
-                );
-                removeRanges.push(
-                    ...archivedEntries.map(({ start, end }): [number, number] => [start, end]),
-                );
+            removeRanges.sort((a, b) => b[0] - a[0]);
+
+            let discussion = content;
+            for (const [start, end] of removeRanges) {
+                discussion = discussion.slice(0, start) + discussion.slice(end);
             }
-        }
+            discussion = `${normalizeHeadingSpacing(discussion).trimEnd()}\n`;
 
-        if (archivedCount === 0) {
-            console.log('No entries need to be archived.');
-            return;
-        }
-
-        const archive = archiveBlocks.join('\n').trimEnd();
-
-        removeRanges.sort((a, b) => b[0] - a[0]);
-
-        let discussion = content;
-        for (const [start, end] of removeRanges) {
-            discussion = discussion.slice(0, start) + discussion.slice(end);
-        }
-        discussion = `${normalizeHeadingSpacing(discussion).trimEnd()}\n`;
-
-        await archiveDiscussion(api, {
-            target: TARGET,
-            archiveTitle: `${TARGET}/存档/${currentTime.format('YYYY年')}`,
-            discussion,
-            archive,
-            summary: '机器人：存档讨论',
-            baserevid: revid,
-        });
-        console.log(`Archived ${archivedCount} entries.`);
-    });
+            await archiveDiscussion(api, {
+                target: TARGET,
+                archiveTitle: `${TARGET}/存档/${currentTime.format('YYYY年')}`,
+                discussion,
+                archive,
+                summary: '机器人：存档讨论',
+                baserevid: revid,
+            });
+            console.log(`Archived ${archivedCount} entries.`);
+        },
+        true,
+    );
 })();
