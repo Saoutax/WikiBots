@@ -1,3 +1,4 @@
+import { hostname } from 'node:os';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { notifyRun, readFeishuConfig, redact, tailLog } from '@/lib/feishu';
 
@@ -170,5 +171,47 @@ describe('feishu', () => {
         const { tail, truncated } = tailLog('a\nb\nc\nd', 2, 100);
         expect(tail).toBe('c\nd');
         expect(truncated).toBe(true);
+    });
+
+    it('SERVER=true 时标题使用 hostname 与脚本名，为 false 时保持原逻辑', async () => {
+        const fetchMock = vi
+            .fn()
+            .mockResolvedValueOnce(
+                new Response(JSON.stringify({ code: 0, tenant_access_token: 't-token-s1' })),
+            )
+            .mockResolvedValueOnce(new Response(JSON.stringify({ code: 0, data: {} })))
+            .mockResolvedValueOnce(
+                new Response(JSON.stringify({ code: 0, tenant_access_token: 't-token-s2' })),
+            )
+            .mockResolvedValueOnce(new Response(JSON.stringify({ code: 0, data: {} })));
+        vi.stubGlobal('fetch', fetchMock);
+
+        await notifyRun({
+            ok: true,
+            sites: ['qw'],
+            durationMs: 100,
+            log: 'ok',
+            env: { ...baseEnv, SERVER: 'true' },
+            scriptPath: '/root/WikiBots/src/bot/qw/archiveTEA.ts',
+            notifierOptions: { retryDelayMs: 0 },
+        });
+
+        await notifyRun({
+            ok: true,
+            sites: ['qw'],
+            durationMs: 100,
+            log: 'ok',
+            env: { ...baseEnv, SERVER: 'false' },
+            scriptPath: '/root/WikiBots/src/bot/qw/archiveTEA.ts',
+            notifierOptions: { retryDelayMs: 0 },
+        });
+
+        const serverCard = JSON.parse(
+            JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body)).content,
+        );
+        expect(serverCard.header.title.content).toBe(`任务成功 · ${hostname()}/qw/archiveTEA`);
+
+        const ghaCard = JSON.parse(JSON.parse(String(fetchMock.mock.calls[3]?.[1]?.body)).content);
+        expect(ghaCard.header.title.content).toBe('任务成功 · MGP daily/deleteRedirect');
     });
 });

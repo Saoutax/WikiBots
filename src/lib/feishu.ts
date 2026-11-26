@@ -1,3 +1,5 @@
+import { hostname } from 'node:os';
+import { basename } from 'node:path';
 import type { SiteAccount } from '@/api/types';
 
 type ReceiveIdType = 'open_id' | 'chat_id' | 'user_id' | 'union_id' | 'email';
@@ -25,6 +27,7 @@ interface NotifyRunParams {
     durationMs: number;
     log: string;
     env?: NodeJS.ProcessEnv;
+    scriptPath?: string;
     notifierOptions?: Omit<FeishuNotifierOptions, 'config'>;
 }
 
@@ -373,6 +376,34 @@ const buildRunCard = ({
     };
 };
 
+const resolveScriptName = (scriptPath = process.argv[1]): string | undefined => {
+    if (!scriptPath) {
+        return undefined;
+    }
+
+    const match = /src[/\\]bot[/\\]([^/\\]+)[/\\]([^/\\]+)\.[cm]?[jt]s$/i.exec(scriptPath);
+    if (match) {
+        return `${match[1]}/${match[2]}`;
+    }
+
+    return basename(scriptPath).replace(/\.[^.]+$/, '') || undefined;
+};
+
+const resolveRunTitle = (
+    sites: SiteAccount['site'][],
+    env: NodeJS.ProcessEnv,
+    scriptPath?: string,
+): string => {
+    if (env.SERVER?.trim().toLowerCase() === 'true') {
+        const script = resolveScriptName(scriptPath) ?? (sites.join(',') || 'unknown');
+        return `${hostname()}/${script}`;
+    }
+
+    const workflow = env.GITHUB_WORKFLOW?.trim();
+    const job = env.GITHUB_JOB?.trim();
+    return workflow && job ? `${workflow}/${job}` : workflow || job || `local/${sites.join(',')}`;
+};
+
 /**
  * 在任务结束时向飞书推送运行摘要与日志；任何异常仅打印 warning，不改变退出码
  */
@@ -382,6 +413,7 @@ const notifyRun = async ({
     durationMs,
     log,
     env = process.env,
+    scriptPath,
     notifierOptions,
 }: NotifyRunParams): Promise<void> => {
     const config = readFeishuConfig(env);
@@ -389,10 +421,7 @@ const notifyRun = async ({
         return;
     }
 
-    const workflow = env.GITHUB_WORKFLOW?.trim();
-    const job = env.GITHUB_JOB?.trim();
-    const title =
-        workflow && job ? `${workflow}/${job}` : workflow || job || `local/${sites.join(',')}`;
+    const title = resolveRunTitle(sites, env, scriptPath);
 
     const serverUrl = env.GITHUB_SERVER_URL?.trim() || 'https://github.com';
     const repo = env.GITHUB_REPOSITORY?.trim();
