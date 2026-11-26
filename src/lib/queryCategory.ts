@@ -1,10 +1,5 @@
 import { BaseApi, formatNamespace } from '@/utils';
 
-interface MWCategory {
-    ns: number;
-    title: string;
-}
-
 class QueryCategory extends BaseApi {
     /**
      * 查询分类成员
@@ -50,9 +45,9 @@ class QueryCategory extends BaseApi {
         let cmcontinue: string | undefined;
         do {
             const {
-                query: { categorymembers },
+                query: { categorymembers = [] },
                 continue: cont,
-            } = await this.queryData<{ categorymembers: MWCategory[] }>({
+            } = await this.queryData({
                 action: 'query',
                 list: 'categorymembers',
                 cmtitle: category,
@@ -63,6 +58,9 @@ class QueryCategory extends BaseApi {
                 cmlimit: 'max',
             });
             for (const member of categorymembers) {
+                if (!member.title) {
+                    continue;
+                }
                 if (member.ns === 14 && recursive) {
                     await this.queryCategory(
                         member.title,

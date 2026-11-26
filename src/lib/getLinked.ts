@@ -1,12 +1,5 @@
 import { BaseApi, formatNamespace, splitAndJoin } from '@/utils';
 
-interface MWPage {
-    title: string;
-    linkshere: {
-        title: string;
-    }[];
-}
-
 class GetLinked extends BaseApi {
     /**
      * 查询链入页面
@@ -31,7 +24,7 @@ class GetLinked extends BaseApi {
                     const {
                         query: { pages = [] },
                         continue: cont,
-                    } = await this.queryData<{ pages?: MWPage[] }>({
+                    } = await this.queryData({
                         action: 'query',
                         prop: 'linkshere',
                         titles: group,
@@ -42,12 +35,17 @@ class GetLinked extends BaseApi {
                         lhcontinue,
                     });
                     for (const page of pages) {
+                        if (!page.title) {
+                            continue;
+                        }
                         result[page.title] ??= [];
                         if (!page.linkshere?.length) {
                             continue;
                         }
                         page.linkshere.forEach(({ title }) => {
-                            result[page.title]?.push(title);
+                            if (title) {
+                                result[page.title!]?.push(title);
+                            }
                         });
                     }
                     lhcontinue = cont?.lhcontinue;

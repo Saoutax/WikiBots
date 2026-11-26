@@ -9,5 +9,6 @@
 |    [highRiskCount](./highRiskCount.ts)    |   每周四 03:00    |                        更新被标记{{Highrisk}}的模板使用数量                        |
 |    [disambigLinks](./disambigLinks.ts)    |   每周六 00:10    | 更新[萌娘百科:疑似链入消歧义页面的条目](https://mzh.moegirl.org.cn/_?curid=545554) |
 |     [deleteUnused](./deleteUnused.ts)     |   每周六 05:00    |                             删除特定分类下的无使用文件                             |
+|   [templateStyles](./templateStyles.ts)   |   每周日 06:00    |                  为使用模板样式表的模板补充{{TemplateStyles}}标记                  |
 |     [linkModifier](./linkModifier.ts)     |     手动执行      |                          根据配置文件替换页面中的链接目标                          |
 |          [monthly](./monthly.ts)          |     手动执行      |                             向订阅用户发送萌娘百科月报                             |

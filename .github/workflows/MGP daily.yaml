@@ -9,6 +9,7 @@ on:
         - cron: '00 21 * * 5' # 05:00 CST Saturday
         - cron: '00 18 * * 2' # 02:00 CST Wednesday
         - cron: '00 17 * * *' # 01:00 CST Everyday
+        - cron: '00 22 * * 6' # 06:00 CST Sunday
     workflow_dispatch:
         inputs:
             task:
@@ -23,6 +24,7 @@ on:
                     - disambigLinks
                     - correctNavFormat
                     - removeExtraPipe
+                    - templateStyles
 
 env:
     API_USER_AGENT: ${{ secrets.API_USER_AGENT }}
@@ -142,3 +144,19 @@ jobs:
                   node-version: '24.4.1'
             - name: Run Script
               run: npx tsx src/bot/mgp/removeExtraPipe.ts
+
+    # 说明: 为使用模板样式表的模板补充{{TemplateStyles}}标记
+    templateStyles:
+        if: |
+            github.event.schedule == '00 22 * * 6' ||
+            github.event.inputs.task == 'templateStyles'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+            - name: Setup Bot
+              uses: ./.github/actions/setup-bot
+              with:
+                  node-version: '24.4.1'
+            - name: Run Script
+              run: npx tsx src/bot/mgp/templateStyles.ts

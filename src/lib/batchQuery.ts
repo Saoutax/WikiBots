@@ -1,11 +1,7 @@
 import pLimit from 'p-limit';
+import type { QueryPage } from 'types-mediawiki-response';
 import { BaseApi, splitAndJoin, delay } from '@/utils';
 import type { PageContent } from './types';
-
-interface MWPage {
-    title: string;
-    revisions?: { content: string; revid: number }[];
-}
 
 class BatchQuery extends BaseApi {
     /**
@@ -29,7 +25,7 @@ class BatchQuery extends BaseApi {
         await Promise.all(
             groups.map((group, index) =>
                 plimit(async () => {
-                    const pages = await this.queryPages<MWPage>({
+                    const pages = await this.queryPages<QueryPage<'revisions'>>({
                         action: 'query',
                         prop: 'revisions',
                         rvprop: 'content|revid',
@@ -37,7 +33,11 @@ class BatchQuery extends BaseApi {
                     });
                     pages.forEach(({ title, revisions }) => {
                         const revision = revisions?.[0];
-                        if (revision) {
+                        if (
+                            title &&
+                            revision?.content !== undefined &&
+                            revision.revid !== undefined
+                        ) {
                             result[title] = { content: revision.content, revid: revision.revid };
                         }
                     });

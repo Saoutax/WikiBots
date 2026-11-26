@@ -1,8 +1,5 @@
+import type { InfoPage } from 'types-mediawiki-response';
 import { BaseApi } from '@/utils';
-
-interface MWPage {
-    missing?: boolean;
-}
 
 class CheckExist extends BaseApi {
     /**
@@ -11,7 +8,7 @@ class CheckExist extends BaseApi {
      * @returns 检查结果
      */
     check = async (title: string) => {
-        const pages = await this.queryPages<MWPage>({
+        const pages = await this.queryPages<InfoPage>({
             action: 'query',
             prop: 'info',
             titles: title,
