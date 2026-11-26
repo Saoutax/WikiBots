@@ -68,6 +68,7 @@
         "utils/getLatestTimestamp",
         "utils/normalizeHeadingSpacing",
         "utils/parseThread",
+        "utils/rateLimit",
         "utils/readAndWrite",
         "utils/recordTime",
         "utils/splitAndJoin",
