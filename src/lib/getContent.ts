@@ -12,12 +12,13 @@ class GetContent extends BaseApi {
         const pages = await this.queryPages<QueryPage<'revisions'>>({
             action: 'query',
             prop: 'revisions',
-            rvprop: 'content|revid',
+            rvprop: 'content|ids',
             titles: title,
         });
-        const revision = pages[0]?.revisions?.[0];
+        const page = pages[0];
+        const revision = page?.revisions?.[0];
         if (revision?.content === undefined || revision.revid === undefined) {
-            throw new Error(`Failed to get content of ${title}.`);
+            throw new Error(`Failed to get content of ${title}: ${JSON.stringify(page ?? pages)}`);
         }
         return { content: revision.content, revid: revision.revid };
     };

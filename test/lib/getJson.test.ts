@@ -50,6 +50,6 @@ describe('GetJson', () => {
 
         const { get } = new GetJson(api);
 
-        await expect(get('Config')).rejects.toThrow('Failed to get content of Config.');
+        await expect(get('Config')).rejects.toThrow('Failed to get content of Config: []');
     });
 });

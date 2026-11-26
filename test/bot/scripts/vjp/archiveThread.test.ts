@@ -102,7 +102,7 @@ it('周一移除 Saved 讨论串，归档到期与超期的讨论串', async () 
     expect(stub.post).toHaveBeenCalledWith({
         action: 'query',
         prop: 'revisions',
-        rvprop: 'content|revid',
+        rvprop: 'content|ids',
         titles: 'Vocawiki:讨论版',
     });
     expect(stub.postWithToken).toHaveBeenCalledTimes(2);

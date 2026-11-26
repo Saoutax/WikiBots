@@ -20,7 +20,7 @@ describe('GetContent', () => {
         expect(post).toHaveBeenCalledWith({
             action: 'query',
             prop: 'revisions',
-            rvprop: 'content|revid',
+            rvprop: 'content|ids',
             titles: 'Foo',
         });
     });
@@ -31,7 +31,7 @@ describe('GetContent', () => {
 
         const { get } = new GetContent(api);
 
-        await expect(get('Foo')).rejects.toThrow('Failed to get content of Foo.');
+        await expect(get('Foo')).rejects.toThrow('Failed to get content of Foo: {"title":"Foo"}');
     });
 
     it('pages 为空时抛出错误', async () => {
@@ -40,6 +40,6 @@ describe('GetContent', () => {
 
         const { get } = new GetContent(api);
 
-        await expect(get('Bar')).rejects.toThrow('Failed to get content of Bar.');
+        await expect(get('Bar')).rejects.toThrow('Failed to get content of Bar: []');
     });
 });

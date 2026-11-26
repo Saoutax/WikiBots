@@ -30,7 +30,7 @@ class CleanSandbox extends BaseApi {
         } = await this.api.post<{ query: { pages: Pages[] } }>({
             prop: 'revisions|info',
             titles: Object.keys(pageMap),
-            rvprop: 'timestamp|revid',
+            rvprop: 'timestamp|ids',
             inprop: 'touched',
         });
         await Promise.all(

@@ -32,7 +32,7 @@ describe('BatchQuery', () => {
             expect.objectContaining({
                 action: 'query',
                 prop: 'revisions',
-                rvprop: 'content|revid',
+                rvprop: 'content|ids',
                 titles: 'A',
             }),
         );

@@ -136,14 +136,14 @@ it('替换正文中的链接目标，保留显示文本与锚点，并跳过排�
     expect(stub.post).toHaveBeenCalledWith({
         action: 'query',
         prop: 'revisions',
-        rvprop: 'content|revid',
+        rvprop: 'content|ids',
         titles: CONFIG_TITLE,
     });
     // 分类排除页面与手写排除页面都不参与批量查询
     expect(stub.post).toHaveBeenCalledWith({
         action: 'query',
         prop: 'revisions',
-        rvprop: 'content|revid',
+        rvprop: 'content|ids',
         titles: 'Page_A|Page_B|Unchanged_Page',
     });
 

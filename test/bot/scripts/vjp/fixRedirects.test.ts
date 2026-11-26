@@ -125,7 +125,7 @@ it('把含空格的旧分类名（含大小写变体）改为重定向目标，�
     expect(stub.post).toHaveBeenCalledWith({
         action: 'query',
         prop: 'revisions',
-        rvprop: 'content|revid',
+        rvprop: 'content|ids',
         titles: 'Page_A|Page_B|Page_C',
     });
 

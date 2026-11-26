@@ -43,7 +43,7 @@ describe('CleanSandbox', () => {
         expect(stub.post).toHaveBeenCalledWith({
             prop: 'revisions|info',
             titles: [TITLE],
-            rvprop: 'timestamp|revid',
+            rvprop: 'timestamp|ids',
             inprop: 'touched',
         });
         expect(stub.postWithToken).toHaveBeenCalledTimes(1);

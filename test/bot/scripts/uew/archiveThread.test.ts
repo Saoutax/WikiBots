@@ -71,7 +71,7 @@ it('每月 1 日归档过期讨论串并保护存档页', async () => {
     expect(stub.post).toHaveBeenCalledWith({
         action: 'query',
         prop: 'revisions',
-        rvprop: 'content|revid',
+        rvprop: 'content|ids',
         titles: '地球联合百科讨论:会议大厅',
     });
     expect(stub.postWithToken).toHaveBeenCalledTimes(3);

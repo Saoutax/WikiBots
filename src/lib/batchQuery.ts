@@ -28,7 +28,7 @@ class BatchQuery extends BaseApi {
                     const pages = await this.queryPages<QueryPage<'revisions'>>({
                         action: 'query',
                         prop: 'revisions',
-                        rvprop: 'content|revid',
+                        rvprop: 'content|ids',
                         titles: group,
                     });
                     pages.forEach(({ title, revisions }) => {
