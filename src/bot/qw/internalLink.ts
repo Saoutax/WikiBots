@@ -1,26 +1,17 @@
+import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import Parser from 'wikiparser-node';
 import { run, qwapi as api } from '@/api';
 import { BotInstance } from '@/lib';
-import type { PageContent } from '@/lib';
-import { delay } from '@/utils';
+import { createRateLimiter } from '@/utils';
 
 const bot = new BotInstance(api);
 
-interface PageItem {
-    title: string;
-}
-
 (async () => {
     await run({ api, site: 'qw' }, async () => {
-        let eicontinue: string | undefined;
+        const limiter = createRateLimiter({ concurrency: 1, interval: 3000, intervalCap: 1 });
+        let eicontinue: string | number | undefined;
         do {
-            const group: string[] = [];
-            const {
-                data,
-                data: {
-                    query: { embeddedin = [] },
-                },
-            } = await api.post({
+            const { data } = await api.post<ApiQueryResponseWithResult>({
                 action: 'query',
                 list: 'embeddedin',
                 eititle: 'Template:Internal_link_helper/en',
@@ -31,13 +22,10 @@ interface PageItem {
 
             eicontinue = data?.continue?.eicontinue;
 
-            embeddedin.forEach((page: PageItem) => {
-                group.push(page.title);
-            });
+            const group = (data?.query?.embeddedin ?? []).map(page => page.title),
+                pageContent = await bot.batchQuery(group, 500);
 
-            const pageContent = await bot.batchQuery(group, 500);
-
-            const result: Record<string, PageContent> = {};
+            const edits: { title: string; text: string; revid: number }[] = [];
             for (const [title, { content, revid }] of Object.entries(pageContent)) {
                 const root = Parser.parse(content),
                     templates = root.querySelectorAll<Parser.TranscludeToken>(
@@ -50,13 +38,13 @@ interface PageItem {
                     template.replaceWith(`[[${target}${display ? `|${display}` : ''}]]`);
                 }
 
-                const newContent = root.toString();
-                if (newContent !== content) {
-                    result[title] = { content: newContent, revid };
+                const text = root.toString();
+                if (text !== content) {
+                    edits.push({ title, text, revid });
                 }
             }
 
-            for (const [title, { content: text, revid }] of Object.entries(result)) {
+            await limiter.map(edits, async ({ title, text, revid }) => {
                 await bot.edit({
                     title,
                     text,
@@ -64,8 +52,7 @@ interface PageItem {
                     summary: '机器人：移除已弃用模板',
                 });
                 console.log(`Done: ${title}`);
-                await delay();
-            }
+            });
 
             console.log('Start next group.');
         } while (eicontinue);

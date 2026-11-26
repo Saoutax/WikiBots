@@ -1,4 +1,5 @@
-import type { MwApiParams } from 'wiki-saikou';
+import type { ApiEditResponse } from 'types-mediawiki-response';
+import type { FexiosFinalContext, MwApiParams } from 'wiki-saikou';
 import { BaseApi } from '@/utils';
 
 /** 编辑目标：标题与页面 ID 二选一 */
@@ -58,7 +59,7 @@ class EditPage extends BaseApi {
         watchlist,
         nocreate,
         baserevid,
-    }: EditParams) => {
+    }: EditParams): Promise<FexiosFinalContext<ApiEditResponse>> => {
         const body: MwApiParams = {
             action: 'edit',
             title,
@@ -76,7 +77,10 @@ class EditPage extends BaseApi {
             ...(notminor ? { notminor: true } : { minor: minor ?? true }),
         };
 
-        return this.api.postWithToken('csrf', body, { retry: 10, noCache: true });
+        return this.api.postWithToken<ApiEditResponse>('csrf', body, {
+            retry: 10,
+            noCache: true,
+        });
     };
 }
 

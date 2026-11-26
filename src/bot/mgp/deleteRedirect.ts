@@ -1,7 +1,10 @@
+import type { ApiDeleteResponse, ApiQueryResponseWithResult } from 'types-mediawiki-response';
+import { z } from 'zod';
 import { run, zhapi, cmapi } from '@/api';
 import { BotInstance } from '@/lib';
 import {
     booleanFilter,
+    createRateLimiter,
     getTimeData,
     updateTimeData,
     readGHFile,
@@ -9,11 +12,13 @@ import {
     dayjs,
 } from '@/utils';
 
+const inUsedRedirectSchema = z.record(z.string(), z.array(z.string()));
+
 const cmbot = new BotInstance(cmapi);
 
 const getRecentMoves = async (lestart: string, leend: string | undefined): Promise<string[]> => {
     try {
-        const { data } = await cmapi.post({
+        const { data } = await cmapi.post<ApiQueryResponseWithResult>({
             action: 'query',
             list: 'logevents',
             letype: 'move',
@@ -23,32 +28,31 @@ const getRecentMoves = async (lestart: string, leend: string | undefined): Promi
             leend,
         });
 
-        const files = data?.query?.logevents || [];
-        return files.map((e: { title: string }) => e.title);
+        const files = data?.query?.logevents ?? [];
+        return files.map(e => e.title).filter((title): title is string => Boolean(title));
     } catch (err) {
         console.error('获取移动日志出错:', err);
         return [];
     }
 };
 
-const deleteRedirect = async (titles: string[]) => {
-    await Promise.all(
-        titles.map(async title => {
-            await cmapi.postWithToken('csrf', {
-                action: 'delete',
-                title,
-                reason: '自动删除文件移动残留重定向',
-                tags: 'Bot',
-                bot: true,
-            });
-        }),
-    );
+const deleteRedirect = async (titles: string[]): Promise<void> => {
+    const limiter = createRateLimiter();
+    await limiter.map(titles, async title => {
+        await cmapi.postWithToken<ApiDeleteResponse>('csrf', {
+            action: 'delete',
+            title,
+            reason: '自动删除文件移动残留重定向',
+            tags: 'Bot',
+            bot: true,
+        });
+    });
 };
 
-const processRecord = async (lestart: string, inUsed: string[]) => {
+const processRecord = async (lestart: string, inUsed: string[]): Promise<void> => {
     const filepath = 'data/inUsedRedirect.json',
         { content, sha } = await readGHFile(filepath),
-        record = JSON.parse(content) as Record<string, string[]>,
+        record = inUsedRedirectSchema.parse(JSON.parse(content)),
         original = JSON.stringify(record);
 
     if (inUsed.length > 0) {

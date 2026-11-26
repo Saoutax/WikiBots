@@ -42,6 +42,12 @@ describe('getTimeData', () => {
 
         await expect(getTimeData('missing')).resolves.toBeUndefined();
     });
+
+    it('空 YAML 文件安全返回 undefined', async () => {
+        stubTimeYaml('');
+
+        await expect(getTimeData('anyTask')).resolves.toBeUndefined();
+    });
 });
 
 describe('updateTimeData', () => {

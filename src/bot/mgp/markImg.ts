@@ -1,14 +1,18 @@
+import { isNotNil } from 'es-toolkit';
+import pMap from 'p-map';
+import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
+import { z } from 'zod';
 import { run, zhapi, cmapi } from '@/api';
 import { BotInstance } from '@/lib';
-import { getTimeData, updateTimeData, dayjs } from '@/utils';
+import { createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/utils';
 import { collectRecentChanges } from '../modules';
 
-interface Config {
-    excludeCategory: string[];
-    excludePrefix: string[];
-    excludeTitle: string[];
-    excludeFile: string[];
-}
+const configSchema = z.object({
+    excludeCategory: z.array(z.string()),
+    excludePrefix: z.array(z.string()),
+    excludeTitle: z.array(z.string()),
+    excludeFile: z.array(z.string()),
+});
 
 const zhbot = new BotInstance(zhapi),
     cmbot = new BotInstance(cmapi);
@@ -37,11 +41,13 @@ const getPages = async (rcstart: string, rcend: string | undefined) => {
     return Array.from(pages);
 };
 
-const matchFiles = async (titles: string[]) => {
-    const matches: Record<string, string> = {};
+const matchFiles = async (titles: string[]): Promise<Map<string, string>> => {
+    const matches = new Map<string, string>();
 
-    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } =
-        await zhbot.getJson<Config>('User:SaoMikoto/Bot/config/markImg.json');
+    const { excludeCategory, excludePrefix, excludeTitle, excludeFile } = await zhbot.getJson(
+        'User:SaoMikoto/Bot/config/markImg.json',
+        configSchema,
+    );
 
     const exclude = [
         ...(await zhbot.queryCategory(excludeCategory, false, ['page'])),
@@ -72,7 +78,7 @@ const matchFiles = async (titles: string[]) => {
             if (extTest.test(file)) {
                 const fileName = `File:${file}`;
                 if (!excludeFile.includes(fileName)) {
-                    matches[fileName] = title;
+                    matches.set(fileName, title);
                 }
             }
         }
@@ -87,7 +93,7 @@ const matchFiles = async (titles: string[]) => {
             if (extTest.test(file)) {
                 const fileName = `File:${file}`;
                 if (!excludeFile.includes(fileName)) {
-                    matches[fileName] = title;
+                    matches.set(fileName, title);
                 }
             }
         }
@@ -96,10 +102,11 @@ const matchFiles = async (titles: string[]) => {
     return matches;
 };
 
-const notInCat = async (fileList: string[], category: string) => {
-    const results = await Promise.all(
-        fileList.map(async file => {
-            const { data } = await cmapi.post({
+const notInCat = async (fileList: string[], category: string): Promise<string[]> => {
+    const results = await pMap(
+        fileList,
+        async file => {
+            const { data } = await cmapi.post<ApiQueryResponseWithResult>({
                 action: 'query',
                 prop: 'categories',
                 titles: file,
@@ -109,17 +116,16 @@ const notInCat = async (fileList: string[], category: string) => {
             if (!page || page.missing) {
                 return null;
             }
-            const inCategory = page.categories?.some(
-                (cat: { title: string }) => cat.title === `Category:${category}`,
-            );
+            const inCategory = page.categories?.some(cat => cat.title === `Category:${category}`);
             return inCategory ? null : file;
-        }),
+        },
+        { concurrency: 5 },
     );
 
-    return results.filter(Boolean);
+    return results.filter(isNotNil);
 };
 
-const addTemplate = async (file: string, pageName: string) => {
+const addTemplate = async (file: string, pageName: string): Promise<void> => {
     await cmbot.edit({
         title: file,
         appendtext: `\n{{非链入使用|[[zhmoe:${pageName}]]}}`,
@@ -143,15 +149,12 @@ const addTemplate = async (file: string, pageName: string) => {
 
             const pages = await getPages(rcstart, rcend);
             const fileList = await matchFiles(pages);
-            const titles = Object.keys(fileList);
-            const needMark = await notInCat(titles, '非链入使用的文件');
+            const needMark = await notInCat([...fileList.keys()], '非链入使用的文件');
+            const limiter = createRateLimiter();
 
-            for (const file of needMark) {
-                if (!file) {
-                    continue;
-                }
-                await addTemplate(file, fileList[file]!);
-            }
+            await limiter.map(needMark, async file => {
+                await addTemplate(file, fileList.get(file)!);
+            });
 
             await updateTimeData('markImg', rcstart);
         },

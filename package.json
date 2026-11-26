@@ -32,13 +32,15 @@
         "mwn": "^3.0.3",
         "octokit": "^5.0.5",
         "opencc-js": "^1.4.2",
-        "p-limit": "^7.3.3",
+        "p-map": "^7.1.1",
+        "p-queue": "^10.0.0",
         "pinyin-pro": "^3.29.4",
         "tsx": "^4.23.15",
         "typescript": "^7.0.2",
         "wanakana": "^5.3.1",
         "wiki-saikou": "^7.6.0",
-        "wikiparser-node": "^2.1.0"
+        "wikiparser-node": "^2.1.0",
+        "zod": "^4.6.7"
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",

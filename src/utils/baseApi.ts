@@ -12,7 +12,9 @@ class BaseApi {
      * @param params - API 参数
      * @returns 响应中的 data 字段
      */
-    protected async queryData<T extends ApiQueryResult = ApiQueryResult>(params: MwApiParams) {
+    protected async queryData<T extends ApiQueryResult = ApiQueryResult>(
+        params: MwApiParams,
+    ): Promise<ApiQueryResponseWithResult & { query: T }> {
         const { data } = await this.api.post<ApiQueryResponseWithResult & { query: T }>(params);
         return data;
     }

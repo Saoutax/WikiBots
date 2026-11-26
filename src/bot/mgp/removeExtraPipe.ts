@@ -1,13 +1,12 @@
 import Parser from 'wikiparser-node';
 import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
-import type { PageContent } from '@/lib';
-import { getTimeData, updateTimeData, dayjs } from '@/utils';
+import { createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/utils';
 import { collectRecentChanges } from '../modules';
 
 const bot = new BotInstance(api);
 
-const getPages = async (rcstart: string, rcend: string | undefined) => {
+const getPages = async (rcstart: string, rcend: string | undefined): Promise<string[]> => {
     const titles = new Set<string>();
 
     await collectRecentChanges<{ title: string }>(
@@ -37,7 +36,7 @@ const getPages = async (rcstart: string, rcend: string | undefined) => {
         const pages = await getPages(rcstart, rcend),
             pageContent = await bot.batchQuery(pages);
 
-        const modify: Record<string, PageContent> = {};
+        const edits: { title: string; text: string; revid: number }[] = [];
         for (const [title, { content, revid }] of Object.entries(pageContent)) {
             const parsed = Parser.parse(content),
                 links = parsed.querySelectorAll<Parser.LinkToken>('link');
@@ -54,13 +53,14 @@ const getPages = async (rcstart: string, rcend: string | undefined) => {
                 }
             }
 
-            const newContent = parsed.toString();
-            if (newContent !== content) {
-                modify[title] = { content: newContent, revid };
+            const text = parsed.toString();
+            if (text !== content) {
+                edits.push({ title, text, revid });
             }
         }
 
-        for (const [title, { content: text, revid }] of Object.entries(modify)) {
+        const limiter = createRateLimiter();
+        await limiter.map(edits, async ({ title, text, revid }) => {
             await bot.edit({
                 title,
                 text,
@@ -69,7 +69,7 @@ const getPages = async (rcstart: string, rcend: string | undefined) => {
                 tags: 'Bot',
             });
             console.log(`√ ${title}`);
-        }
+        });
 
         await updateTimeData('removeExtraPipe', rcstart);
     });

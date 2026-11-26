@@ -1,5 +1,6 @@
+import type { ApiQueryResponseWithResult, InfoPage, QueryPage } from 'types-mediawiki-response';
 import { EditPage } from '@/lib/edit';
-import { BaseApi } from '@/utils';
+import { BaseApi, createRateLimiter } from '@/utils';
 
 interface PageMap {
     [title: string]: {
@@ -8,48 +9,45 @@ interface PageMap {
     };
 }
 
-interface Pages {
-    title: string;
-    revisions: [
-        {
-            timestamp: string;
-            revid: number;
-        },
-    ];
-    touched: string;
-}
-
 class CleanSandbox extends BaseApi {
     #edit = new EditPage(this.api);
 
-    main = async (pageMap: PageMap) => {
+    main = async (pageMap: PageMap): Promise<void> => {
         const {
             data: {
-                query: { pages },
+                query: { pages = [] },
             },
-        } = await this.api.post<{ query: { pages: Pages[] } }>({
+        } = await this.api.post<
+            ApiQueryResponseWithResult & {
+                query: { pages?: (QueryPage<'revisions'> & InfoPage)[] };
+            }
+        >({
             prop: 'revisions|info',
             titles: Object.keys(pageMap),
             rvprop: 'timestamp|ids',
             inprop: 'touched',
         });
-        await Promise.all(
-            pages.map(async ({ title, revisions: [{ timestamp, revid }], touched }) => {
-                const minutes = (Date.now() - new Date(touched || timestamp).getTime()) / 60000;
-                if (minutes > 180) {
-                    await this.#edit.edit({
-                        title,
-                        text: pageMap[title]!.content,
-                        baserevid: revid,
-                        summary: pageMap[title]!.summary,
-                        tags: 'Bot',
-                    });
-                    console.log('Success.');
-                } else {
-                    console.log(`${title} 在 ${minutes.toFixed(1)} 分钟前存在编辑，跳过。`);
-                }
-            }),
-        );
+        const limiter = createRateLimiter();
+        await limiter.map(pages, async ({ title, revisions, touched }) => {
+            const rev = revisions?.[0];
+            if (!title || !rev) {
+                return;
+            }
+            const minutes =
+                (Date.now() - new Date(touched || rev.timestamp || 0).getTime()) / 60000;
+            if (minutes > 180) {
+                await this.#edit.edit({
+                    title,
+                    text: pageMap[title]!.content,
+                    ...(rev.revid !== undefined ? { baserevid: rev.revid } : {}),
+                    summary: pageMap[title]!.summary,
+                    tags: 'Bot',
+                });
+                console.log('Success.');
+            } else {
+                console.log(`${title} 在 ${minutes.toFixed(1)} 分钟前存在编辑，跳过。`);
+            }
+        });
     };
 }
 

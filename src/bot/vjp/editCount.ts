@@ -1,3 +1,4 @@
+import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import { run, vjpapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 
@@ -7,11 +8,9 @@ const bot = new BotInstance(api);
     await run({ api, site: 'vjp' }, async () => {
         const {
             data: {
-                query: { allusers },
+                query: { allusers = [] },
             },
-        } = await api.postWithToken<{
-            query: { allusers: [{ userid: number; name: string; editcount: number }] };
-        }>('csrf', {
+        } = await api.postWithToken<ApiQueryResponseWithResult>('csrf', {
             list: 'allusers',
             auexcludegroup: 'bot',
             auprop: 'editcount',
@@ -19,7 +18,7 @@ const bot = new BotInstance(api);
             auwitheditsonly: 1,
         });
 
-        const count = allusers.map(user => [user.name, user.editcount]);
+        const count = allusers.map(user => [user.name, user.editcount ?? 0] as const);
 
         let text = '* 本页面是由[[U:MisakaNetwork|机器人]]生成的全站累计编辑统计。\n';
         text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n';

@@ -7,6 +7,8 @@ export { parseThread, parsedToString } from './parseThread';
 export { readGHFile, writeGHFile } from './readAndWrite';
 export { getTimeData, updateTimeData } from './recordTime';
 export { delay } from './delay';
+export { createRateLimiter } from './rateLimit';
+export type { RateLimitOptions, RateLimiter } from './rateLimit';
 export { dayjs } from './time';
 export { variantConverter } from './variantConverter';
 export { deriveTalkPage, sameTitle } from './title';

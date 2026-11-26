@@ -1,5 +1,5 @@
 import { BotInstance } from '@/lib';
-import { BaseApi, getTimeData, updateTimeData, dayjs } from '@/utils';
+import { BaseApi, createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/utils';
 
 interface PageMap {
     title: string;
@@ -293,28 +293,24 @@ class InvisibleCharacter extends BaseApi {
             });
         }
 
-        const failed: string[] = [];
-        await Promise.all(
-            result.map(async ({ title, text, revid, summary }) => {
-                try {
-                    await bot.edit({
-                        title,
-                        text,
-                        baserevid: revid,
-                        summary,
-                        tags: 'Bot',
-                        nocreate: true,
-                    });
-                    console.log(`Done: ${title}`);
-                } catch (error) {
-                    failed.push(title);
-                    console.error(
-                        `Failed: ${title}`,
-                        error instanceof Error ? error.message : error,
-                    );
-                }
-            }),
-        );
+        const failed: string[] = [],
+            limiter = createRateLimiter();
+        await limiter.map(result, async ({ title, text, revid, summary }) => {
+            try {
+                await bot.edit({
+                    title,
+                    text,
+                    baserevid: revid,
+                    summary,
+                    tags: 'Bot',
+                    nocreate: true,
+                });
+                console.log(`Done: ${title}`);
+            } catch (error) {
+                failed.push(title);
+                console.error(`Failed: ${title}`, error instanceof Error ? error.message : error);
+            }
+        });
 
         if (kept.size > 0) {
             console.log(`Kept meaningful characters: ${formatCounts(kept)}`);

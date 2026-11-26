@@ -7,7 +7,7 @@
  * formatNamespace([0, 2, 4]); // '0|2|4'
  * formatNamespace([]); // '*'
  */
-const formatNamespace = (namespace: number[]) => {
+const formatNamespace = (namespace: number[]): string => {
     return namespace.length === 0 ? '*' : namespace.join('|');
 };
 

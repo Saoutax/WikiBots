@@ -30,47 +30,47 @@ class BotInstance {
         this.#api = api;
     }
 
-    get batchQuery() {
+    get batchQuery(): BatchQuery['query'] {
         return (this.#batchQuery ??= new BatchQuery(this.#api)).query;
     }
 
-    get checkExist() {
+    get checkExist(): CheckExist['check'] {
         return (this.#checkExist ??= new CheckExist(this.#api)).check;
     }
 
-    get checkGlobalUsage() {
+    get checkGlobalUsage(): CheckGlobalUsage['check'] {
         return (this.#checkGlobalUsage ??= new CheckGlobalUsage(this.#api)).check;
     }
 
-    get checkRedirect() {
+    get checkRedirect(): CheckRedirects['check'] {
         return (this.#checkRedirect ??= new CheckRedirects(this.#api)).check;
     }
 
-    get edit() {
+    get edit(): EditPage['edit'] {
         return (this.#edit ??= new EditPage(this.#api)).edit;
     }
 
-    get flagDelete() {
+    get flagDelete(): FlagDelete['del'] {
         return (this.#flagDelete ??= new FlagDelete(this.#api)).del;
     }
 
-    get getContent() {
+    get getContent(): GetContent['get'] {
         return (this.#getContent ??= new GetContent(this.#api)).get;
     }
 
-    get getEmbedded() {
+    get getEmbedded(): GetEmbedded['get'] {
         return (this.#getEmbedded ??= new GetEmbedded(this.#api)).get;
     }
 
-    get getJson() {
+    get getJson(): GetJson['get'] {
         return (this.#getJson ??= new GetJson(this.#api)).get;
     }
 
-    get getLinked() {
+    get getLinked(): GetLinked['get'] {
         return (this.#getLinked ??= new GetLinked(this.#api)).get;
     }
 
-    get queryCategory() {
+    get queryCategory(): QueryCategory['query'] {
         return (this.#queryCategory ??= new QueryCategory(this.#api)).query;
     }
 }

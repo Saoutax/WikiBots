@@ -129,6 +129,11 @@ vi.mock('@/utils', async importOriginal => {
         ...actual,
         // 避免真实等待
         delay: async () => {},
+        createRateLimiter: () => ({
+            run: <T>(fn: () => Promise<T>) => fn(),
+            map: <T, R>(items: readonly T[], fn: (item: T, index: number) => Promise<R>) =>
+                Promise.all(items.map((item, index) => fn(item, index))),
+        }),
         // 隔离 GitHub 上的时间戳记录
         getTimeData: async () => runtime.timeData,
         updateTimeData: async (name: string, time: string) => {

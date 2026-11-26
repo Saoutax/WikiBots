@@ -1,10 +1,12 @@
+import pMap from 'p-map';
 import Parser from 'wikiparser-node';
 import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
+import { createRateLimiter } from '@/utils';
 
 const bot = new BotInstance(api);
 
-const format = (num: number) => {
+const format = (num: number): string => {
     if (num < 500) {
         return `${num}`;
     } else if (num < 1000) {
@@ -14,12 +16,14 @@ const format = (num: number) => {
     }
 };
 
-const getNewCount = async (templates: string[]) => {
-    const result: Record<string, string> = {};
-    await Promise.all(
-        templates.map(async title => {
-            result[title] = format((await bot.getEmbedded(title)).length);
-        }),
+const getNewCount = async (templates: string[]): Promise<Map<string, string>> => {
+    const result = new Map<string, string>();
+    await pMap(
+        templates,
+        async title => {
+            result.set(title, format((await bot.getEmbedded(title)).length));
+        },
+        { concurrency: 5 },
     );
     return result;
 };
@@ -32,30 +36,29 @@ const getNewCount = async (templates: string[]) => {
             risk = riskDocs.map(item => item.replace('/doc', ''));
 
         const newCount = await getNewCount(risk);
-
         const pageContent = await bot.batchQuery(riskDocs);
-        await Promise.all(
-            Object.entries(pageContent).map(async ([title, { content, revid }]) => {
-                const root = Parser.parse(content),
-                    highRiskTemplate = root.querySelector<Parser.TranscludeToken>(
-                        'template[name="Template:High-risk"]',
-                    ),
-                    count = highRiskTemplate?.getValue(1),
-                    newNum = newCount[title];
-                if (count !== newNum && newNum) {
-                    highRiskTemplate?.setValue('1', `${newNum}`);
-                    await bot.edit({
-                        title,
-                        text: root.toString(),
-                        baserevid: revid,
-                        summary: '更新模板链入数据',
-                        tags: 'Bot',
-                    });
-                    console.log(`${title}：「${count}」→「${newNum}」`);
-                } else {
-                    console.log(`Skipped: ${title}`);
-                }
-            }),
-        );
+        const limiter = createRateLimiter();
+
+        await limiter.map(Object.entries(pageContent), async ([title, { content, revid }]) => {
+            const root = Parser.parse(content),
+                highRiskTemplate = root.querySelector<Parser.TranscludeToken>(
+                    'template[name="Template:High-risk"]',
+                ),
+                count = highRiskTemplate?.getValue(1),
+                newNum = newCount.get(title.replace(/\/doc$/u, ''));
+            if (count !== newNum && newNum) {
+                highRiskTemplate?.setValue('1', `${newNum}`);
+                await bot.edit({
+                    title,
+                    text: root.toString(),
+                    baserevid: revid,
+                    summary: '更新模板链入数据',
+                    tags: 'Bot',
+                });
+                console.log(`${title}：「${count}」→「${newNum}」`);
+            } else {
+                console.log(`Skipped: ${title}`);
+            }
+        });
     });
 })();

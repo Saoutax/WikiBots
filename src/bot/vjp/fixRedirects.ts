@@ -1,15 +1,10 @@
+import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import Parser from 'wikiparser-node';
 import { run, vjpapi as api } from '@/api';
 import { BotInstance } from '@/lib';
-import type { PageContent } from '@/lib';
-import { splitAndJoin, variantConverter } from '@/utils';
+import { createRateLimiter, splitAndJoin, variantConverter } from '@/utils';
 
 const bot = new BotInstance(api);
-
-interface MWRedirects {
-    from: string;
-    to: string;
-}
 
 /**
  * 规范化为解析器中 `CategoryToken.name` 的形式（空格写作下划线、首字母大写等）
@@ -23,23 +18,27 @@ const normalize = (title: string) => Parser.normalizeTitle(title).title;
         const original = await bot.queryCategory('Category:尚未清空的已重定向分类', false, [
             'subcat',
         ]);
+        const limiter = createRateLimiter();
 
         for (const titles of splitAndJoin(original)) {
             const {
                 data: {
                     query: { redirects = [] },
                 },
-            } = await api.post<{ query: { redirects?: MWRedirects[] } }>({
+            } = await api.post<ApiQueryResponseWithResult>({
                 action: 'query',
                 titles,
                 redirects: true,
             });
 
             for (const { from, to } of redirects) {
+                if (!from || !to) {
+                    continue;
+                }
                 const pages = await bot.queryCategory(from, false, ['file', 'page', 'subcat']),
                     pageContent = await bot.batchQuery(pages),
                     names = new Set(variantConverter(from).map(normalize)),
-                    result: Record<string, PageContent> = {};
+                    edits: { title: string; text: string; revid: number }[] = [];
 
                 console.log(`[[${from}]] → [[${to}]]：${pages.length} 个页面`);
 
@@ -49,17 +48,17 @@ const normalize = (title: string) => Parser.normalizeTitle(title).title;
                             .querySelectorAll<Parser.CategoryToken>('category')
                             .filter(oldCat => names.has(oldCat.name));
                     targets.forEach(oldCat => oldCat.setTarget(to));
-                    const newContent = root.toString();
-                    if (content !== newContent) {
-                        result[title] = { content: newContent, revid };
+                    const text = root.toString();
+                    if (content !== text) {
+                        edits.push({ title, text, revid });
                     }
                 }
 
-                if (pages.length > 0 && Object.keys(result).length === 0) {
+                if (pages.length > 0 && edits.length === 0) {
                     console.log(`未找到需修复的分类链接（可能由模板引入）：[[${from}]]`);
                 }
 
-                for (const [title, { content: text, revid }] of Object.entries(result)) {
+                await limiter.map(edits, async ({ title, text, revid }) => {
                     await bot.edit({
                         title,
                         text,
@@ -68,7 +67,7 @@ const normalize = (title: string) => Parser.normalizeTitle(title).title;
                         tags: 'Bot',
                     });
                     console.log(`${title}: ${from} → ${to}`);
-                }
+                });
             }
         }
     });

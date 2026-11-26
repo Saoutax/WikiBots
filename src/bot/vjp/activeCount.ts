@@ -1,3 +1,4 @@
+import type { Dayjs } from 'dayjs';
 import { run, vjpapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 import { dayjs } from '@/utils';
@@ -5,11 +6,14 @@ import { collectRecentChanges } from '../modules';
 
 const bot = new BotInstance(api);
 
-const timestampCST = (ts: string) =>
-    dayjs(ts).tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss [(CST)]');
+const timestampCST = (ts: Dayjs): string =>
+    ts.tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss [(CST)]');
 
-const getRecentChanges = async (start: string, end: string) => {
-    const users = new Map();
+const getRecentChanges = async (
+    start: string,
+    end: string,
+): Promise<Map<string, { count: number; latest: Dayjs }>> => {
+    const users = new Map<string, { count: number; latest: Dayjs }>();
 
     await collectRecentChanges<{ comment?: string; user: string; timestamp: string }>(
         api,

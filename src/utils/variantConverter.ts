@@ -11,7 +11,7 @@ const fromTW = OpenCC.Converter({ from: 'tw', to: 'cn' }),
  * @param input - 待转换的文本
  * @returns [zh-cn, zh-tw, zh-hk]
  */
-const variantConverter = (input: string) => {
+const variantConverter = (input: string): string[] => {
     const simplified = fromHK(fromTW(input));
 
     return [...new Set([simplified, toTW(simplified), toHK(simplified), input])];

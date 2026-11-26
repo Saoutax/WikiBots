@@ -1,10 +1,12 @@
+import type { ApiDeleteResponse } from 'types-mediawiki-response';
+import { z } from 'zod';
 import { run, zhapi, cmapi } from '@/api';
 import { BotInstance } from '@/lib';
-import { booleanFilter } from '@/utils';
+import { booleanFilter, createRateLimiter } from '@/utils';
 
-interface Config {
-    categories: string[];
-}
+const configSchema = z.object({
+    categories: z.array(z.string()),
+});
 
 (async () => {
     await run(
@@ -16,27 +18,27 @@ interface Config {
             const zhbot = new BotInstance(zhapi),
                 cmbot = new BotInstance(cmapi);
 
-            const { categories } = await zhbot.getJson<Config>(
+            const { categories } = await zhbot.getJson(
                 'User:SaoMikoto/Bot/config/deleteUnused.json',
+                configSchema,
             );
 
             const files = await cmbot.queryCategory(categories, true, ['file']),
                 unlink = await cmbot.queryCategory('Category:非链入使用的文件', false, ['file']);
 
             const { isFalse } = booleanFilter(await cmbot.checkGlobalUsage(files)),
-                needDel = isFalse.filter(item => !unlink.includes(item));
+                needDel = isFalse.filter(item => !unlink.includes(item)),
+                limiter = createRateLimiter();
 
-            await Promise.all(
-                needDel.map(async title => {
-                    await cmapi.postWithToken('csrf', {
-                        action: 'delete',
-                        title,
-                        reason: '无使用或不再使用的文件',
-                        tags: 'Bot',
-                        bot: true,
-                    });
-                }),
-            );
+            await limiter.map(needDel, async title => {
+                await cmapi.postWithToken<ApiDeleteResponse>('csrf', {
+                    action: 'delete',
+                    title,
+                    reason: '无使用或不再使用的文件',
+                    tags: 'Bot',
+                    bot: true,
+                });
+            });
 
             console.log(needDel.length > 0 ? 'All unused deleted.' : 'No file need to delete.');
         },

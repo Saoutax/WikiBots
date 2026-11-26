@@ -12,7 +12,7 @@ class GetEmbedded extends BaseApi {
         title: string,
         namespace: number[] = [],
         eifilterredir: 'all' | 'nonredirects' | 'redirects' = 'nonredirects',
-    ) => {
+    ): Promise<string[]> => {
         const result: string[] = [],
             einamespace = formatNamespace(namespace);
 

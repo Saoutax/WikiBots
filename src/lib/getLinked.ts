@@ -1,3 +1,5 @@
+import pMap from 'p-map';
+import type { QueryPage } from 'types-mediawiki-response';
 import { BaseApi, formatNamespace, splitAndJoin } from '@/utils';
 
 class GetLinked extends BaseApi {
@@ -7,6 +9,7 @@ class GetLinked extends BaseApi {
      * @param namespace - 命名空间编号数组
      * @param redirect - 查询重定向设定
      * @param size - 分组大小，默认为 500
+     * @param limit - 并发数量，默认为 5
      * @returns 对象，键为页面名，值为链入页面数组
      */
     get = async (
@@ -14,17 +17,19 @@ class GetLinked extends BaseApi {
         namespace: number[] = [],
         redirect = false,
         size = 500,
-    ) => {
+        limit = 5,
+    ): Promise<Record<string, string[]>> => {
         const result: Record<string, string[]> = {},
             lhnamespace = formatNamespace(namespace);
-        await Promise.all(
-            splitAndJoin(Array.isArray(titles) ? titles : [titles], size).map(async group => {
+        await pMap(
+            splitAndJoin(Array.isArray(titles) ? titles : [titles], size),
+            async group => {
                 let lhcontinue: string | undefined;
                 do {
                     const {
                         query: { pages = [] },
                         continue: cont,
-                    } = await this.queryData({
+                    } = await this.queryData<{ pages?: QueryPage<'linkshere'>[] }>({
                         action: 'query',
                         prop: 'linkshere',
                         titles: group,
@@ -50,7 +55,8 @@ class GetLinked extends BaseApi {
                     }
                     lhcontinue = cont?.lhcontinue;
                 } while (lhcontinue);
-            }),
+            },
+            { concurrency: limit },
         );
         return result;
     };

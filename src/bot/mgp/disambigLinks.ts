@@ -2,6 +2,7 @@ import { pinyin } from 'pinyin-pro';
 import { toRomaji } from 'wanakana';
 import { run, zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
+import { createRateLimiter } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -64,26 +65,26 @@ const grouping = (obj: Record<string, string[]>) => {
     return result;
 };
 
-const generateReport = (obj: Record<string, Record<string, string[]>>) => {
-    const result: Record<string, string> = {};
+const generateReport = (
+    obj: Record<string, Record<string, string[]>>,
+): { title: string; text: string }[] => {
+    const reports: { title: string; text: string }[] = [];
 
-    for (const page of Object.keys(obj)) {
-        const entries = obj[page] || {};
+    for (const [page, entries] of Object.entries(obj)) {
         let text = '* 本页面是由[[U:机娘亚衣琴|机器人]]生成的疑似链入消歧义页面的条目报告。\n';
         text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n';
         text += '{| class="wikitable"\n';
         text += '|+\n! width="10%" | 消歧义页面\n! width="90%" | 链入消歧义页面的条目\n';
-        for (const key of Object.keys(entries)) {
-            const arr = Array.isArray(entries[key]) ? entries[key] : [];
+        for (const [key, arr] of Object.entries(entries)) {
             const values = arr.map(v => `[[${v}]]`).join('、');
             text += '|-\n';
             text += `| [[${key}]] || ${values}\n`;
         }
         text += '|}\n\n[[Category:萌娘百科数据报告]]';
-        result[page] = text;
+        reports.push({ title: page, text });
     }
 
-    return result;
+    return reports;
 };
 
 (async () => {
@@ -95,18 +96,17 @@ const generateReport = (obj: Record<string, Record<string, string[]>>) => {
         const deDuplicate = processObject(disambig, linkPages);
         console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
 
-        const report = generateReport(grouping(deDuplicate));
+        const reports = generateReport(grouping(deDuplicate));
+        const limiter = createRateLimiter();
 
-        await Promise.all(
-            Object.entries(report).map(async ([title, text]) => {
-                await bot.edit({
-                    title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
-                    text,
-                    summary: '更新数据报告',
-                    tags: 'Bot',
-                });
-                console.log(`Done: ${title}`);
-            }),
-        );
+        await limiter.map(reports, async ({ title, text }) => {
+            await bot.edit({
+                title: `萌娘百科:疑似链入消歧义页面的条目/${title}`,
+                text,
+                summary: '更新数据报告',
+                tags: 'Bot',
+            });
+            console.log(`Done: ${title}`);
+        });
     });
 })();

@@ -7,7 +7,7 @@ class CheckExist extends BaseApi {
      * @param title 页面标题
      * @returns 检查结果
      */
-    check = async (title: string) => {
+    check = async (title: string): Promise<boolean> => {
         const pages = await this.queryPages<InfoPage>({
             action: 'query',
             prop: 'info',

@@ -1,3 +1,4 @@
+import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import { run, vjpapi as api } from '@/api';
 import { BotInstance } from '@/lib';
 import { dayjs } from '@/utils';
@@ -31,18 +32,13 @@ const getLastDayEditCount = async () => {
     await run({ api, site: 'vjp' }, async () => {
         const {
             data: {
-                query: {
-                    statistics: { articles, edits, users, activeusers },
-                },
+                query: { statistics: siteStats },
             },
-        } = await api.get<{
-            query: {
-                statistics: { articles: number; edits: number; users: number; activeusers: number };
-            };
-        }>({
+        } = await api.get<ApiQueryResponseWithResult>({
             meta: 'siteinfo',
             siprop: 'statistics',
         });
+        const { articles, edits, users, activeusers } = siteStats!;
 
         const editCount = await getLastDayEditCount(),
             title = 'Template:站点数据.json',

@@ -2,7 +2,7 @@ import Parser from 'wikiparser-node';
 import { run, qwapi as api } from '@/api';
 import { names } from '@/config/Internal_link_helper.json';
 import { BotInstance } from '@/lib';
-import { delay } from '@/utils';
+import { createRateLimiter } from '@/utils';
 
 const bot = new BotInstance(api);
 
@@ -15,9 +15,10 @@ const bot = new BotInstance(api);
         );
 
         const pageContent = await bot.batchQuery(pages, 500, 3, 5000);
-
+        const limiter = createRateLimiter({ concurrency: 1, interval: 3000, intervalCap: 1 });
         const selector = `template:is(#${names.join(', #')})`;
-        for (const [title, { content, revid }] of Object.entries(pageContent)) {
+
+        await limiter.map(Object.entries(pageContent), async ([title, { content, revid }]) => {
             const root = Parser.parse(content),
                 templates = root.querySelectorAll<Parser.TranscludeToken>(selector);
 
@@ -29,8 +30,7 @@ const bot = new BotInstance(api);
                     summary: '机器人：零编辑',
                 });
                 console.log(`NULLEDIT: ${title}`);
-                await delay();
-                continue;
+                return;
             }
 
             for (const template of templates) {
@@ -48,8 +48,7 @@ const bot = new BotInstance(api);
                     summary: '机器人：移除已弃用模板',
                 });
                 console.log(`REPLACED: ${title}`);
-                await delay();
             }
-        }
+        });
     });
 })();

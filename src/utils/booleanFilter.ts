@@ -20,7 +20,12 @@
  * //   isFalse: ['deleted', 'archived']
  * // }
  */
-const booleanFilter = (input: Record<string, boolean>) => {
+interface BooleanFilterResult {
+    isTrue: string[];
+    isFalse: string[];
+}
+
+const booleanFilter = (input: Record<string, boolean>): BooleanFilterResult => {
     const result = {
         isTrue: [] as string[],
         isFalse: [] as string[],

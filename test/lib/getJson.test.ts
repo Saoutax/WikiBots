@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { z } from 'zod';
 import { GetJson } from '@/lib/getJson';
 import { createApiStub } from '../helpers/api';
 
@@ -51,5 +52,31 @@ describe('GetJson', () => {
         const { get } = new GetJson(api);
 
         await expect(get('Config')).rejects.toThrow('Failed to get content of Config: []');
+    });
+
+    it('传入 Zod schema 时校验合法结构并在结构不符时抛出 ZodError', async () => {
+        const { api, post } = createApiStub();
+        const schema = z.object({ a: z.number(), b: z.string() });
+        const { get } = new GetJson(api);
+
+        post.mockResolvedValueOnce({
+            data: {
+                query: {
+                    pages: [
+                        { title: 'Config', revisions: [{ content: '{"a":1,"b":"ok"}', revid: 7 }] },
+                    ],
+                },
+            },
+        });
+        await expect(get('Config', schema)).resolves.toEqual({ a: 1, b: 'ok' });
+
+        post.mockResolvedValueOnce({
+            data: {
+                query: {
+                    pages: [{ title: 'Config', revisions: [{ content: '{"a":"bad"}', revid: 8 }] }],
+                },
+            },
+        });
+        await expect(get('Config', schema)).rejects.toThrow(z.ZodError);
     });
 });

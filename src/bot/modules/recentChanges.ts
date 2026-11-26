@@ -1,3 +1,4 @@
+import type { ApiQueryResponseWithResult, ApiRecentChange } from 'types-mediawiki-response';
 import type { MediaWikiApi, MwApiParams } from 'wiki-saikou';
 
 /**
@@ -7,14 +8,16 @@ import type { MediaWikiApi, MwApiParams } from 'wiki-saikou';
  * @param params - recentchanges 查询参数
  * @param collect - 每页数据的处理回调
  */
-const collectRecentChanges = async <T>(
+const collectRecentChanges = async <T = ApiRecentChange>(
     api: MediaWikiApi,
     params: MwApiParams,
     collect: (list: T[]) => void,
-) => {
-    let rccontinue: string | undefined;
+): Promise<void> => {
+    let rccontinue: string | number | undefined;
     do {
-        const { data } = await api.post<{ query: { recentchanges?: T[] } }>({
+        const { data } = await api.post<
+            ApiQueryResponseWithResult & { query: { recentchanges?: T[] } }
+        >({
             list: 'recentchanges',
             ...params,
             rccontinue,

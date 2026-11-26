@@ -14,7 +14,7 @@ class QueryCategory extends BaseApi {
         recursive = false,
         type: ('page' | 'subcat' | 'file')[] = ['page', 'subcat', 'file'],
         namespace: number[] = [],
-    ) => {
+    ): Promise<string[]> => {
         const result: Set<string> = new Set(),
             visited: Set<string> = new Set(),
             cmtype = type.join('|'),

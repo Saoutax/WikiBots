@@ -10,6 +10,14 @@
         "typescript/no-base-to-string": ["error", { "ignoredTypeNames": ["Token"] }],
         "import/no-duplicates": "error"
     },
+    "overrides": [
+        {
+            "files": ["src/lib/**/*.ts", "src/utils/**/*.ts"],
+            "rules": {
+                "typescript/explicit-module-boundary-types": "error"
+            }
+        }
+    ],
     "env": {
         "builtin": true
     },
