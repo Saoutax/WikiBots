@@ -1,4 +1,7 @@
-import { load } from 'js-yaml';
+import { CronExpressionParser } from 'cron-parser';
+import { isMap, isNode, isScalar, parseDocument } from 'yaml';
+import type { Pair } from 'yaml';
+import { z } from 'zod';
 
 /**
  * 站点 README 的生成逻辑
@@ -22,20 +25,52 @@ const WEEKDAY_NAMES = ['日', '一', '二', '三', '四', '五', '六'];
 /** 显示与排序时按周一在前排列。 */
 const WEEKDAY_RANK: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
 
-/** job 说明注释的标记，兼容全角与半角冒号。 */
-const DESCRIPTION_PATTERN = /^\s*#\s*说明\s*[:：]\s*(.+?)\s*$/;
-
-/** YAML 中形如 `key:` 的行，缩进不超过 4 个空格时视为 job 或顶层键。 */
-const KEY_LINE_PATTERN = /^\s{0,4}[^\s#][^:]*:\s*(#.*)?$/;
-
-/** 缩进不超过 4 个空格的注释属于 job 级，标志当前 job 块结束。 */
-const JOB_LEVEL_COMMENT_PATTERN = /^\s{0,4}#/;
+/** job 说明注释的标记（yaml AST 的 comment 已去除 `#`），兼容全角与半角冒号。 */
+const DESCRIPTION_PATTERN = /^\s*说明\s*[:：]\s*(.+?)\s*$/;
 
 /** 站点脚本路径，如 `src/bot/mgp/deleteRedirect.ts`。 */
 const SCRIPT_PATH_PATTERN = /^src\/bot\/([^/]+)\/([^/]+)\.ts$/;
 
 /** job 步骤中的脚本入口。 */
 const TSX_PATTERN = /npx\s+tsx\s+(\S+)/;
+
+const JobDefinitionSchema = z
+    .object({
+        if: z.string().optional(),
+        steps: z
+            .array(
+                z
+                    .object({
+                        run: z.string().optional(),
+                    })
+                    .loose(),
+            )
+            .optional(),
+    })
+    .loose();
+
+const WorkflowDocSchema = z
+    .object({
+        name: z.string().optional(),
+        on: z
+            .object({
+                schedule: z
+                    .array(
+                        z
+                            .object({
+                                cron: z.string().optional(),
+                            })
+                            .loose(),
+                    )
+                    .optional(),
+            })
+            .loose()
+            .optional(),
+        jobs: z.record(z.string(), JobDefinitionSchema).optional(),
+    })
+    .loose();
+
+type JobDefinition = z.infer<typeof JobDefinitionSchema>;
 
 interface WorkflowFile {
     /** workflow 文件名，如 `MGP daily.yaml` */
@@ -76,25 +111,6 @@ interface ReadmeResult {
     scripts: string[];
 }
 
-interface ScheduleEntry {
-    cron?: string;
-}
-
-interface JobStep {
-    run?: string;
-}
-
-interface JobDefinition {
-    if?: string;
-    steps?: JobStep[];
-}
-
-interface WorkflowDoc {
-    name?: string;
-    on?: { schedule?: ScheduleEntry[] };
-    jobs?: Record<string, JobDefinition>;
-}
-
 interface JobRecord {
     site: string;
     task: string;
@@ -119,45 +135,38 @@ interface Badge {
     fileName: string;
 }
 
-const parseInteger = (value: string, min: number, max: number, label: string, cron: string) => {
-    if (!/^\d+$/.test(value)) {
-        throw new Error(`${label}不是整数：${cron}`);
-    }
-
-    const parsed = Number(value);
-    if (parsed < min || parsed > max) {
-        throw new Error(`${label}超出 ${min} 到 ${max} 的范围：${cron}`);
-    }
-
-    return parsed;
-};
-
 /**
  * 解析 cron 表达式，返回 UTC 时间换算成 CST 后的执行时刻
  *
- * 只支持「分钟 小时 * * 星期」这一形态，小时可以是逗号分隔的列表。
+ * 使用 cron-parser 解析并校验字段范围，业务上仅支持「单分钟 小时列表 * * 单星期(或*)」。
  */
 const parseCron = (cron: string): CronTime[] => {
-    const fields = cron.trim().split(/\s+/);
-    if (fields.length !== 5) {
+    if (cron.trim().split(/\s+/).length !== 5) {
         throw new Error(`cron 需要 5 个字段：${cron}`);
     }
 
-    const [minuteField, hourField, dayField, monthField, weekdayField] = fields;
-    if (!minuteField || !hourField || !dayField || !monthField || !weekdayField) {
-        throw new Error(`cron 存在空字段：${cron}`);
-    }
-
-    if (dayField !== '*' || monthField !== '*') {
+    const { fields } = CronExpressionParser.parse(cron);
+    if (!fields.dayOfMonth.isWildcard || !fields.month.isWildcard) {
         throw new Error(`不支持指定日期或月份的 cron：${cron}`);
     }
+    if (fields.minute.isWildcard || fields.minute.values.length !== 1) {
+        throw new Error(`分钟只支持单个整数：${cron}`);
+    }
+    if (fields.hour.isWildcard) {
+        throw new Error(`小时不支持通配符：${cron}`);
+    }
+    if (!fields.dayOfWeek.isWildcard && fields.dayOfWeek.values.length !== 1) {
+        throw new Error(`星期只支持单个整数或 *：${cron}`);
+    }
 
-    const minute = parseInteger(minuteField, 0, 59, '分钟', cron);
-    const hours = hourField.split(',').map(hour => parseInteger(hour, 0, 23, '小时', cron));
-    const weekday =
-        weekdayField === '*' ? null : parseInteger(weekdayField, 0, 7, '星期', cron) % 7;
+    const minute = fields.minute.values[0]!;
+    const rawWeekday = fields.dayOfWeek.values[0];
+    if (!fields.dayOfWeek.isWildcard && typeof rawWeekday !== 'number') {
+        throw new Error(`星期只支持单个整数或 *：${cron}`);
+    }
+    const weekday = fields.dayOfWeek.isWildcard ? null : Number(rawWeekday) % 7;
 
-    return hours.map(hour => {
+    return fields.hour.values.map(hour => {
         const total = hour * 60 + minute + CST_OFFSET_MINUTES;
 
         return {
@@ -236,55 +245,46 @@ const readCrons = (condition: string | undefined): string[] => {
     return [...(condition ?? '').matchAll(pattern)].flatMap(match => (match[1] ? [match[1]] : []));
 };
 
-const findJobLine = (lines: string[], jobName: string) => {
-    for (let index = 0; index < lines.length; index++) {
-        const line = lines[index] ?? '';
-        const match = /^(\s*)([^\s#][^:]*):\s*$/.exec(line);
-        if (match && match[2] === jobName && (match[1] ?? '').length < 8) {
-            return index;
-        }
+const extractDescriptionLines = (comment: string | null | undefined): string[] => {
+    if (!comment) {
+        return [];
     }
 
-    return -1;
+    return comment
+        .split(/\r?\n/)
+        .map(line => DESCRIPTION_PATTERN.exec(line)?.[1]?.trim())
+        .filter((value): value is string => Boolean(value));
 };
 
 /**
- * 读取 job 的说明注释
+ * 从 YAML AST 节点读取 job 的说明注释
  *
  * 注释可以写在 job 上方，也可以写在 job 块内；两处内容不一致时报错。
+ * 第一个 job 上方的注释在 yaml AST 中会附着在父级 `jobs` Map 的 `commentBefore` 上。
  */
-const readDescription = (raw: string, jobName: string, fileName: string) => {
-    const lines = raw.split(/\r?\n/);
-    const start = findJobLine(lines, jobName);
-    if (start === -1) {
-        throw new Error(`${fileName} → ${jobName}：没有找到 job 定义`);
+const readDescription = (
+    pair: Pair,
+    jobName: string,
+    fileName: string,
+    leadingComment?: string | null,
+) => {
+    const comments: Array<string | null | undefined> = [leadingComment];
+
+    if (isNode(pair.key)) {
+        comments.push(pair.key.commentBefore, pair.key.comment);
+    }
+    if (isNode(pair.value)) {
+        comments.push(pair.value.commentBefore, pair.value.comment);
+    }
+    if (isMap(pair.value)) {
+        for (const item of pair.value.items) {
+            if (isNode(item.key)) {
+                comments.push(item.key.commentBefore, item.key.comment);
+            }
+        }
     }
 
-    const candidates: string[] = [];
-    const pushCandidate = (line: string) => {
-        const value = DESCRIPTION_PATTERN.exec(line)?.[1]?.trim();
-        if (value) {
-            candidates.push(value);
-        }
-    };
-
-    for (let index = start - 1; index >= 0; index--) {
-        const line = lines[index] ?? '';
-        if (!line.trimStart().startsWith('#')) {
-            break;
-        }
-        pushCandidate(line);
-    }
-
-    for (let index = start + 1; index < lines.length; index++) {
-        const line = lines[index] ?? '';
-        if (KEY_LINE_PATTERN.test(line) || JOB_LEVEL_COMMENT_PATTERN.test(line)) {
-            break;
-        }
-        pushCandidate(line);
-    }
-
-    const unique = [...new Set(candidates)];
+    const unique = [...new Set(comments.flatMap(extractDescriptionLines))];
     if (unique.length === 0) {
         throw new Error(`${fileName} → ${jobName}：缺少 "# 说明: " 注释`);
     }
@@ -331,11 +331,30 @@ const readScript = (definition: JobDefinition, fileName: string, jobName: string
 };
 
 const parseWorkflow = ({ fileName, raw }: WorkflowFile): ParsedWorkflow => {
-    const doc = (load(raw) as WorkflowDoc | undefined) ?? {};
+    const yamlDoc = parseDocument(raw);
+    if (yamlDoc.errors.length > 0) {
+        throw new Error(`${fileName}：YAML 解析失败：${yamlDoc.errors[0]?.message ?? ''}`);
+    }
+
+    const doc = WorkflowDocSchema.parse(yamlDoc.toJS() ?? {});
     const schedule = (doc.on?.schedule ?? [])
         .map(entry => entry.cron)
         .filter((cron): cron is string => typeof cron === 'string' && cron.trim() !== '');
     const name = doc.name?.trim() || fileName.replace(/\.ya?ml$/i, '');
+
+    const jobPairs = new Map<string, { pair: Pair; leadingComment: string | null | undefined }>();
+    const jobsNode = yamlDoc.get('jobs', true);
+    if (isMap(jobsNode)) {
+        for (const [index, pair] of jobsNode.items.entries()) {
+            if (isScalar(pair.key) && typeof pair.key.value === 'string') {
+                jobPairs.set(pair.key.value, {
+                    pair,
+                    leadingComment: index === 0 ? jobsNode.commentBefore : undefined,
+                });
+            }
+        }
+    }
+
     const jobs: JobRecord[] = [];
 
     for (const [jobName, definition] of Object.entries(doc.jobs ?? {})) {
@@ -344,13 +363,18 @@ const parseWorkflow = ({ fileName, raw }: WorkflowFile): ParsedWorkflow => {
             continue;
         }
 
+        const jobEntry = jobPairs.get(jobName);
+        if (!jobEntry) {
+            throw new Error(`${fileName} → ${jobName}：没有找到 job 定义`);
+        }
+
         jobs.push({
             site: script.site,
             task: script.task,
             scriptPath: script.path,
             workflow: fileName,
             crons: readCrons(definition.if),
-            description: readDescription(raw, jobName, fileName),
+            description: readDescription(jobEntry.pair, jobName, fileName, jobEntry.leadingComment),
         });
     }
 

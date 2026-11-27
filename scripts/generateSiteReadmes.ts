@@ -1,10 +1,13 @@
 import { access, readFile, readdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import process from 'node:process';
+import { format } from 'oxfmt';
+import type { FormatConfig } from 'oxfmt';
 import { buildSiteReadmes } from './lib/readmes';
 import type { WorkflowFile } from './lib/readmes';
 
 const WORKFLOW_DIR = resolve(process.cwd(), '.github/workflows');
+const OXFMT_CONFIG_PATH = resolve(process.cwd(), '.oxfmtrc.json');
 
 const isWorkflowFile = (fileName: string) => /\.ya?ml$/i.test(fileName);
 
@@ -34,20 +37,11 @@ const readExisting = async (path: string) => {
     }
 };
 
-/** 忽略表格对齐留白后的内容，用于判断是否真的需要改写。 */
-const normalize = (content: string) =>
-    content
-        .split(/\r?\n/)
-        .map(line => {
-            const compact = line.trimEnd().replace(/\s*\|\s*/g, '|');
-
-            return /^\|(:?-+:?\|)+$/.test(compact) ? compact.replace(/-{2,}/g, '---') : compact;
-        })
-        .join('\n')
-        .trimEnd();
+const readOxfmtConfig = async (): Promise<FormatConfig> =>
+    JSON.parse(await readFile(OXFMT_CONFIG_PATH, 'utf-8')) as FormatConfig;
 
 (async () => {
-    const files = await readWorkflowFiles();
+    const [files, oxfmtConfig] = await Promise.all([readWorkflowFiles(), readOxfmtConfig()]);
     const { readmes, warnings, scripts } = buildSiteReadmes(files);
 
     warnings.forEach(warning => console.warn(warning));
@@ -62,13 +56,20 @@ const normalize = (content: string) =>
 
     let changed = 0;
     for (const { path, content } of readmes) {
+        const formatted = await format(path, content, oxfmtConfig);
+        if (formatted.errors.length > 0) {
+            throw new Error(
+                `格式化失败：${path}\n${formatted.errors.map(error => error.message).join('\n')}`,
+            );
+        }
+
         const current = await readExisting(path);
-        if (current !== undefined && normalize(current) === normalize(content)) {
+        if (current === formatted.code) {
             console.log(`无变化：${path}`);
             continue;
         }
 
-        await writeFile(resolve(process.cwd(), path), content, 'utf-8');
+        await writeFile(resolve(process.cwd(), path), formatted.code, 'utf-8');
         changed += 1;
         console.log(`${current === undefined ? '创建' : '更新'}：${path}`);
     }

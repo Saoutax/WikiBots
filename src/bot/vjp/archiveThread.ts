@@ -23,10 +23,7 @@ const isOnlyMovedto = (content: string): boolean => {
             }
             return false;
         }
-        if (
-            child.type !== 'template' ||
-            normalizeTemplateName(child.name ?? '') !== 'movedto'
-        ) {
+        if (child.type !== 'template' || normalizeTemplateName(child.name ?? '') !== 'movedto') {
             return false;
         }
         hasTemplate = true;

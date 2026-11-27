@@ -86,13 +86,13 @@ describe('formatSchedule', () => {
     });
 
     it('拒绝不支持的 cron 写法', () => {
-        expect(() => formatSchedule(['*/5 17 * * *'])).toThrow('不是整数');
-        expect(() => formatSchedule(['00 17 * * 1-5'])).toThrow('星期不是整数');
-        expect(() => formatSchedule(['00 17 * * 1,3'])).toThrow('星期不是整数');
+        expect(() => formatSchedule(['*/5 17 * * *'])).toThrow('分钟只支持单个整数');
+        expect(() => formatSchedule(['00 17 * * 1-5'])).toThrow('星期只支持单个整数或 *');
+        expect(() => formatSchedule(['00 17 * * 1,3'])).toThrow('星期只支持单个整数或 *');
         expect(() => formatSchedule(['00 17 1 * *'])).toThrow('不支持指定日期或月份');
         expect(() => formatSchedule(['00 17 * 2 *'])).toThrow('不支持指定日期或月份');
-        expect(() => formatSchedule(['00 24 * * *'])).toThrow('小时超出');
-        expect(() => formatSchedule(['60 17 * * *'])).toThrow('分钟超出');
+        expect(() => formatSchedule(['00 24 * * *'])).toThrow(/expected range 0-23/);
+        expect(() => formatSchedule(['60 17 * * *'])).toThrow(/expected range 0-59/);
     });
 });
 
@@ -240,5 +240,28 @@ ${buildJob({ name: 'conflict', description: '块内说明', cron: '00 17 * * *',
         const { readmes } = buildSiteReadmes([{ fileName: 'MGP daily.yaml', raw }]);
 
         expect(readmes[0]?.content).toContain('| [escape](./escape.ts) | 每天 01:00 | A \\| B |');
+    });
+
+    it('支持非 4 空格缩进且不误判多行脚本内的注释', () => {
+        const raw = `name: 'MGP daily'
+on:
+  schedule:
+    - cron: '00 17 * * *'
+jobs:
+  # 说明: 两空格缩进任务
+  twoSpaces:
+    if: github.event.schedule == '00 17 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          # 说明: 这是脚本里的注释，不应被当作 job 说明
+          npx tsx src/bot/mgp/twoSpaces.ts
+`;
+
+        const { readmes } = buildSiteReadmes([{ fileName: 'MGP daily.yaml', raw }]);
+
+        expect(readmes[0]?.content).toContain(
+            '| [twoSpaces](./twoSpaces.ts) | 每天 01:00 | 两空格缩进任务 |',
+        );
     });
 });
