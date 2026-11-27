@@ -4,6 +4,13 @@ updates:
       directory: '/'
       schedule:
           interval: daily
+      groups:
+          oxc:
+              patterns:
+                  - 'oxfmt*'
+                  - 'oxlint*'
+                  - 'oxc-*'
+                  - '@oxc*'
     - package-ecosystem: 'github-actions'
       directory: '/'
       schedule:
