@@ -1,5 +1,6 @@
-import { run, vjpapi as api } from '@/api';
-import { CleanSandbox } from '../modules';
+import { vjpapi as api } from '@/api';
+import { run } from '@/runner';
+import { CleanSandbox } from '@/tasks';
 
 (async () => {
     await run({ api, site: 'vjp' }, async () => {

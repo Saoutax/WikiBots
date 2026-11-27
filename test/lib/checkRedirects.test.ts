@@ -1,16 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import type { MwApiParams } from 'wiki-saikou';
-import { CheckRedirects } from '@/lib/checkRedirects';
+import { PageOps } from '@/lib/page';
 import { createApiStub } from '../helpers/api';
 
-describe('CheckRedirects', () => {
+describe('PageOps', () => {
     it('页面带 redirect 属性时返回 true', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
             data: { query: { pages: [{ title: 'Foo', redirect: true }] } },
         });
 
-        const { check } = new CheckRedirects(api);
+        const { checkRedirect: check } = new PageOps(api);
         const result = await check(['Foo']);
 
         expect(result).toEqual({ Foo: true });
@@ -23,7 +23,7 @@ describe('CheckRedirects', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [{ title: 'Foo' }] } } });
 
-        const { check } = new CheckRedirects(api);
+        const { checkRedirect: check } = new PageOps(api);
 
         expect(await check(['Foo'])).toEqual({ Foo: false });
     });
@@ -41,7 +41,7 @@ describe('CheckRedirects', () => {
             };
         });
 
-        const { check } = new CheckRedirects(api);
+        const { checkRedirect: check } = new PageOps(api);
         const result = await check(['A', 'B'], 1);
 
         expect(post).toHaveBeenCalledTimes(2);

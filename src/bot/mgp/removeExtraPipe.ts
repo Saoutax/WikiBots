@@ -1,8 +1,8 @@
 import Parser from 'wikiparser-node';
-import { run, zhapi as api } from '@/api';
-import { BotInstance } from '@/lib';
-import { createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/utils';
-import { collectRecentChanges } from '../modules';
+import { zhapi as api } from '@/api';
+import { createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/infra';
+import { BotInstance, collectRecentChanges } from '@/lib';
+import { run } from '@/runner';
 
 const bot = new BotInstance(api);
 

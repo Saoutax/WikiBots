@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
-import { GetJson } from '@/lib/getJson';
+import { PageOps } from '@/lib/page';
 import { createApiStub } from '../helpers/api';
 
-describe('GetJson', () => {
+describe('PageOps', () => {
     it('解析页面中的合法 JSON', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
@@ -19,7 +19,7 @@ describe('GetJson', () => {
             },
         });
 
-        const { get } = new GetJson(api);
+        const { getJson: get } = new PageOps(api);
         const result = await get<{ a: number; b: string }>('Config');
 
         expect(result).toEqual({ a: 1, b: 'text' });
@@ -38,7 +38,7 @@ describe('GetJson', () => {
             },
         });
 
-        const { get } = new GetJson(api);
+        const { getJson: get } = new PageOps(api);
         const thrown = await get('Config').catch((error: unknown) => error);
 
         expect(thrown).toBeInstanceOf(SyntaxError);
@@ -49,7 +49,7 @@ describe('GetJson', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { get } = new GetJson(api);
+        const { getJson: get } = new PageOps(api);
 
         await expect(get('Config')).rejects.toThrow('Failed to get content of Config: []');
     });
@@ -57,7 +57,7 @@ describe('GetJson', () => {
     it('传入 Zod schema 时校验合法结构并在结构不符时抛出 ZodError', async () => {
         const { api, post } = createApiStub();
         const schema = z.object({ a: z.number(), b: z.string() });
-        const { get } = new GetJson(api);
+        const { getJson: get } = new PageOps(api);
 
         post.mockResolvedValueOnce({
             data: {

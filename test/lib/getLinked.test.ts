@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { MwApiParams } from 'wiki-saikou';
-import { GetLinked } from '@/lib/getLinked';
+import { QueryOps } from '@/lib/query';
 import { createApiStub } from '../helpers/api';
 
-describe('GetLinked', () => {
+describe('QueryOps', () => {
     it('单标题自动转为数组并返回链入页面', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
@@ -12,7 +12,7 @@ describe('GetLinked', () => {
             },
         });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         const result = await get('Foo');
 
         expect(post).toHaveBeenCalledTimes(1);
@@ -43,7 +43,7 @@ describe('GetLinked', () => {
             },
         });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         const result = await get(['Foo', 'Bar']);
 
         expect(post.mock.calls[0]![0]).toEqual(expect.objectContaining({ titles: 'Foo|Bar' }));
@@ -62,7 +62,7 @@ describe('GetLinked', () => {
             data: { query: { pages: [{ title: 'Foo', linkshere: [{ title: 'B' }] }] } },
         });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         const result = await get('Foo');
 
         expect(result).toEqual({ Foo: ['A', 'B'] });
@@ -75,7 +75,7 @@ describe('GetLinked', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [{ title: 'Foo' }] } } });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
 
         expect(await get('Foo')).toEqual({ Foo: [] });
     });
@@ -84,7 +84,7 @@ describe('GetLinked', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: {} } });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
 
         expect(await get('Foo')).toEqual({});
     });
@@ -93,7 +93,7 @@ describe('GetLinked', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         await get('Foo', [], false);
 
         const params = post.mock.calls[0]![0] as MwApiParams;
@@ -104,7 +104,7 @@ describe('GetLinked', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         await get('Foo', [], true);
 
         const params = post.mock.calls[0]![0] as MwApiParams;
@@ -115,7 +115,7 @@ describe('GetLinked', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         await get('Foo', [0, 4]);
 
         expect(post.mock.calls[0]![0]).toEqual(expect.objectContaining({ lhnamespace: '0|4' }));
@@ -125,7 +125,7 @@ describe('GetLinked', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { get } = new GetLinked(api);
+        const { getLinked: get } = new QueryOps(api);
         await get('Foo');
 
         expect(post.mock.calls[0]![0]).toEqual(expect.objectContaining({ lhnamespace: '*' }));

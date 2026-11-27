@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { GetContent } from '@/lib/getContent';
+import { PageOps } from '@/lib/page';
 import { createApiStub } from '../helpers/api';
 
-describe('GetContent', () => {
+describe('PageOps', () => {
     it('返回页面内容与版本号', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
@@ -13,7 +13,7 @@ describe('GetContent', () => {
             },
         });
 
-        const { get } = new GetContent(api);
+        const { getContent: get } = new PageOps(api);
         const result = await get('Foo');
 
         expect(result).toEqual({ content: 'wikitext', revid: 42 });
@@ -29,7 +29,7 @@ describe('GetContent', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [{ title: 'Foo' }] } } });
 
-        const { get } = new GetContent(api);
+        const { getContent: get } = new PageOps(api);
 
         await expect(get('Foo')).rejects.toThrow('Failed to get content of Foo: {"title":"Foo"}');
     });
@@ -38,7 +38,7 @@ describe('GetContent', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { get } = new GetContent(api);
+        const { getContent: get } = new PageOps(api);
 
         await expect(get('Bar')).rejects.toThrow('Failed to get content of Bar: []');
     });

@@ -1,6 +1,7 @@
 import Parser from 'wikiparser-node';
-import { run, zhapi as api } from '@/api';
+import { zhapi as api } from '@/api';
 import { BotInstance } from '@/lib';
+import { run } from '@/runner';
 
 interface Config {
     target: string;

@@ -115,6 +115,9 @@ vi.mock('@/api', () => ({
     Login: class {
         login = async () => ({ lgusername: 'Bot' });
     },
+}));
+
+vi.mock('@/runner', () => ({
     // 与真实 run 的差异：不登录、不打印起止时间、不设置 process.exitCode，
     // 只登记任务执行结果，便于测试断言脚本行为。
     run: (targets: unknown, task: () => Promise<void>) => {
@@ -122,25 +125,24 @@ vi.mock('@/api', () => ({
     },
 }));
 
-vi.mock('@/utils', async importOriginal => {
-    const actual = await importOriginal<typeof import('@/utils')>();
+vi.mock('@/infra/delay', () => ({
+    delay: async () => {},
+}));
 
-    return {
-        ...actual,
-        // 避免真实等待
-        delay: async () => {},
-        createRateLimiter: () => ({
-            run: <T>(fn: () => Promise<T>) => fn(),
-            map: <T, R>(items: readonly T[], fn: (item: T, index: number) => Promise<R>) =>
-                Promise.all(items.map((item, index) => fn(item, index))),
-        }),
-        // 隔离 GitHub 上的时间戳记录
-        getTimeData: async () => runtime.timeData,
-        updateTimeData: async (name: string, time: string) => {
-            runtime.timeDataUpdates.push([name, time]);
-        },
-    };
-});
+vi.mock('@/infra/rateLimit', () => ({
+    createRateLimiter: () => ({
+        run: <T>(fn: () => Promise<T>) => fn(),
+        map: <T, R>(items: readonly T[], fn: (item: T, index: number) => Promise<R>) =>
+            Promise.all(items.map((item, index) => fn(item, index))),
+    }),
+}));
+
+vi.mock('@/infra/state', () => ({
+    getTimeData: async () => runtime.timeData,
+    updateTimeData: async (name: string, time: string) => {
+        runtime.timeDataUpdates.push([name, time]);
+    },
+}));
 
 /**
  * 由编辑请求体还原页面修改后的完整内容。

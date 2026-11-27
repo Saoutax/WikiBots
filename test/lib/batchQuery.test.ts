@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { MwApiParams } from 'wiki-saikou';
-import { BatchQuery } from '@/lib/batchQuery';
+import { QueryOps } from '@/lib/query';
 import { createApiStub } from '../helpers/api';
 import type { MockFn } from '../helpers/api';
 
@@ -11,7 +11,7 @@ interface MWPage {
 
 const titlesOf = (post: MockFn) => post.mock.calls.map(call => (call[0] as MwApiParams).titles);
 
-describe('BatchQuery', () => {
+describe('QueryOps', () => {
     it('按 size 分组请求并返回页面内容与版本号', async () => {
         const { api, post } = createApiStub();
         post.mockImplementation(async (params: MwApiParams) => {
@@ -23,7 +23,7 @@ describe('BatchQuery', () => {
             return { data: { query: { pages } } };
         });
 
-        const { query } = new BatchQuery(api);
+        const { batchQuery: query } = new QueryOps(api);
         const result = await query(['A', 'B'], 1, 1, 0);
 
         expect(post).toHaveBeenCalledTimes(2);
@@ -46,7 +46,7 @@ describe('BatchQuery', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { query } = new BatchQuery(api);
+        const { batchQuery: query } = new QueryOps(api);
         await query(['A', 'B', 'C'], 2, 1, 0);
 
         expect(post).toHaveBeenCalledTimes(2);
@@ -66,7 +66,7 @@ describe('BatchQuery', () => {
             },
         });
 
-        const { query } = new BatchQuery(api);
+        const { batchQuery: query } = new QueryOps(api);
         const result = await query(['A', 'B'], 2, 1, 0);
 
         expect(result).toEqual({ B: { content: 'b', revid: 2 } });
@@ -75,7 +75,7 @@ describe('BatchQuery', () => {
     it('空标题数组返回空对象且不发起请求', async () => {
         const { api, post } = createApiStub();
 
-        const { query } = new BatchQuery(api);
+        const { batchQuery: query } = new QueryOps(api);
         const result = await query([], 500, 5, 0);
 
         expect(result).toEqual({});
@@ -86,7 +86,7 @@ describe('BatchQuery', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { query } = new BatchQuery(api);
+        const { batchQuery: query } = new QueryOps(api);
         const started = Date.now();
         await query(['A', 'B', 'C'], 1, 1, 0);
         const elapsed = Date.now() - started;

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CheckGlobalUsage } from '@/lib/checkGlobalUsage';
+import { QueryOps } from '@/lib/query';
 import { createApiStub } from '../helpers/api';
 
 interface MWPage {
@@ -7,7 +7,7 @@ interface MWPage {
     globalusage: { wiki: string; title: string }[];
 }
 
-describe('CheckGlobalUsage', () => {
+describe('QueryOps', () => {
     it('globalusage 非空返回 true，为空返回 false', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
@@ -21,7 +21,7 @@ describe('CheckGlobalUsage', () => {
             },
         });
 
-        const { check } = new CheckGlobalUsage(api);
+        const { checkGlobalUsage: check } = new QueryOps(api);
         const result = await check(['File:A', 'File:B']);
 
         expect(result).toEqual({ 'File:A': true, 'File:B': false });
@@ -54,7 +54,7 @@ describe('CheckGlobalUsage', () => {
         });
         post.mockResolvedValueOnce({ data: { query: { pages: secondPage } } });
 
-        const { check } = new CheckGlobalUsage(api);
+        const { checkGlobalUsage: check } = new QueryOps(api);
         const result = await check(['File:A', 'File:B']);
 
         expect(result).toEqual({ 'File:A': true, 'File:B': true });
@@ -67,7 +67,7 @@ describe('CheckGlobalUsage', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { check } = new CheckGlobalUsage(api);
+        const { checkGlobalUsage: check } = new QueryOps(api);
         await check(['File:A', 'File:B', 'File:C'], 2);
 
         expect(post).toHaveBeenCalledTimes(2);

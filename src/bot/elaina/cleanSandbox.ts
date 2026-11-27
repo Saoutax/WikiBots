@@ -1,5 +1,6 @@
-import { run, elainaapi as api } from '@/api';
-import { CleanSandbox } from '../modules';
+import { elainaapi as api } from '@/api';
+import { run } from '@/runner';
+import { CleanSandbox } from '@/tasks';
 
 (async () => {
     await run({ api, site: 'elaina' }, async () => {

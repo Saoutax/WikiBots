@@ -1,6 +1,7 @@
 import type { ApiEditResponse } from 'types-mediawiki-response';
 import type { FexiosFinalContext, MwApiParams } from 'wiki-saikou';
-import { BaseApi } from '@/utils';
+import { createRateLimiter } from '@/infra';
+import { BaseApi } from './base';
 
 /** 编辑目标：标题与页面 ID 二选一 */
 type PageRef =
@@ -36,9 +37,9 @@ interface EditTarget {
 type EditParams = PageRef & EditTarget;
 
 /**
- * 统一的页面编辑操作
+ * 统一的页面编辑与挂删操作
  */
-class EditPage extends BaseApi {
+class EditOps extends BaseApi {
     /**
      * 编辑页面
      * @param params - 编辑参数
@@ -82,7 +83,42 @@ class EditPage extends BaseApi {
             noCache: true,
         });
     };
+
+    /**
+     * 批量挂删页面
+     * @param titles - 页面标题数组
+     * @param reason - 挂删理由
+     * @param user - 用户名
+     * @param summary - 编辑摘要，默认为挂删理由
+     * @returns 成功挂删的页面数组
+     */
+    flagDelete = async (
+        titles: string[],
+        reason: string,
+        user: string,
+        summary: string = reason,
+    ): Promise<string[]> => {
+        const result: string[] = [],
+            limiter = createRateLimiter();
+
+        await limiter.map(titles, async title => {
+            const { data } = await this.api.postWithToken<ApiEditResponse>('csrf', {
+                action: 'edit',
+                title,
+                text: `<noinclude>{{即将删除|user=${user}|1=${reason}}}</noinclude>`,
+                summary,
+                tags: 'Bot',
+                bot: true,
+                minor: true,
+                nocreate: true,
+            });
+            if (data?.edit?.newtimestamp) {
+                result.push(title);
+            }
+        });
+        return result;
+    };
 }
 
-export { EditPage };
+export { EditOps };
 export type { EditParams, PageRef };

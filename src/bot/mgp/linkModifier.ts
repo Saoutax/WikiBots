@@ -1,8 +1,9 @@
 import Parser from 'wikiparser-node';
 import { z } from 'zod';
-import { run, zhapi as api } from '@/api';
+import { zhapi as api } from '@/api';
+import { createRateLimiter } from '@/infra';
 import { BotInstance } from '@/lib';
-import { createRateLimiter } from '@/utils';
+import { run } from '@/runner';
 
 const configSchema = z.object({
     from: z.string(),

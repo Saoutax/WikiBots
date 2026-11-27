@@ -1,7 +1,6 @@
 import type { ApiDeleteResponse, ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import { z } from 'zod';
-import { run, zhapi, cmapi } from '@/api';
-import { BotInstance } from '@/lib';
+import { zhapi, cmapi } from '@/api';
 import {
     booleanFilter,
     createRateLimiter,
@@ -10,7 +9,9 @@ import {
     readGHFile,
     writeGHFile,
     dayjs,
-} from '@/utils';
+} from '@/infra';
+import { BotInstance } from '@/lib';
+import { run } from '@/runner';
 
 const inUsedRedirectSchema = z.record(z.string(), z.array(z.string()));
 

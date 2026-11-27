@@ -1,5 +1,6 @@
-import { run, vjpapi as api } from '@/api';
-import { InvisibleCharacter } from '../modules';
+import { vjpapi as api } from '@/api';
+import { run } from '@/runner';
+import { InvisibleCharacter } from '@/tasks';
 
 (async () => {
     await run(

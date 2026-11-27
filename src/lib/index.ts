@@ -1,79 +1,67 @@
 import type { MediaWikiApi } from 'wiki-saikou';
-import { BatchQuery } from './batchQuery';
-import { CheckExist } from './checkExist';
-import { CheckGlobalUsage } from './checkGlobalUsage';
-import { CheckRedirects } from './checkRedirects';
-import { EditPage } from './edit';
-import { FlagDelete } from './flagDelete';
-import { GetContent } from './getContent';
-import { GetEmbedded } from './getEmbedded';
-import { GetJson } from './getJson';
-import { GetLinked } from './getLinked';
-import { QueryCategory } from './queryCategory';
+import { EditOps } from './edit';
+import { PageOps } from './page';
+import { QueryOps } from './query';
 
 class BotInstance {
     #api: MediaWikiApi;
 
-    #batchQuery?: BatchQuery;
-    #checkExist?: CheckExist;
-    #checkGlobalUsage?: CheckGlobalUsage;
-    #checkRedirect?: CheckRedirects;
-    #edit?: EditPage;
-    #flagDelete?: FlagDelete;
-    #getContent?: GetContent;
-    #getEmbedded?: GetEmbedded;
-    #getJson?: GetJson;
-    #getLinked?: GetLinked;
-    #queryCategory?: QueryCategory;
+    #query?: QueryOps;
+    #page?: PageOps;
+    #edit?: EditOps;
 
     constructor(api: MediaWikiApi) {
         this.#api = api;
     }
 
-    get batchQuery(): BatchQuery['query'] {
-        return (this.#batchQuery ??= new BatchQuery(this.#api)).query;
+    get batchQuery(): QueryOps['batchQuery'] {
+        return (this.#query ??= new QueryOps(this.#api)).batchQuery;
     }
 
-    get checkExist(): CheckExist['check'] {
-        return (this.#checkExist ??= new CheckExist(this.#api)).check;
+    get checkExist(): PageOps['checkExist'] {
+        return (this.#page ??= new PageOps(this.#api)).checkExist;
     }
 
-    get checkGlobalUsage(): CheckGlobalUsage['check'] {
-        return (this.#checkGlobalUsage ??= new CheckGlobalUsage(this.#api)).check;
+    get checkGlobalUsage(): QueryOps['checkGlobalUsage'] {
+        return (this.#query ??= new QueryOps(this.#api)).checkGlobalUsage;
     }
 
-    get checkRedirect(): CheckRedirects['check'] {
-        return (this.#checkRedirect ??= new CheckRedirects(this.#api)).check;
+    get checkRedirect(): PageOps['checkRedirect'] {
+        return (this.#page ??= new PageOps(this.#api)).checkRedirect;
     }
 
-    get edit(): EditPage['edit'] {
-        return (this.#edit ??= new EditPage(this.#api)).edit;
+    get edit(): EditOps['edit'] {
+        return (this.#edit ??= new EditOps(this.#api)).edit;
     }
 
-    get flagDelete(): FlagDelete['del'] {
-        return (this.#flagDelete ??= new FlagDelete(this.#api)).del;
+    get flagDelete(): EditOps['flagDelete'] {
+        return (this.#edit ??= new EditOps(this.#api)).flagDelete;
     }
 
-    get getContent(): GetContent['get'] {
-        return (this.#getContent ??= new GetContent(this.#api)).get;
+    get getContent(): PageOps['getContent'] {
+        return (this.#page ??= new PageOps(this.#api)).getContent;
     }
 
-    get getEmbedded(): GetEmbedded['get'] {
-        return (this.#getEmbedded ??= new GetEmbedded(this.#api)).get;
+    get getEmbedded(): QueryOps['getEmbedded'] {
+        return (this.#query ??= new QueryOps(this.#api)).getEmbedded;
     }
 
-    get getJson(): GetJson['get'] {
-        return (this.#getJson ??= new GetJson(this.#api)).get;
+    get getJson(): PageOps['getJson'] {
+        return (this.#page ??= new PageOps(this.#api)).getJson;
     }
 
-    get getLinked(): GetLinked['get'] {
-        return (this.#getLinked ??= new GetLinked(this.#api)).get;
+    get getLinked(): QueryOps['getLinked'] {
+        return (this.#query ??= new QueryOps(this.#api)).getLinked;
     }
 
-    get queryCategory(): QueryCategory['query'] {
-        return (this.#queryCategory ??= new QueryCategory(this.#api)).query;
+    get queryCategory(): QueryOps['queryCategory'] {
+        return (this.#query ??= new QueryOps(this.#api)).queryCategory;
     }
 }
 
 export { BotInstance };
+export { BaseApi } from './base';
+export { formatNamespace } from './formatNamespace';
+export { collectRecentChanges } from './recentChanges';
+export { splitAndJoin } from './splitAndJoin';
 export type { PageContent } from './types';

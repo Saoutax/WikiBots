@@ -1,4 +1,4 @@
-import { readGHFile, writeGHFile } from '@/utils';
+import { readGHFile, writeGHFile } from '@/infra';
 import { filterOutdatedRecords } from './lib/outdatedRecords';
 
 (async () => {

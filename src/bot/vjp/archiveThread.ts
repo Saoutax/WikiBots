@@ -1,8 +1,10 @@
 import { cloneDeep } from 'es-toolkit/object';
 import Parser from 'wikiparser-node';
-import { run, vjpapi as api } from '@/api';
+import { vjpapi as api } from '@/api';
+import { dayjs } from '@/infra';
 import { BotInstance } from '@/lib';
-import { dayjs, normalizeTemplateName, parsedToString, parseThread } from '@/utils';
+import { run } from '@/runner';
+import { normalizeTemplateName, parsedToString, parseThread } from '@/wikitext';
 
 const bot = new BotInstance(api);
 

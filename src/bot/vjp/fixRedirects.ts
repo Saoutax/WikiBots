@@ -1,8 +1,10 @@
 import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import Parser from 'wikiparser-node';
-import { run, vjpapi as api } from '@/api';
-import { BotInstance } from '@/lib';
-import { createRateLimiter, splitAndJoin, variantConverter } from '@/utils';
+import { vjpapi as api } from '@/api';
+import { createRateLimiter } from '@/infra';
+import { BotInstance, splitAndJoin } from '@/lib';
+import { run } from '@/runner';
+import { variantConverter } from '@/wikitext';
 
 const bot = new BotInstance(api);
 

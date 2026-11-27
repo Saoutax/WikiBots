@@ -12,9 +12,62 @@
     },
     "overrides": [
         {
-            "files": ["src/lib/**/*.ts", "src/utils/**/*.ts"],
+            "files": [
+                "src/lib/**/*.ts",
+                "src/infra/**/*.ts",
+                "src/wikitext/**/*.ts",
+                "src/notify/**/*.ts",
+                "src/tasks/**/*.ts",
+                "src/runner.ts"
+            ],
             "rules": {
                 "typescript/explicit-module-boundary-types": "error"
+            }
+        },
+        {
+            "files": ["src/api/**/*.ts", "src/wikitext/**/*.ts", "src/infra/**/*.ts"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            { "group": ["@/lib", "@/lib/*"] },
+                            { "group": ["@/tasks", "@/tasks/*"] },
+                            { "group": ["@/notify", "@/notify/*"] },
+                            { "group": ["@/runner"] }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["src/lib/**/*.ts"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            { "group": ["@/tasks", "@/tasks/*"] },
+                            { "group": ["@/notify", "@/notify/*"] },
+                            { "group": ["@/runner"] }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["src/notify/**/*.ts"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            { "group": ["@/lib", "@/lib/*"] },
+                            { "group": ["@/tasks", "@/tasks/*"] },
+                            { "group": ["@/runner"] }
+                        ]
+                    }
+                ]
             }
         }
     ],

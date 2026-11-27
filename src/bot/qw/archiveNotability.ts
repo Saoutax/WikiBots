@@ -1,7 +1,8 @@
 import Parser from 'wikiparser-node';
-import { run, qwapi as api } from '@/api';
-import { dayjs } from '@/utils';
-import { archiveList } from '../modules';
+import { qwapi as api } from '@/api';
+import { dayjs } from '@/infra';
+import { run } from '@/runner';
+import { archiveList } from '@/tasks';
 
 const TARGET = 'Qiuwen_talk:存废讨论/关注度提报';
 

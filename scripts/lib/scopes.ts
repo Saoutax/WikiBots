@@ -1,17 +1,16 @@
 // Directories under src/ that keep lowercase prefix as-is
-const LOWERCASE_SRC_DIRS = new Set(['lib', 'utils', 'api']);
+const LOWERCASE_SRC_DIRS = new Set(['lib', 'api', 'wikitext', 'infra', 'notify', 'tasks']);
 
 // Directories under src/bot/ that keep lowercase prefix
-const LOWERCASE_BOT_DIRS = new Set(['modules']);
+const LOWERCASE_BOT_DIRS = new Set<string>();
 
 /**
  * Resolves the scope prefix for a given path expressed as directory segments relative to src/.
  * Note: segments contains only directories, not the filename itself.
  *
  * Rules:
- *  - src/lib/, src/utils/, src/api/  → lowercase  (e.g. "lib/getJson")
- *  - src/bot/modules/                → lowercase  (e.g. "modules/cleanSandbox")
- *  - src/bot/<other>/                → UPPERCASE  (e.g. "MGP/monthly")
+ *  - src/lib/, src/api/, src/wikitext/, src/infra/, src/notify/, src/tasks/ → lowercase (e.g. "lib/getJson")
+ *  - src/bot/<site>/ → UPPERCASE (e.g. "MGP/monthly")
  */
 const resolvePrefix = (segments: string[]): string | null => {
     const topDir = segments[0];

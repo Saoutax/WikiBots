@@ -1,15 +1,11 @@
 import { cloneDeep } from 'es-toolkit/object';
 import Parser from 'wikiparser-node';
-import { run, qwapi as api } from '@/api';
+import { qwapi as api } from '@/api';
+import { dayjs } from '@/infra';
 import { BotInstance } from '@/lib';
-import {
-    dayjs,
-    getLatestTimestamp,
-    normalizeTemplateName,
-    parsedToString,
-    parseThread,
-} from '@/utils';
-import { archiveDiscussion } from '../modules';
+import { run } from '@/runner';
+import { archiveDiscussion } from '@/tasks';
+import { getLatestTimestamp, normalizeTemplateName, parsedToString, parseThread } from '@/wikitext';
 
 const bot = new BotInstance(api);
 

@@ -1,8 +1,10 @@
 import Parser from 'wikiparser-node';
-import { run, qwapi as api } from '@/api';
+import { qwapi as api } from '@/api';
+import { dayjs } from '@/infra';
 import { BotInstance } from '@/lib';
-import { dayjs, getLatestTimestamp, normalizeHeadingSpacing } from '@/utils';
-import { archiveDiscussion } from '../modules';
+import { run } from '@/runner';
+import { archiveDiscussion } from '@/tasks';
+import { getLatestTimestamp, normalizeHeadingSpacing, normalizeTemplateName } from '@/wikitext';
 
 const bot = new BotInstance(api);
 
@@ -18,16 +20,6 @@ const copyvioTemplates = [
     'Qiuwen talk:侵权提报/Preload2/CopyvioEntry',
     'Qiuwen:侵权提报/Preload2/CopyvioEntry',
 ].map(name => name.toLowerCase());
-
-const templatePrefix = 'template:';
-
-/** 解析器会在模板名前补 `Template:`，并把标题内空格转为下划线 */
-const normalizeTemplateName = (name: string): string => {
-    const lower = name.toLowerCase();
-    return (lower.startsWith(templatePrefix) ? lower.slice(templatePrefix.length) : lower)
-        .replaceAll('_', ' ')
-        .trim();
-};
 
 const isCopyvioTemplate = (template: Parser.TranscludeToken): boolean =>
     copyvioTemplates.includes(normalizeTemplateName(template.name));

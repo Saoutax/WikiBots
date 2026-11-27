@@ -2,17 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { isSourceFile, resolvePrefix, scopesChanged } from '../../scripts/lib/scopes';
 
 describe('resolvePrefix', () => {
-    it('keeps lowercase for direct children of src/lib, src/utils and src/api', () => {
+    it('keeps lowercase for direct children of top-level shared src directories', () => {
         expect(resolvePrefix(['lib'])).toBe('lib');
         expect(resolvePrefix(['api'])).toBe('api');
+        expect(resolvePrefix(['wikitext'])).toBe('wikitext');
+        expect(resolvePrefix(['infra'])).toBe('infra');
+        expect(resolvePrefix(['notify'])).toBe('notify');
+        expect(resolvePrefix(['tasks'])).toBe('tasks');
     });
 
     it('uppercases site directories under src/bot', () => {
         expect(resolvePrefix(['bot', 'mgp'])).toBe('MGP');
-    });
-
-    it('keeps lowercase for src/bot/modules', () => {
-        expect(resolvePrefix(['bot', 'modules'])).toBe('modules');
+        expect(resolvePrefix(['bot', 'modules'])).toBe('MODULES');
     });
 
     it('returns null for empty, nested or unsupported segments', () => {

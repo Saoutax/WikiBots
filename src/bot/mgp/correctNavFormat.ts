@@ -1,7 +1,8 @@
-import { run, zhapi as api } from '@/api';
+import { zhapi as api } from '@/api';
+import { createRateLimiter } from '@/infra';
 import { BotInstance } from '@/lib';
 import type { PageContent } from '@/lib';
-import { createRateLimiter } from '@/utils';
+import { run } from '@/runner';
 
 const bot = new BotInstance(api);
 

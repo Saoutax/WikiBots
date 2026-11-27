@@ -1,6 +1,8 @@
-import { run, uewapi as api } from '@/api';
+import { uewapi as api } from '@/api';
+import { dayjs } from '@/infra';
 import { BotInstance } from '@/lib';
-import { dayjs, parseThread, parsedToString } from '@/utils';
+import { run } from '@/runner';
+import { parseThread, parsedToString } from '@/wikitext';
 
 const bot = new BotInstance(api);
 

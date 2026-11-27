@@ -1,8 +1,9 @@
 import type { ApiDeleteResponse } from 'types-mediawiki-response';
 import { z } from 'zod';
-import { run, zhapi, cmapi } from '@/api';
+import { zhapi, cmapi } from '@/api';
+import { booleanFilter, createRateLimiter } from '@/infra';
 import { BotInstance } from '@/lib';
-import { booleanFilter, createRateLimiter } from '@/utils';
+import { run } from '@/runner';
 
 const configSchema = z.object({
     categories: z.array(z.string()),

@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { CheckExist } from '@/lib/checkExist';
+import { PageOps } from '@/lib/page';
 import { createApiStub } from '../helpers/api';
 
-describe('CheckExist', () => {
+describe('PageOps', () => {
     it('pages 中带 missing 标记时返回 false', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [{ missing: true }] } } });
 
-        const { check } = new CheckExist(api);
+        const { checkExist: check } = new PageOps(api);
         const result = await check('Foo');
 
         expect(result).toBe(false);
@@ -24,7 +24,7 @@ describe('CheckExist', () => {
             data: { query: { pages: [{ title: 'Foo', pageid: 1 }] } },
         });
 
-        const { check } = new CheckExist(api);
+        const { checkExist: check } = new PageOps(api);
 
         expect(await check('Foo')).toBe(true);
     });
@@ -33,7 +33,7 @@ describe('CheckExist', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { pages: [] } } });
 
-        const { check } = new CheckExist(api);
+        const { checkExist: check } = new PageOps(api);
 
         expect(await check('Foo')).toBe(true);
     });

@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { GetEmbedded } from '@/lib/getEmbedded';
+import { QueryOps } from '@/lib/query';
 import { createApiStub } from '../helpers/api';
 
-describe('GetEmbedded', () => {
+describe('QueryOps', () => {
     it('返回嵌入页面标题并使用默认参数', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
             data: { query: { embeddedin: [{ title: 'P1' }] } },
         });
 
-        const { get } = new GetEmbedded(api);
+        const { getEmbedded: get } = new QueryOps(api);
         const result = await get('Foo');
 
         expect(result).toEqual(['P1']);
@@ -38,7 +38,7 @@ describe('GetEmbedded', () => {
             data: { query: { embeddedin: [{ title: 'P2' }, { title: 'P3' }] } },
         });
 
-        const { get } = new GetEmbedded(api);
+        const { getEmbedded: get } = new QueryOps(api);
         const result = await get('Foo');
 
         expect(result).toEqual(['P1', 'P2', 'P3']);
@@ -51,7 +51,7 @@ describe('GetEmbedded', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: {} } });
 
-        const { get } = new GetEmbedded(api);
+        const { getEmbedded: get } = new QueryOps(api);
 
         expect(await get('Foo')).toEqual([]);
     });
@@ -60,7 +60,7 @@ describe('GetEmbedded', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { embeddedin: [] } } });
 
-        const { get } = new GetEmbedded(api);
+        const { getEmbedded: get } = new QueryOps(api);
 
         expect(await get('Foo')).toEqual([]);
     });
@@ -69,7 +69,7 @@ describe('GetEmbedded', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { embeddedin: [] } } });
 
-        const { get } = new GetEmbedded(api);
+        const { getEmbedded: get } = new QueryOps(api);
         await get('Foo', [0, 10], 'all');
 
         const params = post.mock.calls[0]![0];

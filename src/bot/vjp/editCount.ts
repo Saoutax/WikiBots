@@ -1,6 +1,7 @@
 import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
-import { run, vjpapi as api } from '@/api';
+import { vjpapi as api } from '@/api';
 import { BotInstance } from '@/lib';
+import { run } from '@/runner';
 
 const bot = new BotInstance(api);
 

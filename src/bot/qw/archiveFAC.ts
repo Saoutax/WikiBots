@@ -1,16 +1,17 @@
 import Parser from 'wikiparser-node';
-import { run, qwapi as api } from '@/api';
+import { qwapi as api } from '@/api';
+import { dayjs } from '@/infra';
 import { BotInstance } from '@/lib';
+import { run } from '@/runner';
+import { archiveDiscussion } from '@/tasks';
 import {
-    dayjs,
     deriveTalkPage,
     extractChineseDate,
     findTemplates,
     getLatestTimestamp,
     normalizeHeadingSpacing,
     sameTitle,
-} from '@/utils';
-import { archiveDiscussion } from '../modules';
+} from '@/wikitext';
 
 const bot = new BotInstance(api);
 

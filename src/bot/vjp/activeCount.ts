@@ -1,8 +1,8 @@
 import type { Dayjs } from 'dayjs';
-import { run, vjpapi as api } from '@/api';
-import { BotInstance } from '@/lib';
-import { dayjs } from '@/utils';
-import { collectRecentChanges } from '../modules';
+import { vjpapi as api } from '@/api';
+import { dayjs } from '@/infra';
+import { BotInstance, collectRecentChanges } from '@/lib';
+import { run } from '@/runner';
 
 const bot = new BotInstance(api);
 

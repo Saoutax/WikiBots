@@ -1,6 +1,7 @@
-import { run, qwapi as api } from '@/api';
+import { qwapi as api } from '@/api';
+import { delay } from '@/infra';
 import { BotInstance } from '@/lib';
-import { delay } from '@/utils';
+import { run } from '@/runner';
 
 const bot = new BotInstance(api);
 

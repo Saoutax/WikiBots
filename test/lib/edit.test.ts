@@ -1,17 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { EditPage } from '@/lib/edit';
+import { EditOps } from '@/lib/edit';
 import { createApiStub } from '../helpers/api';
 
 const bodyOf = (postWithToken: ReturnType<typeof createApiStub>['postWithToken']) =>
     postWithToken.mock.calls[0]![1] as Record<string, unknown>;
 
-describe('EditPage', () => {
+describe('EditOps', () => {
     it('默认下发 bot、watchlist 与 minor 参数并返回编辑响应', async () => {
         const { api, postWithToken } = createApiStub();
         const response = { data: { edit: { result: 'Success' } } };
         postWithToken.mockResolvedValue(response);
 
-        const { edit } = new EditPage(api);
+        const { edit } = new EditOps(api);
         const result = await edit({ title: 'Foo', summary: '摘要', text: '新内容' });
 
         expect(result).toBe(response);
@@ -34,7 +34,7 @@ describe('EditPage', () => {
         const { api, postWithToken } = createApiStub();
         postWithToken.mockResolvedValue({ data: {} });
 
-        const { edit } = new EditPage(api);
+        const { edit } = new EditOps(api);
         await edit({ title: 'Foo', summary: '摘要', text: '新内容', notminor: true });
 
         const body = bodyOf(postWithToken);
@@ -46,7 +46,7 @@ describe('EditPage', () => {
         const { api, postWithToken } = createApiStub();
         postWithToken.mockResolvedValue({ data: {} });
 
-        const { edit } = new EditPage(api);
+        const { edit } = new EditOps(api);
         await edit({ title: 'Foo', summary: '摘要', text: '新内容', minor: false });
 
         const body = bodyOf(postWithToken);
@@ -58,7 +58,7 @@ describe('EditPage', () => {
         const { api, postWithToken } = createApiStub();
         postWithToken.mockResolvedValue({ data: {} });
 
-        const { edit } = new EditPage(api);
+        const { edit } = new EditOps(api);
         await edit({ pageid: 12345, summary: '摘要', text: '新内容' });
 
         const body = bodyOf(postWithToken);
@@ -70,7 +70,7 @@ describe('EditPage', () => {
         const { api, postWithToken } = createApiStub();
         postWithToken.mockResolvedValue({ data: {} });
 
-        const { edit } = new EditPage(api);
+        const { edit } = new EditOps(api);
         await edit({
             title: 'Foo',
             summary: '摘要',

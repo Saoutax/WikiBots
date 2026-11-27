@@ -1,17 +1,18 @@
 import type { ApiQueryResponseWithResult, InfoPage } from 'types-mediawiki-response';
 import type { MwApiParams } from 'wiki-saikou';
-import { run, zhapi as api } from '@/api';
-import { BotInstance } from '@/lib';
+import { zhapi as api } from '@/api';
+import { delay } from '@/infra';
+import { BotInstance, splitAndJoin } from '@/lib';
 import type { PageContent } from '@/lib';
-import { delay, splitAndJoin } from '@/utils';
+import { run } from '@/runner';
 import {
     extractTemplateStyles,
     findTemplateStylesMarker,
-    keyOf,
     syncStylePageComment,
     syncTemplateStylesDoc,
     syncTemplateStylesPage,
-} from '../modules';
+} from '@/tasks';
+import { normalizeTitleKey as keyOf } from '@/wikitext';
 
 const bot = new BotInstance(api);
 

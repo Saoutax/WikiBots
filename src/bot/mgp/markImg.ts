@@ -2,10 +2,10 @@ import { isNotNil } from 'es-toolkit';
 import pMap from 'p-map';
 import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import { z } from 'zod';
-import { run, zhapi, cmapi } from '@/api';
-import { BotInstance } from '@/lib';
-import { createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/utils';
-import { collectRecentChanges } from '../modules';
+import { zhapi, cmapi } from '@/api';
+import { createRateLimiter, getTimeData, updateTimeData, dayjs } from '@/infra';
+import { BotInstance, collectRecentChanges } from '@/lib';
+import { run } from '@/runner';
 
 const configSchema = z.object({
     excludeCategory: z.array(z.string()),

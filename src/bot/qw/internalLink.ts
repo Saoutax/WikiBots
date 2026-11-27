@@ -1,8 +1,9 @@
 import type { ApiQueryResponseWithResult } from 'types-mediawiki-response';
 import Parser from 'wikiparser-node';
-import { run, qwapi as api } from '@/api';
+import { qwapi as api } from '@/api';
+import { createRateLimiter } from '@/infra';
 import { BotInstance } from '@/lib';
-import { createRateLimiter } from '@/utils';
+import { run } from '@/runner';
 
 const bot = new BotInstance(api);
 

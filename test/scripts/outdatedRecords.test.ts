@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dayjs } from '@/utils/time';
+import { dayjs } from '@/infra/time';
 import { filterOutdatedRecords } from '../../scripts/lib/outdatedRecords';
 
 /** Fixed reference time so the tests never depend on the clock. */

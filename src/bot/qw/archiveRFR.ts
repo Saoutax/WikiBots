@@ -1,8 +1,10 @@
 import Parser from 'wikiparser-node';
-import { run, qwapi as api } from '@/api';
+import { qwapi as api } from '@/api';
+import { dayjs } from '@/infra';
 import { BotInstance } from '@/lib';
-import { dayjs, getLatestTimestamp } from '@/utils';
-import { archiveDiscussion, statusList } from '../modules';
+import { run } from '@/runner';
+import { archiveDiscussion, statusList } from '@/tasks';
+import { getLatestTimestamp } from '@/wikitext';
 
 const bot = new BotInstance(api);
 

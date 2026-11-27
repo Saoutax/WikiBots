@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { QueryCategory } from '@/lib/queryCategory';
+import { QueryOps } from '@/lib/query';
 import { createApiStub } from '../helpers/api';
 
 interface MWCategory {
@@ -7,7 +7,7 @@ interface MWCategory {
     title: string;
 }
 
-describe('QueryCategory', () => {
+describe('QueryOps', () => {
     it('查询单个分类并使用默认参数', async () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({
@@ -21,7 +21,7 @@ describe('QueryCategory', () => {
             },
         });
 
-        const { query } = new QueryCategory(api);
+        const { queryCategory: query } = new QueryOps(api);
         const result = await query('Category:A');
 
         expect(result).toEqual(['Page1', 'Category:B']);
@@ -55,7 +55,7 @@ describe('QueryCategory', () => {
             data: { query: { categorymembers: members[params.cmtitle] ?? [] } },
         }));
 
-        const { query } = new QueryCategory(api);
+        const { queryCategory: query } = new QueryOps(api);
         const result = await query('Category:A', true);
 
         expect(post).toHaveBeenCalledTimes(2);
@@ -78,7 +78,7 @@ describe('QueryCategory', () => {
             data: { query: { categorymembers: [{ ns: 0, title: 'P2' }] } },
         });
 
-        const { query } = new QueryCategory(api);
+        const { queryCategory: query } = new QueryOps(api);
         const result = await query('Category:A');
 
         expect(result).toEqual(['P1', 'P2']);
@@ -106,7 +106,7 @@ describe('QueryCategory', () => {
             },
         }));
 
-        const { query } = new QueryCategory(api);
+        const { queryCategory: query } = new QueryOps(api);
         const result = await query(['Category:A', 'Category:B']);
 
         expect(post).toHaveBeenCalledTimes(2);
@@ -117,7 +117,7 @@ describe('QueryCategory', () => {
         const { api, post } = createApiStub();
         post.mockResolvedValue({ data: { query: { categorymembers: [] } } });
 
-        const { query } = new QueryCategory(api);
+        const { queryCategory: query } = new QueryOps(api);
         await query('Category:A', false, ['page'], [0, 4]);
 
         expect(post.mock.calls[0]![0]).toEqual(
