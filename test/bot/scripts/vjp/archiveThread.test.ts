@@ -167,3 +167,53 @@ it('没有需要归档的讨论串时存档页追加空串，讨论页仍被编�
         tags: 'Bot',
     });
 });
+
+it('仅含 Movedto 模板的讨论串直接存档，含其他正文时保留', async () => {
+    useNow('2026-01-05T04:00:00.000Z');
+    const movedOnlyThread = [
+        '== 已移动讨论 ==',
+        '<!-- 注释不影响判定 -->',
+        '{{Movedto|Vocawiki:其他页面|sign=User 2026年1月5日 10:00 (CST)}}',
+        '',
+    ].join('\n');
+    const movedWithTextThread = [
+        '== 含正文不直接存档 ==',
+        '{{Movedto|Vocawiki:其他页面}}',
+        '仍有补充说明 2026年1月5日 10:00 (CST)',
+        '',
+    ].join('\n');
+
+    mockDiscussion(movedOnlyThread + movedWithTextThread, 44);
+
+    await import('@/bot/vjp/archiveThread');
+    const result = await runtime.drain();
+    const stub = runtime.stubs['vjp']!;
+
+    expect(result.errors).toEqual([]);
+    expect(stub.postWithToken).toHaveBeenCalledTimes(2);
+
+    const [archiveEdit, discussionEdit] = editBodies(stub);
+    expect(archiveEdit).toMatchObject({
+        title: 'Vocawiki:讨论版/存档/2026年',
+        appendtext: `\n\n${movedOnlyThread}`,
+        summary: '存档过期讨论串',
+        tags: 'Bot',
+    });
+    expect(editedPage(archiveEdit!, ARCHIVE_PAGE_BEFORE)).toBe(
+        `${ARCHIVE_PAGE_BEFORE}\n\n${movedOnlyThread}`,
+    );
+
+    const expectedDiscussion = [
+        '== 已移动讨论 ==',
+        '{{Saved|link=Vocawiki:讨论版/存档/2026年|title=已移动讨论}}',
+        '',
+        movedWithTextThread,
+    ].join('\n');
+    expect(discussionEdit).toMatchObject({
+        title: 'Vocawiki:讨论版',
+        text: expectedDiscussion,
+        baserevid: 44,
+        summary: '存档过期讨论串',
+        tags: 'Bot',
+    });
+});
