@@ -2,8 +2,7 @@ import type { ApiQueryResponseWithResult, InfoPage } from 'types-mediawiki-respo
 import type { MwApiParams } from 'wiki-saikou';
 import { zhapi as api } from '@/api';
 import { delay } from '@/infra';
-import { BotInstance, splitAndJoin } from '@/lib';
-import type { PageContent } from '@/lib';
+import { BotInstance, splitAndJoin, type PageContent } from '@/lib';
 import { run } from '@/runner';
 import {
     extractTemplateStyles,

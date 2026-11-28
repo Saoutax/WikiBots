@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { commitReadmes } from '../../scripts/lib/readmeCommit';
-import type { ReadmeClient, RemoteFile } from '../../scripts/lib/readmeCommit';
+import { commitReadmes, type ReadmeClient, type RemoteFile } from '../../scripts/lib/readmeCommit';
 
 interface WrittenFile {
     path: string;

@@ -1,6 +1,5 @@
 import { CronExpressionParser } from 'cron-parser';
-import { isMap, isNode, isScalar, parseDocument } from 'yaml';
-import type { Pair } from 'yaml';
+import { isMap, isNode, isScalar, parseDocument, type Pair } from 'yaml';
 import { z } from 'zod';
 
 /**

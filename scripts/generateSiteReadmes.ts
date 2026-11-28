@@ -1,10 +1,8 @@
 import { access, readFile, readdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import process from 'node:process';
-import { format } from 'oxfmt';
-import type { FormatConfig } from 'oxfmt';
-import { buildSiteReadmes } from './lib/readmes';
-import type { WorkflowFile } from './lib/readmes';
+import { format, type FormatConfig } from 'oxfmt';
+import { buildSiteReadmes, type WorkflowFile } from './lib/readmes';
 
 const WORKFLOW_DIR = resolve(process.cwd(), '.github/workflows');
 const OXFMT_CONFIG_PATH = resolve(process.cwd(), '.oxfmtrc.json');

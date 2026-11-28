@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { MwApiParams } from 'wiki-saikou';
 import { QueryOps } from '@/lib/query';
-import { createApiStub } from '../helpers/api';
-import type { MockFn } from '../helpers/api';
+import { createApiStub, type MockFn } from '../helpers/api';
 
 interface MWPage {
     title: string;

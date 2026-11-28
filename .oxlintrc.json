@@ -8,7 +8,7 @@
         "curly": "error",
         "typescript/no-floating-promises": ["error", { "ignoreIIFE": true }],
         "typescript/no-base-to-string": ["error", { "ignoredTypeNames": ["Token"] }],
-        "import/no-duplicates": "error"
+        "import/no-duplicates": ["error", { "preferInline": true }]
     },
     "overrides": [
         {

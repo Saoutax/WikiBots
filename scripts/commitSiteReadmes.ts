@@ -2,8 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import process from 'node:process';
 import { Octokit } from 'octokit';
-import { commitReadmes } from './lib/readmeCommit';
-import type { ReadmeFile } from './lib/readmeCommit';
+import { commitReadmes, type ReadmeFile } from './lib/readmeCommit';
 
 const OWNER = 'Saoutax';
 const REPO = 'WikiBots';
