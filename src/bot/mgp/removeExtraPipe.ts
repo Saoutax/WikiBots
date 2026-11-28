@@ -58,6 +58,9 @@ const getPages = async (rcstart: string, rcend: string | undefined): Promise<str
                 edits.push({ title, text, revid });
             }
         }
+        console.log(
+            `Window ${rcend ?? 'initial'} ~ ${rcstart}: scanned ${pages.length} page(s), ${edits.length} page(s) to fix.`,
+        );
 
         const limiter = createRateLimiter();
         await limiter.map(edits, async ({ title, text, revid }) => {
@@ -70,6 +73,11 @@ const getPages = async (rcstart: string, rcend: string | undefined): Promise<str
             });
             console.log(`√ ${title}`);
         });
+        console.log(
+            edits.length > 0
+                ? `Completed: fixed ${edits.length} page(s).`
+                : 'No pages need to be fixed.',
+        );
 
         await updateTimeData('removeExtraPipe', rcstart);
     });

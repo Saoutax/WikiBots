@@ -40,6 +40,7 @@ const main = async (targets: string[]) => {
             try {
                 const { content, revid } = await bot.getContent(target);
                 const parsed = parseRFRRequests(content);
+                console.log(`Checking ${target} (${parsed.sections.length} threads)...`);
                 const archiveArr: string[] = [];
                 const currentTime = dayjs().tz();
 

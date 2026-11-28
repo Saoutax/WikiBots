@@ -38,7 +38,10 @@ const getNewCount = async (templates: string[]): Promise<Map<string, string>> =>
 
         const newCount = await getNewCount(risk);
         const pageContent = await bot.batchQuery(riskDocs);
+        console.log(`Checking ${riskDocs.length} high-risk template doc page(s)...`);
         const limiter = createRateLimiter();
+        let updated = 0,
+            skipped = 0;
 
         await limiter.map(Object.entries(pageContent), async ([title, { content, revid }]) => {
             const root = Parser.parse(content),
@@ -56,10 +59,13 @@ const getNewCount = async (templates: string[]): Promise<Map<string, string>> =>
                     summary: '更新模板链入数据',
                     tags: 'Bot',
                 });
+                updated++;
                 console.log(`${title}：「${count}」→「${newNum}」`);
             } else {
+                skipped++;
                 console.log(`Skipped: ${title}`);
             }
         });
+        console.log(`Completed: ${updated} updated, ${skipped} skipped.`);
     });
 })();

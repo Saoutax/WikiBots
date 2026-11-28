@@ -12,6 +12,7 @@ const bot = new BotInstance(api);
             'file',
             'subcat',
         ]);
+        console.log(`Category:${process.env.CATEGORY}: ${pages.length} page(s) to null-edit.`);
 
         for (const title of pages) {
             await bot.edit({
@@ -22,5 +23,6 @@ const bot = new BotInstance(api);
             console.log(`NULLEDIT: ${title}`);
             await delay();
         }
+        console.log(`Completed: ${pages.length} page(s) null-edited.`);
     });
 })();

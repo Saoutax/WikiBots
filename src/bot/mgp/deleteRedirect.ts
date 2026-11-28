@@ -47,6 +47,7 @@ const deleteRedirect = async (titles: string[]): Promise<void> => {
             tags: 'Bot',
             bot: true,
         });
+        console.log(`Deleted redirect: ${title}`);
     });
 };
 
@@ -88,6 +89,9 @@ const processRecord = async (lestart: string, inUsed: string[]): Promise<void> =
             'chore: auto update inUsedRedirect record',
             sha,
         );
+        console.log(
+            `Updated ${filepath}: tracking ${Object.keys(record).length} timestamp group(s).`,
+        );
     }
 };
 
@@ -103,12 +107,18 @@ const processRecord = async (lestart: string, inUsed: string[]): Promise<void> =
                 leend = await getTimeData('deleteRedirect');
 
             const movedFiles = await getRecentMoves(lestart, leend);
+            console.log(
+                `Move log window ${leend ?? 'initial'} ~ ${lestart}: ${movedFiles.length} moved file(s).`,
+            );
 
             const redirects = await cmbot.checkRedirect(movedFiles),
                 { isTrue: isRedirect } = booleanFilter(redirects);
 
             const usage = await cmbot.checkGlobalUsage(isRedirect),
                 { isFalse, isTrue } = booleanFilter(usage);
+            console.log(
+                `Redirects: ${isRedirect.length} total (${isFalse.length} unused, ${isTrue.length} in use).`,
+            );
 
             if (isTrue.length > 0) {
                 console.log(`共 ${isTrue.length} 个重定向仍存在使用：\n${isTrue.join('\n')}`);

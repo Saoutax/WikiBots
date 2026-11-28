@@ -14,10 +14,13 @@ const bot = new BotInstance(api);
             false,
             ['page'],
         );
+        console.log(`Found ${pages.length} page(s) in category.`);
 
         const pageContent = await bot.batchQuery(pages, 500, 3, 5000);
         const limiter = createRateLimiter({ concurrency: 1, interval: 3000, intervalCap: 1 });
         const selector = `template:is(#${names.join(', #')})`;
+        let nullEdited = 0,
+            replaced = 0;
 
         await limiter.map(Object.entries(pageContent), async ([title, { content, revid }]) => {
             const root = Parser.parse(content),
@@ -30,6 +33,7 @@ const bot = new BotInstance(api);
                     baserevid: revid,
                     summary: '机器人：零编辑',
                 });
+                nullEdited++;
                 console.log(`NULLEDIT: ${title}`);
                 return;
             }
@@ -48,8 +52,10 @@ const bot = new BotInstance(api);
                     baserevid: revid,
                     summary: '机器人：移除已弃用模板',
                 });
+                replaced++;
                 console.log(`REPLACED: ${title}`);
             }
         });
+        console.log(`Completed: ${replaced} replaced, ${nullEdited} null-edited.`);
     });
 })();

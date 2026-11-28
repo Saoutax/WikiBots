@@ -53,6 +53,7 @@ const getRecentChanges = async (
             end = now.subtract(30, 'day').toISOString();
 
         const users = await getRecentChanges(start, end);
+        console.log(`Collected ${users.size} active user(s) in last 30 days (${end} ~ ${start}).`);
 
         let text = '* 本页面是由[[U:MisakaNetwork|机器人]]生成的活跃用户近30日内编辑统计。\n';
         text += '* 不包含机器人用户组与通过[[Special:ReplaceText|替换文本]]进行的编辑。\n';
@@ -72,5 +73,6 @@ const getRecentChanges = async (
             tags: 'Bot',
             nocreate: true,
         });
+        console.log('Updated: Vocawiki:活跃用户编辑报告.');
     });
 })();

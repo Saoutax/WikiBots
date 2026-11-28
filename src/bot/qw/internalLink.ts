@@ -11,6 +11,7 @@ const bot = new BotInstance(api);
     await run({ api, site: 'qw' }, async () => {
         const limiter = createRateLimiter({ concurrency: 1, interval: 3000, intervalCap: 1 });
         let eicontinue: string | number | undefined;
+        let totalEdited = 0;
         do {
             const { data } = await api.post<ApiQueryResponseWithResult>({
                 action: 'query',
@@ -44,6 +45,7 @@ const bot = new BotInstance(api);
                     edits.push({ title, text, revid });
                 }
             }
+            console.log(`Group: ${group.length} page(s) queried, ${edits.length} page(s) to edit.`);
 
             await limiter.map(edits, async ({ title, text, revid }) => {
                 await bot.edit({
@@ -52,10 +54,12 @@ const bot = new BotInstance(api);
                     baserevid: revid,
                     summary: '机器人：移除已弃用模板',
                 });
+                totalEdited++;
                 console.log(`Done: ${title}`);
             });
 
             console.log('Start next group.');
         } while (eicontinue);
+        console.log(`Completed: ${totalEdited} page(s) edited.`);
     });
 })();

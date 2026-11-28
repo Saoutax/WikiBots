@@ -52,6 +52,10 @@ const getLastDayEditCount = async () => {
             articles,
             edits,
         ]);
+        const statDate = statistics.dataset.source.at(-1)?.[0];
+        console.log(
+            `Site stats (${statDate}): users=${users}, activeusers=${activeusers}, dailyEdits=${editCount}, articles=${articles}, totalEdits=${edits}.`,
+        );
 
         const text = JSON.stringify(statistics, null, 4);
 
@@ -62,5 +66,6 @@ const getLastDayEditCount = async () => {
             tags: 'Bot',
             nocreate: true,
         });
+        console.log(`Updated: ${title}.`);
     });
 })();

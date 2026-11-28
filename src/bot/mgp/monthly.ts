@@ -30,6 +30,7 @@ const bot = new BotInstance(api);
         const monthly =
             '{{subst:User:SaoMikoto/Bot/config/monthly}}<span style="display:none">~~~~</span>';
 
+        console.log(`Target monthly: ${target}, subscribers: ${targets.length}.`);
         console.log('Start delivery.');
         for (const title of targets) {
             const user = title.match(/User_talk:([^/\]]+)(?:\/[^\]]*)?/)?.[1],
@@ -60,5 +61,6 @@ const bot = new BotInstance(api);
             summary: '更新当期月报',
             tags: 'Bot',
         });
+        console.log(`Done: ${mptarget}`);
     });
 })();

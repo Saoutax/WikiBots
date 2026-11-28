@@ -18,6 +18,7 @@ const bot = new BotInstance(api);
             qppage: 'DoubleRedirects',
             qplimit: 'max',
         });
+        console.log(`Found ${results.length} double redirect(s).`);
 
         for (const {
             title,

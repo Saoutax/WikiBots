@@ -30,6 +30,9 @@ const bot = new BotInstance(api);
         const [linkPages] = Object.values(await bot.getLinked(from, [0, 10])),
             modify = linkPages!.filter(item => !exclude.has(item)),
             pageContent = await bot.batchQuery(modify);
+        console.log(
+            `Config: [[${from}]] -> [[${to}]], ${linkPages?.length ?? 0} linked page(s), ${modify.length} after exclusions.`,
+        );
 
         const edits: { title: string; text: string; revid: number }[] = [];
         for (const [title, { content, revid }] of Object.entries(pageContent)) {

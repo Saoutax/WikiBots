@@ -47,12 +47,18 @@ const getParsedThread = async () => {
             const currentTime = dayjs().tz().format('YYYYMMDD'),
                 currentYear = dayjs().tz().format('YYYY年');
 
+            console.log(
+                `Checking Vocawiki:讨论版 (${discussionThread.sections.length} threads)...`,
+            );
             let archive = '';
+            let archivedCount = 0,
+                removedCount = 0;
             const discussion = cloneDeep(discussionThread);
             discussion.sections = discussion.sections.filter(section => {
                 const parsedSection = Parser.parse(section.thread);
                 const saved = parsedSection.querySelector('template#Template:Saved');
                 if (saved && dayjs().tz().day() === 1) {
+                    removedCount++;
                     console.log(`周一移除已存档讨论串：${section.title}`);
                     return false;
                 }
@@ -78,6 +84,7 @@ const getParsedThread = async () => {
                 }
                 if (shouldArchive) {
                     archive += section.thread;
+                    archivedCount++;
                     section.thread = `== ${section.title} ==\n{{Saved|link=Vocawiki:讨论版/存档/${currentYear}|title=${section.title}}}\n\n`;
                     console.log(`存档讨论串：${section.title}`);
                 }
@@ -99,6 +106,9 @@ const getParsedThread = async () => {
                 summary: '存档过期讨论串',
                 tags: 'Bot',
             });
+            console.log(
+                `Archived ${archivedCount} thread(s) to Vocawiki:讨论版/存档/${currentYear}, removed ${removedCount} saved thread(s).`,
+            );
             console.log('存档成功。');
         },
         true,

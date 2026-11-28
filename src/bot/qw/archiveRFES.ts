@@ -45,6 +45,7 @@ const parseSignatureRequests = (text: string): ParsedResult => {
 
             const { content, revid } = await bot.getContent(target);
             const parsed = parseSignatureRequests(content);
+            console.log(`Checking ${target} (${parsed.requests.length} requests)...`);
             const archiveArr: string[] = [];
 
             const currentTime = dayjs().tz();
@@ -67,6 +68,7 @@ const parseSignatureRequests = (text: string): ParsedResult => {
             });
 
             if (archiveArr.length > 0) {
+                console.log(`Archiving ${archiveArr.length} request(s) in ${target}.`);
                 await archiveDiscussion(api, {
                     target,
                     archiveTitle: `${target}/存档/${currentTime.format('YYYY年')}`,

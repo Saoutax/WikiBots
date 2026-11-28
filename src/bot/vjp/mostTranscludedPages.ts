@@ -73,6 +73,9 @@ const bot = new BotInstance(api);
             count++;
         }
         text += '|}\n\n[[Category:Vocawiki数据报告]]';
+        console.log(
+            `Queried ${results.length} most-transcluded page(s), ${count - 1} with >100 transclusions.`,
+        );
 
         await bot.edit({
             pageid: 63794,
@@ -81,6 +84,7 @@ const bot = new BotInstance(api);
             notminor: true,
             tags: 'Bot',
         });
+        console.log('Updated: Vocawiki:高引用量页面保护数据 (pageid=63794).');
         console.log('Done.');
     });
 })();

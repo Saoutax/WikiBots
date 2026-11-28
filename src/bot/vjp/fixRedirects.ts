@@ -22,6 +22,7 @@ const normalize = (title: string) => Parser.normalizeTitle(title).title;
             const original = await bot.queryCategory('Category:尚未清空的已重定向分类', false, [
                 'subcat',
             ]);
+            console.log(`Found ${original.length} unemptied redirected category(s).`);
             const limiter = createRateLimiter();
 
             for (const titles of splitAndJoin(original)) {

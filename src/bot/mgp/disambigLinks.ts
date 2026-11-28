@@ -91,6 +91,7 @@ const generateReport = (
 (async () => {
     await run({ api, site: 'zh' }, async () => {
         const disambig = await bot.queryCategory('Category:消歧义页', false, ['page']);
+        console.log(`Found ${disambig.length} disambiguation page(s).`);
 
         const linkPages = await bot.getLinked(disambig, [0], false);
 
@@ -98,6 +99,7 @@ const generateReport = (
         console.log(`共计${Object.keys(deDuplicate).length}个消歧义页存在链入页面`);
 
         const reports = generateReport(grouping(deDuplicate));
+        console.log(`Generated ${reports.length} report page(s) to update.`);
         const limiter = createRateLimiter();
 
         await limiter.map(reports, async ({ title, text }) => {

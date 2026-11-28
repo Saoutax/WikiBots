@@ -28,9 +28,14 @@ class CleanSandbox extends BaseApi {
             inprop: 'touched',
         });
         const limiter = createRateLimiter();
+        let cleaned = 0,
+            skipped = 0;
+        console.log(`Checking ${Object.keys(pageMap).length} sandbox page(s)...`);
         await limiter.map(pages, async ({ title, revisions, touched }) => {
             const rev = revisions?.[0];
             if (!title || !rev) {
+                skipped++;
+                console.log(`Skip ${title ?? '(unknown)'}: missing revision info.`);
                 return;
             }
             const minutes =
@@ -43,11 +48,14 @@ class CleanSandbox extends BaseApi {
                     summary: pageMap[title]!.summary,
                     tags: 'Bot',
                 });
-                console.log('Success.');
+                cleaned++;
+                console.log(`Cleaned: ${title} (last edited ${minutes.toFixed(1)} min ago).`);
             } else {
+                skipped++;
                 console.log(`${title} 在 ${minutes.toFixed(1)} 分钟前存在编辑，跳过。`);
             }
         });
+        console.log(`Sandbox cleanup finished: ${cleaned} cleaned, ${skipped} skipped.`);
     };
 }
 

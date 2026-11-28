@@ -30,6 +30,9 @@ const configSchema = z.object({
             const { isFalse } = booleanFilter(await cmbot.checkGlobalUsage(files)),
                 needDel = isFalse.filter(item => !unlink.includes(item)),
                 limiter = createRateLimiter();
+            console.log(
+                `Scanned ${files.length} file(s), excluded ${unlink.length} non-link-used file(s), ${needDel.length} unused file(s) to delete.`,
+            );
 
             await limiter.map(needDel, async title => {
                 await cmapi.postWithToken<ApiDeleteResponse>('csrf', {
@@ -39,6 +42,7 @@ const configSchema = z.object({
                     tags: 'Bot',
                     bot: true,
                 });
+                console.log(`Deleted: ${title}`);
             });
 
             console.log(needDel.length > 0 ? 'All unused deleted.' : 'No file need to delete.');

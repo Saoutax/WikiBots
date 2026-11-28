@@ -150,11 +150,19 @@ const addTemplate = async (file: string, pageName: string): Promise<void> => {
             const pages = await getPages(rcstart, rcend);
             const fileList = await matchFiles(pages);
             const needMark = await notInCat([...fileList.keys()], '非链入使用的文件');
+            console.log(
+                `Window ${rcend ?? 'initial'} ~ ${rcstart}: ${pages.length} candidate page(s), ${fileList.size} matched file(s), ${needMark.length} to mark.`,
+            );
             const limiter = createRateLimiter();
 
             await limiter.map(needMark, async file => {
                 await addTemplate(file, fileList.get(file)!);
             });
+            console.log(
+                needMark.length > 0
+                    ? `Completed: marked ${needMark.length} file(s).`
+                    : 'No files need to be marked.',
+            );
 
             await updateTimeData('markImg', rcstart);
         },

@@ -13,13 +13,16 @@ const bot = new BotInstance(api);
 
             const currentThread = parseThread(content);
             const { sections } = currentThread;
+            console.log(`Checking 地球联合百科讨论:会议大厅 (${sections.length} threads)...`);
 
             let archive = '';
+            let archivedCount = 0;
             const remainingSections = sections.filter(section => {
                 const today = dayjs.tz().startOf('day'),
                     lastComment = dayjs(section.timestamp);
                 if (today.diff(lastComment, 'day') >= 5) {
                     archive += `${section.thread}\n`;
+                    archivedCount++;
                     console.log(`Need archive: ${section.title}`);
                     return false;
                 }
@@ -62,6 +65,7 @@ const bot = new BotInstance(api);
                     tags: 'Bot',
                     bot: true,
                 });
+                console.log(`Archived ${archivedCount} thread(s) to ${archiveTitle}.`);
                 console.log('Protect success.');
             } else {
                 console.log('No thread need archive.');

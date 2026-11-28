@@ -21,6 +21,7 @@ const bot = new BotInstance(api);
                 ...pages,
             ]),
         ];
+        console.log(`Found ${needEdit.length} page(s) to null-edit.`);
 
         await Promise.all(
             needEdit.map(async title => {
@@ -34,5 +35,8 @@ const bot = new BotInstance(api);
                 console.log(`Done: ${title}`);
             }),
         );
+        if (needEdit.length > 0) {
+            console.log(`Completed: ${needEdit.length} page(s) null-edited.`);
+        }
     });
 })();

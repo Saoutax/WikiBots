@@ -17,6 +17,6 @@ const bot = new BotInstance(api);
             summary: '更新倒计时',
             tags: 'Bot',
         });
-        console.log('Update success.');
+        console.log(`Update success: Template:上映倒计时 -> ${diff} day(s).`);
     });
 })();

@@ -77,17 +77,22 @@ const main = async (targets: string[]) => {
     for (const target of targets) {
         const { content: pageContent, revid } = await bot.getContent(target);
         const discussionThread = parseThread(pageContent);
+        console.log(`Checking ${target} (${discussionThread.sections.length} threads)...`);
 
         let archive = '';
         const newDiscussion = cloneDeep(discussionThread);
 
         const removeIndices: number[] = [];
 
-        for (const [i, { thread, content, timestamp }] of discussionThread.sections.entries()) {
+        for (const [
+            i,
+            { title, thread, content, timestamp },
+        ] of discussionThread.sections.entries()) {
             if (target === MESSAGE_TARGET) {
                 if (timestamp && currentTime.diff(timestamp, 'day') >= INACTIVE_DAYS) {
                     archive += thread;
                     removeIndices.push(i);
+                    console.log(`[${target}] Archive inactive thread: ${title}`);
                 }
                 continue;
             }
@@ -97,6 +102,7 @@ const main = async (targets: string[]) => {
                 if (!movedTime || currentTime.diff(movedTime, 'day') >= MOVED_DAYS) {
                     archive += thread;
                     removeIndices.push(i);
+                    console.log(`[${target}] Archive moved thread: ${title}`);
                 }
                 continue;
             }
@@ -113,6 +119,7 @@ const main = async (targets: string[]) => {
             if (time && dayjs(currentTime).diff(time, 'day') >= day) {
                 archive += thread;
                 removeIndices.push(i);
+                console.log(`[${target}] Archive resolved thread: ${title}`);
             }
         }
 
@@ -121,6 +128,7 @@ const main = async (targets: string[]) => {
         }
 
         if (!archive) {
+            console.log(`No threads need to be archived in ${target}.`);
             continue;
         }
 
@@ -133,7 +141,7 @@ const main = async (targets: string[]) => {
             summary: '机器人：存档讨论',
             baserevid: revid,
         });
-        console.log(`Archived: ${target} → ${archiveTitle}`);
+        console.log(`Archived ${removeIndices.length} thread(s): ${target} → ${archiveTitle}`);
     }
 };
 

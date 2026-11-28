@@ -49,5 +49,10 @@ const collectFixes = (obj: Record<string, PageContent>): EditTask[] => {
             });
             console.log(`√ ${title}`);
         });
+        console.log(
+            tasks.length > 0
+                ? `Completed: fixed ${tasks.length} template(s).`
+                : 'No templates need formatting fixes.',
+        );
     });
 })();

@@ -53,6 +53,9 @@ class InvisibleCharacter extends BaseApi {
             }
             pages.add(title);
         }
+        console.log(
+            `Window ${rcend ?? 'initial'} ~ ${rcstart}: ${changes.length} change(s), ${pages.size} candidate page(s).`,
+        );
 
         if (pages.size === 0) {
             console.log('No page need to process.');
@@ -85,6 +88,7 @@ class InvisibleCharacter extends BaseApi {
             });
         }
 
+        console.log(`Pages requiring cleanup: ${result.length}/${pages.size}.`);
         const failed: string[] = [],
             limiter = createRateLimiter();
         await limiter.map(result, async ({ title, text, revid, summary }) => {
@@ -106,6 +110,11 @@ class InvisibleCharacter extends BaseApi {
 
         if (kept.size > 0) {
             console.log(`Kept meaningful characters: ${formatCounts(kept)}`);
+        }
+        if (result.length > 0) {
+            console.log(
+                `Cleanup finished: ${result.length - failed.length} succeeded, ${failed.length} failed.`,
+            );
         }
         if (failed.length > 0) {
             console.error(`Failed to edit ${failed.length} page(s): ${failed.join(', ')}`);

@@ -20,6 +20,7 @@ const bot = new BotInstance(api);
         });
 
         const count = allusers.map(user => [user.name, user.editcount ?? 0] as const);
+        console.log(`Collected edit counts for ${count.length} user(s).`);
 
         let text = '* 本页面是由[[U:MisakaNetwork|机器人]]生成的全站累计编辑统计。\n';
         text += '* 生成时间：{{subst:#time:Y年n月j日 (D) H:i (T)|||1}}\n\n';
@@ -36,5 +37,6 @@ const bot = new BotInstance(api);
             tags: 'Bot',
             nocreate: true,
         });
+        console.log('Updated: Vocawiki:全站累计编辑报告.');
     });
 })();

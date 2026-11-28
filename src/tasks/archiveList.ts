@@ -136,6 +136,7 @@ const archiveList = async (
     const bot = new BotInstance(api);
     const { content, revid } = await bot.getContent(target);
     const entries = parseListEntries(content);
+    console.log(`Checking ${target} (${entries.length} entries)...`);
 
     if (entries.length === 0) {
         console.log('No entries found.');
